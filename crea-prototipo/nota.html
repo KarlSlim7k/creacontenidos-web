@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Arranca la temporada de niebla en el Cofre de Perote: guía completa para conductores que transitan la autopista Perote–Xalapa.">
+  <title>Arranca la temporada de niebla en el Cofre de Perote — CREA Contenidos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+  <style>
+    #reading-progress {
+      position: fixed; top: 0; left: 0; height: 3px;
+      background: var(--color-rojo); z-index: 999;
+      width: 0; transition: width 100ms linear;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="reading-progress"></div>
+
+  <!-- BARRA DE UTILIDAD -->
+  <div class="barra-utilidad">
+    <div class="container">
+      <div class="barra-utilidad__izq">
+        <span id="fecha-actual"></span>
+        <span class="temp-perote">🌤 14°C Perote</span>
+      </div>
+      <div class="barra-utilidad__der">
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header-editorial" id="header">
+    <div class="container">
+      <div class="header__top">
+        <div>
+          <a href="index.html" class="header__logo">CREA<span>.</span></a>
+          <p class="header__tagline">El medio de Perote y su región</p>
+        </div>
+        <div class="header__actions">
+          <button class="search-toggle" id="search-toggle" aria-label="Buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+          <a href="comercial.html" class="btn-cta">Apoya a CREA</a>
+          <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false"><span></span><span></span><span></span></button>
+        </div>
+      </div>
+      <nav class="nav-principal" aria-label="Navegación principal">
+        <ul class="nav-principal__lista" id="nav-lista">
+          <li><a href="seccion.html" class="nav-principal__enlace activo">Local</a></li>
+          <li><a href="seccion.html" class="nav-principal__enlace">Cultura</a></li>
+          <li><a href="seccion.html" class="nav-principal__enlace">Economía</a></li>
+          <li><a href="seccion.html" class="nav-principal__enlace">Entretenimiento</a></li>
+          <li><a href="seccion.html" class="nav-principal__enlace">Deportes</a></li>
+          <li><a href="seccion.html" class="nav-principal__enlace">Opinión</a></li>
+        </ul>
+      </nav>
+      <div class="search-bar" id="search-bar"><input type="search" placeholder="Buscar en CREA Contenidos..." aria-label="Buscar"></div>
+    </div>
+  </header>
+
+  <main>
+    <!-- BREADCRUMB -->
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Ruta de navegación">
+        <a href="index.html">Inicio</a>
+        <span class="breadcrumb__sep">›</span>
+        <a href="seccion.html">Local</a>
+        <span class="breadcrumb__sep">›</span>
+        <span>Temporada de niebla en el Cofre de Perote</span>
+      </nav>
+    </div>
+
+    <!-- HEADER DE NOTA -->
+    <article>
+      <div class="container container--narrow" style="padding-top:var(--space-4);">
+        <span class="badge-categoria">Local</span>
+        <h1 style="font-family:var(--font-display); font-size:clamp(2rem,4vw,3.2rem); font-weight:900; line-height:1.1; margin:var(--space-4) 0; color:var(--color-noche);">Arranca la temporada de niebla en el Cofre de Perote: guía completa para conductores</h1>
+        <p style="font-family:var(--font-accent); font-size:var(--text-xl); color:var(--color-gris-medio); line-height:1.5; margin-bottom:var(--space-6);">Las autoridades de Protección Civil emitieron recomendaciones para transitar por la autopista Perote–Xalapa durante los meses de mayor incidencia de neblina en la sierra veracruzana.</p>
+
+        <div style="display:flex; align-items:center; gap:var(--space-4); margin-bottom:var(--space-6); padding-bottom:var(--space-4); border-bottom:1px solid var(--color-gris-linea);">
+          <img src="https://i.pravatar.cc/80?img=11" alt="Carlos Hernández Mora" style="width:56px; height:56px; border-radius:50%; object-fit:cover;">
+          <div>
+            <strong style="color:var(--color-noche); font-size:var(--text-base);">Carlos Hernández Mora</strong>
+            <div style="font-size:var(--text-sm); color:var(--color-gris-medio);">
+              <time datetime="2026-03-27">27 de marzo, 2026</time> · 6 min de lectura
+            </div>
+          </div>
+          <div class="compartir" style="margin-left:auto;">
+            <span class="compartir__label">Compartir</span>
+            <button class="compartir__btn" aria-label="Compartir en Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></button>
+            <button class="compartir__btn" aria-label="Compartir en Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></button>
+            <button class="compartir__btn" aria-label="Compartir por WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- IMAGEN PRINCIPAL -->
+      <figure class="container" style="margin-bottom:var(--space-8);">
+        <img src="https://picsum.photos/seed/cofre-niebla-art/1200/600" alt="Niebla densa cubriendo la autopista Perote-Xalapa al amanecer" style="width:100%; border-radius:var(--radius-base); aspect-ratio:2/1; object-fit:cover;">
+        <figcaption style="font-size:var(--text-sm); color:var(--color-gris-medio); margin-top:var(--space-2); font-style:italic;">La niebla en la autopista Perote-Xalapa puede reducir la visibilidad a menos de 50 metros. Foto: Protección Civil Veracruz.</figcaption>
+      </figure>
+
+      <!-- CUERPO + SIDEBAR -->
+      <div class="container">
+        <div class="articulo-layout" style="display:grid; grid-template-columns:1fr 300px; gap:var(--space-12);">
+          <!-- CUERPO -->
+          <div class="articulo-body">
+            <p>Con la llegada de los últimos días de marzo, la temporada de niebla ha comenzado oficialmente en la zona del Cofre de Perote. Los conductores que transitan diariamente por la autopista Perote–Xalapa, una de las vías más transitadas del estado de Veracruz, enfrentan condiciones de visibilidad reducida que pueden representar un riesgo considerable si no se toman las precauciones adecuadas.</p>
+
+            <p>De acuerdo con datos de la Dirección de Protección Civil del municipio de Perote, entre los meses de marzo y septiembre se registran en promedio 120 días con presencia de neblina en la zona serrana. «La altitud del Cofre de Perote, que supera los 4,200 metros sobre el nivel del mar, genera condiciones atmosféricas únicas que provocan la formación de bancos de niebla densos, particularmente durante las primeras horas de la mañana y al atardecer», explicó el director de Protección Civil, ingeniero Roberto Zárate Mendoza.</p>
+
+            <blockquote>
+              «Cada año perdemos vidas en esta carretera por exceso de velocidad en condiciones de niebla. Una guía clara y difusión constante pueden salvar vidas. Pedimos a los conductores que reduzcan su velocidad y enciendan sus luces bajas.»
+              <cite>— Ing. Roberto Zárate Mendoza, Director de Protección Civil de Perote</cite>
+            </blockquote>
+
+            <p>Las recomendaciones emitidas por las autoridades incluyen reducir la velocidad a un máximo de 40 kilómetros por hora cuando la visibilidad es menor a 100 metros, utilizar luces bajas en todo momento (nunca luces altas, ya que el reflejo empeora la visibilidad), mantener una distancia de seguimiento de al menos cuatro segundos con el vehículo de adelante, y evitar rebasar en zonas donde la niebla sea densa.</p>
+
+            <p>Además, se ha instalado señalización nueva en los puntos kilométricos más críticos de la autopista, particularmente entre los kilómetros 28 y 45, donde históricamente se concentra el mayor número de accidentes relacionados con visibilidad reducida. La inversión en señalización preventiva ascendió a 1.8 millones de pesos, financiados conjuntamente por el gobierno estatal y el municipio de Perote.</p>
+
+            <p>Para los transportistas y conductores frecuentes, Protección Civil ha habilitado un número de WhatsApp (228-555-0147) donde se envían alertas en tiempo real sobre las condiciones de la carretera. El servicio, que comenzó como un proyecto piloto el año pasado con 200 suscriptores, hoy cuenta con más de 3,400 personas registradas.</p>
+
+            <hr class="editorial-divider">
+            <p style="font-family:var(--font-body); font-size:var(--text-sm); color:var(--color-gris-medio); font-style:italic;">Revisado por el equipo editorial CREA · Reportaje original.</p>
+          </div>
+
+          <!-- SIDEBAR -->
+          <aside class="articulo-sidebar">
+            <div style="margin-bottom:var(--space-8);">
+              <h3 style="font-size:var(--text-sm); font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--color-rojo); margin-bottom:var(--space-4);">Últimas notas</h3>
+              <article class="card-nota card-nota--compacta">
+                <div class="card-contenido" style="padding:0;">
+                  <h3 class="card-titular"><a href="nota.html">Municipio anuncia pavimentación de 3 calles en colonia Centro</a></h3>
+                  <footer class="card-meta"><time class="fecha">27 mar</time></footer>
+                </div>
+              </article>
+              <article class="card-nota card-nota--compacta">
+                <div class="card-contenido" style="padding:0;">
+                  <h3 class="card-titular"><a href="nota.html">Feria del café veracruzano llega a Perote</a></h3>
+                  <footer class="card-meta"><time class="fecha">26 mar</time></footer>
+                </div>
+              </article>
+              <article class="card-nota card-nota--compacta">
+                <div class="card-contenido" style="padding:0;">
+                  <h3 class="card-titular"><a href="nota.html">Precio del gas LP sube 3% en la zona</a></h3>
+                  <footer class="card-meta"><time class="fecha">25 mar</time></footer>
+                </div>
+              </article>
+            </div>
+
+            <!-- Patrocinador sidebar -->
+            <div class="banner-patrocinador" style="padding:var(--space-4);">
+              <span class="banner-patrocinador__etiqueta" style="font-size:0.65rem;">Contenido patrocinado</span>
+              <p style="font-family:var(--font-display); font-size:var(--text-lg); color:var(--color-noche); margin:var(--space-4) 0 var(--space-2);">Refaccionaria Perote Express</p>
+              <p style="font-size:var(--text-sm); color:var(--color-gris-medio);">Refacciones y servicio automotriz. Av. Nacional #120.</p>
+            </div>
+
+            <div style="margin-top:var(--space-8);">
+              <h3 style="font-size:var(--text-sm); font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--color-gris-medio); margin-bottom:var(--space-4);">Compartir</h3>
+              <div class="compartir" style="flex-direction:column; align-items:flex-start; gap:var(--space-2);">
+                <button class="compartir__btn" style="width:100%; border-radius:var(--radius-base); justify-content:center; gap:var(--space-2); padding:var(--space-2);" aria-label="Facebook">
+                  <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                  Facebook
+                </button>
+                <button class="compartir__btn" style="width:100%; border-radius:var(--radius-base); justify-content:center; gap:var(--space-2); padding:var(--space-2);" aria-label="WhatsApp">
+                  <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                  WhatsApp
+                </button>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <!-- NOTAS RELACIONADAS -->
+      <section class="seccion seccion--gris">
+        <div class="container">
+          <h2 class="seccion__titulo">Notas relacionadas</h2>
+          <hr class="editorial-divider--accent" style="margin:var(--space-3) 0 var(--space-8);">
+          <div class="grid-notas" style="display:grid; grid-template-columns:repeat(3,1fr); gap:var(--col-gap);">
+            <article class="card-nota reveal reveal-delay-1">
+              <a href="nota.html">
+                <div class="card-imagen"><img src="https://picsum.photos/seed/carretera1/400/250" alt="Carretera federal Perote-Puebla" loading="lazy"><span class="badge-categoria">Local</span></div>
+                <div class="card-contenido">
+                  <h3 class="card-titular">Reabren tramo de la carretera federal Perote–Puebla tras derrumbe</h3>
+                  <p class="card-bajada">El tramo fue cerrado durante 8 horas por un deslizamiento de tierra en el kilómetro 32.</p>
+                  <footer class="card-meta"><span class="autor">Carlos Hernández</span><time class="fecha">26 mar</time></footer>
+                </div>
+              </a>
+            </article>
+            <article class="card-nota reveal reveal-delay-2">
+              <a href="nota.html">
+                <div class="card-imagen"><img src="https://picsum.photos/seed/proteccion-civil/400/250" alt="Protección Civil de Perote" loading="lazy"><span class="badge-categoria">Local</span></div>
+                <div class="card-contenido">
+                  <h3 class="card-titular">Protección Civil instala 15 nuevas señales de advertencia en la autopista</h3>
+                  <p class="card-bajada">La inversión forma parte del programa estatal de reducción de siniestros viales.</p>
+                  <footer class="card-meta"><span class="autor">Gabriela Tláloc</span><time class="fecha">24 mar</time></footer>
+                </div>
+              </a>
+            </article>
+            <article class="card-nota reveal reveal-delay-3">
+              <a href="nota.html">
+                <div class="card-imagen"><img src="https://picsum.photos/seed/cofre-panorama/400/250" alt="Panorámica del Cofre de Perote" loading="lazy"><span class="badge-categoria badge-categoria--cultura">Cultura</span></div>
+                <div class="card-contenido">
+                  <h3 class="card-titular">El Cofre de Perote: historia y leyendas del volcán que vigila la sierra</h3>
+                  <p class="card-bajada">Un recorrido por las tradiciones orales y la importancia ecológica del Nauhcampatépetl.</p>
+                  <footer class="card-meta"><span class="autor">Sofía Ríos</span><time class="fecha">22 mar</time></footer>
+                </div>
+              </a>
+            </article>
+          </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <div class="footer__logo">CREA<span>.</span></div>
+          <p class="footer__desc">CREA Contenidos es el medio digital de referencia para Perote y la región serrana de Veracruz.</p>
+          <div class="footer__redes">
+            <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+            <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer__titulo-col">Secciones</h4>
+          <ul class="footer__lista">
+            <li><a href="seccion.html">Local</a></li><li><a href="seccion.html">Cultura</a></li>
+            <li><a href="seccion.html">Economía</a></li><li><a href="seccion.html">Deportes</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer__titulo-col">CREA</h4>
+          <ul class="footer__lista">
+            <li><a href="colaboradores.html">Equipo</a></li><li><a href="comunidad.html">Comunidad</a></li>
+            <li><a href="comercial.html">Publicidad</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer__titulo-col">Legal</h4>
+          <ul class="footer__lista">
+            <li><a href="#">Aviso de privacidad</a></li><li><a href="#">Términos de uso</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© <span id="anio-actual">2026</span> CREA Contenidos.</span>
+        <span class="footer__hecho">Hecho en Perote, Veracruz 🇲🇽</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/interactions.js"></script>
+</body>
+</html>
