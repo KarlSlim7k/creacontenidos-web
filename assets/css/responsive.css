@@ -172,3 +172,63 @@
   .header-editorial { position: static; border-bottom: 2px solid #000; }
   body { background: #fff; color: #000; }
 }
+
+/* ═══════════════════════════════════════════════════════
+   TERCER TIEMPO — Responsive
+═══════════════════════════════════════════════════════ */
+
+/* Mobile base: todo lineal */
+.ep-destacado { grid-template-columns: 1fr; }
+.ep-destacado__info { padding: var(--space-5); }
+.beisbol-layout { grid-template-columns: 1fr; }
+.beisbol-quote { padding: var(--space-6) var(--space-4); }
+.beisbol-quote blockquote { font-size: var(--text-lg); }
+.grid-episodios { grid-template-columns: 1fr; }
+.grid-comentarios { grid-template-columns: 1fr; }
+.countdown { gap: var(--space-2); }
+.countdown__numero { min-width: 60px; font-size: 2rem; padding: var(--space-2) var(--space-3); }
+.countdown__sep { font-size: 2rem; padding-top: var(--space-2); }
+.proxima__form { flex-direction: column; }
+.footer-tt__inner { flex-direction: column; gap: var(--space-4); }
+.hero-tt__ctas { flex-direction: column; align-items: center; }
+.btn-tt-primario, .btn-tt-outline { width: 100%; justify-content: center; max-width: 320px; }
+.widget-grid { grid-template-columns: 1fr; }
+.widget-eps-secundarios { grid-template-columns: 1fr 1fr; display: grid; }
+.ep-destacado__titular { font-size: var(--text-xl); }
+.seccion-tt__header { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
+.engagement-bar { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
+.fb-video-wrapper { max-width: 100%; }
+.fb-video-wrapper iframe { max-width: 100%; }
+
+/* Tablet: ≥ 640px */
+@media (min-width: 640px) {
+  .grid-episodios { grid-template-columns: repeat(2, 1fr); }
+  .grid-comentarios { grid-template-columns: repeat(2, 1fr); }
+  .ep-destacado__info { padding: var(--space-6); }
+  .hero-tt__ctas { flex-direction: row; }
+  .btn-tt-primario, .btn-tt-outline { width: auto; max-width: none; }
+  .countdown__numero { min-width: 80px; }
+  .widget-eps-secundarios { grid-template-columns: 1fr 1fr; }
+}
+
+/* Desktop: ≥ 1024px */
+@media (min-width: 1024px) {
+  .ep-destacado { grid-template-columns: 3fr 2fr; }
+  .ep-destacado__info { padding: var(--space-8); }
+  .beisbol-layout { grid-template-columns: 1fr 1fr; }
+  .grid-episodios { grid-template-columns: repeat(3, 1fr); }
+  .grid-comentarios { grid-template-columns: repeat(3, 1fr); }
+  .widget-grid { grid-template-columns: 1fr 1fr; }
+  .widget-eps-secundarios { display: flex; flex-direction: column; }
+  .seccion-tt__header { flex-direction: row; align-items: flex-end; }
+  .engagement-bar { flex-direction: row; align-items: center; }
+  .countdown__numero { min-width: 90px; font-size: clamp(2.5rem, 6vw, 5rem); }
+  .proxima__form { flex-direction: row; }
+  .footer-tt__inner { flex-direction: row; }
+}
+
+/* Mobile estrecho para el widget de index */
+@media (max-width: 480px) {
+  .widget-eps-secundarios { grid-template-columns: 1fr; display: grid; }
+  .widget-ep-secundario { grid-template-columns: 100px 1fr; }
+}
