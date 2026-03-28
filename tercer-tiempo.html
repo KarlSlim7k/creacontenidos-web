@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tercer Tiempo — El programa deportivo de CREA Contenidos. Deportes, pasión y orgullo veracruzano en cada emisión. En vivo los jueves por Facebook.">
+  <meta name="keywords" content="Tercer Tiempo, CREA Contenidos, deportes Perote, Veracruz deportes, Facebook Live, básquetbol, béisbol">
+  <meta property="og:title" content="Tercer Tiempo — CREA Contenidos">
+  <meta property="og:description" content="Deportes, pasión y orgullo veracruzano en cada emisión. En vivo los jueves.">
+  <meta property="og:type" content="website">
+  <title>Tercer Tiempo — Deportes en vivo · CREA Contenidos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+</head>
+<body>
+
+  <!-- ═══ BARRA DE UTILIDAD ═══ -->
+  <div class="barra-utilidad">
+    <div class="container">
+      <div class="barra-utilidad__izq">
+        <span id="fecha-actual">Viernes 27 de marzo de 2026</span>
+        <span class="temp-perote">🌤 14°C Perote</span>
+        <a href="index.html#newsletter" class="newsletter-link">📩 Newsletter</a>
+      </div>
+      <div class="barra-utilidad__der">
+        <a href="https://www.facebook.com/profile.php?id=100079776720617" target="_blank" rel="noopener noreferrer" aria-label="Facebook CREA Contenidos"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+        <a href="#" aria-label="X / Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ HEADER EDITORIAL ═══ -->
+  <header class="header-editorial" id="header">
+    <div class="container">
+      <div class="header__top">
+        <div>
+          <a href="index.html" class="header__logo">CREA<span>.</span></a>
+          <p class="header__tagline">El medio de Perote y su región</p>
+        </div>
+        <div class="header__actions">
+          <button class="search-toggle" id="search-toggle" aria-label="Buscar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <a href="comercial.html" class="btn-cta">Apoya a CREA</a>
+          <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <nav class="nav-principal" aria-label="Navegación principal">
+        <ul class="nav-principal__lista" id="nav-lista">
+          <li><a href="seccion.html" class="nav-principal__enlace">Local</a></li>
+          <li><a href="seccion.html" class="nav-principal__enlace">Cultura</a></li>
+          <li><a href="seccion.html" class="nav-principal__enlace">Economía</a></li>
+          <li><a href="seccion.html" class="nav-principal__enlace">Entretenimiento</a></li>
+          <li><a href="seccion.html" class="nav-principal__enlace activo">Deportes</a></li>
+          <li><a href="tercer-tiempo.html" class="nav-principal__enlace" style="color:var(--tt-acento);">⚽ Tercer Tiempo</a></li>
+        </ul>
+      </nav>
+      <div class="search-bar" id="search-bar">
+        <input type="search" placeholder="Buscar en CREA Contenidos..." aria-label="Buscar">
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ═══ SECCIÓN 1 — HERO DEL PROGRAMA ═══ -->
+    <section class="hero-tercer-tiempo" id="hero-tt">
+      <div class="hero-tt__contenido">
+        <div class="badge-live reveal reveal-delay-1">
+          <span class="dot"></span>EN VIVO · JUEVES
+        </div>
+        <h1 class="hero-tt__logo reveal reveal-delay-2">TERCER TIEMPO</h1>
+        <div class="hero-tt__linea-acento reveal reveal-delay-3"></div>
+        <p class="hero-tt__tagline reveal reveal-delay-4">
+          Deportes, pasión y orgullo veracruzano en cada emisión
+        </p>
+        <div class="hero-tt__ctas reveal reveal-delay-5">
+          <a href="https://www.facebook.com/100079776720617/videos/920742307478966/" 
+             target="_blank" rel="noopener noreferrer"
+             class="btn-tt-primario" id="btn-ver-ultimo-ep">
+            ▶ Ver último episodio
+          </a>
+          <a href="https://www.facebook.com/profile.php?id=100079776720617" 
+             target="_blank" rel="noopener noreferrer"
+             class="btn-tt-outline" id="btn-seguir-fb">
+            <svg style="width:16px;height:16px;fill:currentColor;" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            Seguir en Facebook
+          </a>
+        </div>
+      </div>
+      <div class="hero-tt__scroll" aria-hidden="true">
+        <span class="hero-tt__scroll-arrow">↓</span>
+        <span>Explorar</span>
+      </div>
+    </section>
+
+    <!-- ═══ SECCIÓN 2 — EPISODIO DESTACADO (Coyotes) ═══ -->
+    <section class="seccion-tt" id="episodio-destacado">
+      <div class="container">
+        <div class="seccion-tt__header reveal">
+          <div>
+            <span class="seccion-tt__label">🏆 Episodio de la temporada</span>
+            <h2 class="seccion-tt__titulo">El episodio que movió a Perote</h2>
+          </div>
+          <a href="#episodios" class="seccion-tt__ver-todos">Ver todos los episodios ↓</a>
+        </div>
+
+        <div class="ep-destacado reveal">
+          <!-- Columna izquierda: Embed Facebook -->
+          <div class="ep-destacado__media">
+            <div class="fb-video-wrapper">
+              <iframe
+                data-src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F100079776720617%2Fvideos%2F920742307478966%2F&width=560&show_text=false"
+                src="about:blank"
+                width="560"
+                height="315"
+                style="border:none;overflow:hidden;width:100%;height:100%;"
+                scrolling="no"
+                frameborder="0"
+                allowfullscreen="true"
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                title="Tercer Tiempo - Episodio 14 · Coyotes de Perote campeones estatales">
+              </iframe>
+            </div>
+          </div>
+
+          <!-- Columna derecha: Información editorial -->
+          <div class="ep-destacado__info">
+            <div>
+              <span class="badge-categoria" style="background:var(--tt-acento); margin-bottom:var(--space-3); display:inline-block;">EPISODIO DESTACADO</span>
+              <span class="ep-numero">T1 · EP. 14 · 5 de marzo de 2026</span>
+            </div>
+            <h3 class="ep-destacado__titular">
+              Coyotes de Perote: los niños que conquistaron el estado
+            </h3>
+            <div class="ep-destacado__desc">
+              <p>En el Torneo Estatal de Básquetbol Juvenil 2026, celebrado en Coatepec, la Escuela de Básquetbol Coyotes de Perote se convirtió en el equipo revelación del año. De los 18 equipos participantes de todo Veracruz, los Coyotes avanzaron invictos hasta la final disputando un campeonato que nadie esperaba que llegara tan lejos desde las montañas del centro del estado.</p>
+              <p>La final fue un partido que se decidió en los últimos segundos: 42–39 ante los Halcones de Orizaba. Cada jugada, cada punto y cada canasta valen por toda una comunidad que sigue al equipo desde el parque central.</p>
+              <p>En Tercer Tiempo recibimos a los pequeños campeones y a su entrenador el Prof. Eduardo Tláloc, quienes compartieron su emoción, su esfuerzo y su mensaje para Perote.</p>
+            </div>
+            <div class="ep-dato-especial">
+              🏆 Campeones Estatales Juveniles · Básquetbol · 2026 — Torneo celebrado en Coatepec, Veracruz
+            </div>
+            <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;align-items:center;">
+              <a href="https://www.facebook.com/100079776720617/videos/920742307478966/" 
+                 target="_blank" rel="noopener noreferrer"
+                 class="btn-tt-primario" id="btn-ep-completo">
+                Ver episodio completo →
+              </a>
+            </div>
+            <div class="ep-compartir">
+              <span class="ep-compartir__label">Compartir:</span>
+              <a href="#" class="btn-compartir-wa" id="share-wa-coyotes"
+                 data-share-whatsapp
+                 data-titulo="Coyotes de Perote: los niños que conquistaron el estado"
+                 data-url="https://www.facebook.com/100079776720617/videos/920742307478966/"
+                 rel="noopener noreferrer">
+                📱 WhatsApp
+              </a>
+              <a href="#" class="btn-compartir-fb" id="share-fb-coyotes"
+                 data-share-facebook
+                 data-titulo="Coyotes de Perote: los niños que conquistaron el estado"
+                 data-url="https://www.facebook.com/100079776720617/videos/920742307478966/"
+                 rel="noopener noreferrer">
+                👍 Facebook
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECCIÓN 3 — GRID DE EPISODIOS RECIENTES ═══ -->
+    <section class="seccion-tt seccion-tt--oscura" id="episodios">
+      <div class="container">
+        <div class="seccion-tt__header reveal">
+          <div>
+            <span class="seccion-tt__label">Archivo del programa</span>
+            <h2 class="seccion-tt__titulo">Últimas emisiones</h2>
+          </div>
+        </div>
+
+        <div class="grid-episodios">
+
+          <!-- EP. 13 — Torneo Municipal Fútbol -->
+          <article class="card-episodio reveal reveal-delay-1" id="ep-13">
+            <div class="ep-thumbnail">
+              <img src="https://picsum.photos/seed/futbolmunicipal/480/270" alt="Torneo Municipal de Fútbol Varonil Perote 2026" loading="lazy">
+              <div class="play-overlay">
+                <span class="play-btn">▶</span>
+              </div>
+              <span class="ep-duracion">52:14</span>
+            </div>
+            <div class="ep-info">
+              <span class="ep-numero-card">EP. 13 · 20 feb 2026</span>
+              <h3 class="ep-titulo">El campeón del torneo municipal de fútbol varonil</h3>
+              <p class="ep-descripcion">Resumen y análisis del campeonato municipal en el que Deportivo La Cima se coronó después de tres temporadas consecutivas en subcampeonato.</p>
+              <div class="ep-meta">
+                <time>20 feb 2026</time>
+                <a href="https://www.facebook.com/profile.php?id=100079776720617" target="_blank" rel="noopener noreferrer">Ver en Facebook →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- EP. 12 — Historia del Béisbol (tratamiento especial) -->
+          <article class="card-episodio reveal reveal-delay-2" id="ep-12-beisbol">
+            <div class="ep-thumbnail">
+              <img src="https://picsum.photos/seed/beisbolperote/480/270" alt="Historia del béisbol en Perote, Veracruz" loading="lazy">
+              <div class="play-overlay">
+                <span class="play-btn">▶</span>
+              </div>
+              <span class="ep-duracion">61:47</span>
+              <span class="ep-badge-historia">⚾ HISTORIA</span>
+            </div>
+            <div class="ep-info">
+              <span class="ep-numero-card">EP. 12 · 6 feb 2026</span>
+              <h3 class="ep-titulo">La historia del béisbol en Perote: voces de una tradición</h3>
+              <p class="ep-descripcion">Recorrido histórico del béisbol peroteño con testimonios de veteranos, jugadores y aficionados de generaciones que forjaron el diamante local.</p>
+              <div class="ep-meta">
+                <time>6 feb 2026</time>
+                <a href="https://www.facebook.com/p/Crea-Contenidos-100079776720617/" target="_blank" rel="noopener noreferrer">Ver en Facebook →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- EP. 11 — Arranque temporada béisbol regional -->
+          <article class="card-episodio reveal reveal-delay-3" id="ep-11">
+            <div class="ep-thumbnail">
+              <img src="https://picsum.photos/seed/temporadabeisbol/480/270" alt="Arranque de la temporada de béisbol regional Perote" loading="lazy">
+              <div class="play-overlay">
+                <span class="play-btn">▶</span>
+              </div>
+              <span class="ep-duracion">44:38</span>
+            </div>
+            <div class="ep-info">
+              <span class="ep-numero-card">EP. 11 · 23 ene 2026</span>
+              <h3 class="ep-titulo">Arranca la temporada de béisbol regional: expectativas 2026</h3>
+              <p class="ep-descripcion">Análisis de los equipos inscritos en la Liga Regional Perote–Altotonga y los pronósticos para la temporada que se avecina con nueva reglamentación.</p>
+              <div class="ep-meta">
+                <time>23 ene 2026</time>
+                <a href="https://www.facebook.com/profile.php?id=100079776720617" target="_blank" rel="noopener noreferrer">Ver en Facebook →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- EP. 10 — Entrenador de Atletismo -->
+          <article class="card-episodio reveal reveal-delay-1" id="ep-10">
+            <div class="ep-thumbnail">
+              <img src="https://picsum.photos/seed/atletismoperote/480/270" alt="Entrenador de atletismo de la preparatoria de Perote" loading="lazy">
+              <div class="play-overlay">
+                <span class="play-btn">▶</span>
+              </div>
+              <span class="ep-duracion">38:55</span>
+            </div>
+            <div class="ep-info">
+              <span class="ep-numero-card">EP. 10 · 16 ene 2026</span>
+              <h3 class="ep-titulo">Prof. Ignacio Zaragoza: treinta años formando atletas en Perote</h3>
+              <p class="ep-descripcion">Entrevista con el Prof. Ignacio Zaragoza Moreno, entrenador de atletismo de la Preparatoria No. 3 de Perote y formador de más de 200 atletas a lo largo de su carrera.</p>
+              <div class="ep-meta">
+                <time>16 ene 2026</time>
+                <a href="https://www.facebook.com/profile.php?id=100079776720617" target="_blank" rel="noopener noreferrer">Ver en Facebook →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- EP. 9 — Fútbol femenil inter-colonias -->
+          <article class="card-episodio reveal reveal-delay-2" id="ep-9">
+            <div class="ep-thumbnail">
+              <img src="https://picsum.photos/seed/futbolfemenil/480/270" alt="Campeonato de fútbol femenil inter-colonias Perote" loading="lazy">
+              <div class="play-overlay">
+                <span class="play-btn">▶</span>
+              </div>
+              <span class="ep-duracion">47:21</span>
+            </div>
+            <div class="ep-info">
+              <span class="ep-numero-card">EP. 9 · 9 ene 2026</span>
+              <h3 class="ep-titulo">Las guerreras del fútbol femenil: campeón inter-colonias 2026</h3>
+              <p class="ep-descripcion">El equipo Guerreras del Cofre de la colonia Lázaro Cárdenas se llevó el campeonato femenil inter-colonias con una final disputada ante Águilas del Norte.</p>
+              <div class="ep-meta">
+                <time>9 ene 2026</time>
+                <a href="https://www.facebook.com/profile.php?id=100079776720617" target="_blank" rel="noopener noreferrer">Ver en Facebook →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- EP. 8 — Resumen fin de año deportivo -->
+          <article class="card-episodio reveal reveal-delay-3" id="ep-8">
+            <div class="ep-thumbnail">
+              <img src="https://picsum.photos/seed/resumen2025/480/270" alt="Resumen deportivo fin de año Perote 2025" loading="lazy">
+              <div class="play-overlay">
+                <span class="play-btn">▶</span>
+              </div>
+              <span class="ep-duracion">55:09</span>
+            </div>
+            <div class="ep-info">
+              <span class="ep-numero-card">EP. 8 · 19 dic 2025</span>
+              <h3 class="ep-titulo">Lo mejor del deporte peroteño en 2025: un año para recordar</h3>
+              <p class="ep-descripcion">Especial de fin de año con los momentos más emocionantes, los deportistas más destacados y los hitos del deporte local durante 2025.</p>
+              <div class="ep-meta">
+                <time>19 dic 2025</time>
+                <a href="https://www.facebook.com/profile.php?id=100079776720617" target="_blank" rel="noopener noreferrer">Ver en Facebook →</a>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECCIÓN 4 — EPISODIO DEL BÉISBOL (Tratamiento documental) ═══ -->
+    <section class="seccion-beisbol" id="beisbol-historia">
+      <div class="beisbol-quote">
+        <blockquote>El béisbol en Perote tiene historia, nombres y hazañas que merecen ser contadas.</blockquote>
+      </div>
+      <div class="container">
+        <div class="beisbol-layout reveal">
+          <!-- Imagen con filtro sepia -->
+          <div class="beisbol-imagen">
+            <img src="https://picsum.photos/seed/beisbol-historico/600/340" alt="Fotografía histórica del béisbol en Perote, Veracruz" loading="lazy">
+          </div>
+          <!-- Texto editorial -->
+          <div class="beisbol-texto">
+            <span class="badge-historia-special">⚾ Historia Deportiva Peroteña</span>
+            <h3>La historia del béisbol en Perote: voces de una tradición</h3>
+            <p>El béisbol llegó a Perote a principios de la década de 1950, traído por trabajadores ferroviarios y cafetaleros que venían del golfo. Los primeros equipos —Los Cafetaleros del Cofre y los Aguiluchos de Perote— disputaron un diamante improvisado en lo que hoy es la colonia La Laguna. Con guantes de cuero curtido y pelotas remendadas, fundaron una tradición que décadas después aún late en la ciudad.</p>
+            <p>En este episodio especial, Tercer Tiempo reunió a cuatro veteranos: Don Aurelio Méndez Camacho, 78 años, lanzador de Los Cafetaleros en 1968; la familia Zamora Tláloc, tres generaciones de beisbolistas; y el Prof. Héctor Fuentes, cronista deportivo que documentó cada temporada desde 1971. Sus testimonios reconstituyen décadas de gloria, de derrotas y de reuniones bajo el mismo techo veracruzano.</p>
+            <p>El béisbol no es solo un deporte en Perote: es el idioma de los domingos por la tarde. La cancha es el lugar donde abuelos y nietos coinciden, donde los rivales de temporada se convierten en compadres al caer el sol. Ese tejido social, preservado generación a generación, es el corazón del episodio que Tercer Tiempo le dedica a esta tradición.</p>
+            <a href="https://www.facebook.com/p/Crea-Contenidos-100079776720617/" 
+               target="_blank" rel="noopener noreferrer"
+               class="btn-tt-naranja" id="btn-ep-beisbol">
+              Ver episodio completo ↗
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECCIÓN 5 — INTERACCIÓN COMUNITARIA ═══ -->
+    <section class="seccion-comunidad" id="comunidad-tercer-tiempo">
+      <div class="container">
+        <div class="seccion-tt__header reveal">
+          <div>
+            <span class="seccion-tt__label">Reacciones</span>
+            <h2 class="seccion-tt__titulo" style="color:var(--color-noche);">La comunidad habla</h2>
+          </div>
+        </div>
+
+        <!-- Contador de engagement -->
+        <div class="engagement-bar reveal">
+          <span>👍 342 reacciones</span>
+          <span>💬 87 comentarios</span>
+          <span>↗ 156 compartidos</span>
+          <span style="margin-left:auto; opacity:0.5; font-size:var(--text-xs);">Datos del episodio EP. 14 — Coyotes</span>
+        </div>
+
+        <!-- Grid de comentarios -->
+        <div class="grid-comentarios">
+
+          <!-- Comentario 1 — Coyotes -->
+          <div class="card-comentario reveal reveal-delay-1" id="comentario-1">
+            <div class="comentario-header">
+              <img src="https://picsum.photos/seed/avatar1/42/42" alt="Avatar de María G." class="avatar-comentario" loading="lazy">
+              <div>
+                <div class="comentario-nombre">María Guadalupe Xochihua</div>
+                <div class="comentario-ep-ref">EP. 14 · Coyotes de Perote</div>
+              </div>
+            </div>
+            <p class="comentario-texto">¡Qué orgullo ver a estos chamacos ganar! Los veía jugar en el parque los domingos y ahora resulta que son campeones estatales 🏆 Así se hace Perote, así se hace. Gracias Tercer Tiempo por traerlos al programa.</p>
+            <div class="comentario-reaccion">
+              <span class="comentario-likes">❤️ 87</span>
+              <span>hace 3 días</span>
+            </div>
+          </div>
+
+          <!-- Comentario 2 — Coyotes -->
+          <div class="card-comentario reveal reveal-delay-2" id="comentario-2">
+            <div class="comentario-header">
+              <img src="https://picsum.photos/seed/avatar2/42/42" alt="Avatar de Roberto M." class="avatar-comentario" loading="lazy">
+              <div>
+                <div class="comentario-nombre">Roberto Méndez Torres</div>
+                <div class="comentario-ep-ref">EP. 14 · Coyotes de Perote</div>
+              </div>
+            </div>
+            <p class="comentario-texto">Estos niños no solo pusieron a Perote en el mapa del básquetbol veracruzano, lo pusieron en el corazón de todos. Mi hijo es uno de ellos y verlo ganar fue de lo más emocionante que he vivido. ¡Gracias CREA por este episodio tan especial!</p>
+            <div class="comentario-reaccion">
+              <span class="comentario-likes">👏 134</span>
+              <span>hace 3 días</span>
+            </div>
+          </div>
+
+          <!-- Comentario 3 — Coyotes -->
+          <div class="card-comentario reveal reveal-delay-3" id="comentario-3">
+            <div class="comentario-header">
+              <img src="https://picsum.photos/seed/avatar3/42/42" alt="Avatar de Lucía R." class="avatar-comentario" loading="lazy">
+              <div>
+                <div class="comentario-nombre">Lucía Ramírez Carbajal</div>
+                <div class="comentario-ep-ref">EP. 14 · Coyotes de Perote</div>
+              </div>
+            </div>
+            <p class="comentario-texto">Qué bonito programa, qué bonita historia. Le puse pausa cuatro veces de tanto que me emocioné. Cuando el chamaco dijo "lo hicimos por Perote" casi se me va una lágrima 🥹 Tercer Tiempo es lo mejor que le ha pasado al deporte local.</p>
+            <div class="comentario-reaccion">
+              <span class="comentario-likes">💪 61</span>
+              <span>hace 2 días</span>
+            </div>
+          </div>
+
+          <!-- Comentario 4 — Béisbol -->
+          <div class="card-comentario reveal reveal-delay-1" id="comentario-4">
+            <div class="comentario-header">
+              <img src="https://picsum.photos/seed/avatar4/42/42" alt="Avatar de Don Alfredo T." class="avatar-comentario" loading="lazy">
+              <div>
+                <div class="comentario-nombre">Alfredo Tláloc Hernández</div>
+                <div class="comentario-ep-ref">EP. 12 · Historia del Béisbol</div>
+              </div>
+            </div>
+            <p class="comentario-texto">Conocí a Don Aurelio en ese episodio y resulta que fue compañero de mi papá en Los Cafetaleros. Me mandé a llamar a mi apá inmediatamente. Setenta años después todavía se acuerdan de todo. Eso es béisbol veracruzano, señores.</p>
+            <div class="comentario-reaccion">
+              <span class="comentario-likes">⚾ 58</span>
+              <span>hace 3 semanas</span>
+            </div>
+          </div>
+
+          <!-- Comentario 5 — Béisbol -->
+          <div class="card-comentario reveal reveal-delay-2" id="comentario-5">
+            <div class="comentario-header">
+              <img src="https://picsum.photos/seed/avatar5/42/42" alt="Avatar de Consuelo B." class="avatar-comentario" loading="lazy">
+              <div>
+                <div class="comentario-nombre">Consuelo Bautista Morales</div>
+                <div class="comentario-ep-ref">EP. 12 · Historia del Béisbol</div>
+              </div>
+            </div>
+            <p class="comentario-texto">Mi abuelo fue de los primeros pitchers que hubo en Perote. Siempre nos platicaba de esa cancha de tierra en La Laguna. Verlo mencionado en el programa —aunque ya no está con nosotros— fue un regalo. Gracias CREA por no dejar morir la memoria.</p>
+            <div class="comentario-reaccion">
+              <span class="comentario-likes">🙏 97</span>
+              <span>hace 3 semanas</span>
+            </div>
+          </div>
+
+          <!-- Comentario 6 — General del programa -->
+          <div class="card-comentario reveal reveal-delay-3" id="comentario-6">
+            <div class="comentario-header">
+              <img src="https://picsum.photos/seed/avatar6/42/42" alt="Avatar de Jorge S." class="avatar-comentario" loading="lazy">
+              <div>
+                <div class="comentario-nombre">Jorge Sánchez Domínguez</div>
+                <div class="comentario-ep-ref">Seguidor del programa</div>
+              </div>
+            </div>
+            <p class="comentario-texto">No me pierdo un solo jueves. Tercer Tiempo es el único programa que habla del deporte de nuestra gente, de nuestros equipos, de nuestros hijos. Lo demás son los grandes clubes y nosotros no somos nadie para ellos. Aquí sí somos alguien. ¡Que siga muchos años más!</p>
+            <div class="comentario-reaccion">
+              <span class="comentario-likes">❤️ 211</span>
+              <span>hace 1 semana</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECCIÓN 6 — PRÓXIMA EMISIÓN / COUNTDOWN ═══ -->
+    <section class="seccion-proxima" id="proxima-emision">
+      <div class="proxima__inner">
+        <p class="proxima__label">📅 Próxima emisión en vivo</p>
+        <h2 class="proxima__titulo reveal">
+          El próximo jueves, en vivo a las 8:00 pm<br>por Facebook · CREA Contenidos
+        </h2>
+
+        <!-- Contador regresivo -->
+        <div class="countdown reveal" id="countdown">
+          <div class="countdown__item">
+            <span class="countdown__numero" id="dias">00</span>
+            <span class="countdown__label">Días</span>
+          </div>
+          <span class="countdown__sep">:</span>
+          <div class="countdown__item">
+            <span class="countdown__numero" id="horas">00</span>
+            <span class="countdown__label">Horas</span>
+          </div>
+          <span class="countdown__sep">:</span>
+          <div class="countdown__item">
+            <span class="countdown__numero" id="minutos">00</span>
+            <span class="countdown__label">Minutos</span>
+          </div>
+          <span class="countdown__sep">:</span>
+          <div class="countdown__item">
+            <span class="countdown__numero" id="segundos">00</span>
+            <span class="countdown__label">Segundos</span>
+          </div>
+        </div>
+
+        <a href="https://www.facebook.com/profile.php?id=100079776720617" 
+           target="_blank" rel="noopener noreferrer"
+           class="btn-tt-primario" id="btn-notificaciones" 
+           style="font-size:var(--text-lg); padding:var(--space-4) var(--space-10); margin-bottom:var(--space-4);">
+          🔔 Activar notificaciones en Facebook
+        </a>
+
+        <!-- Newsletter -->
+        <div class="proxima__newsletter reveal">
+          <p>O recibe el resumen del programa en tu correo cada semana</p>
+          <form class="proxima__form" action="#" method="post" id="form-newsletter-tt">
+            <input type="email" placeholder="tucorreo@ejemplo.com" aria-label="Correo electrónico" required>
+            <button type="submit" class="btn-tt-newsletter" id="btn-suscribir-tt">Suscribirme</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══ FOOTER GLOBAL DE CREA ═══ -->
+  <footer class="footer" style="background:var(--tt-primario);">
+
+    <!-- Franja específica de Tercer Tiempo -->
+    <div class="footer-tt-programa">
+      <div class="container">
+        <div class="footer-tt__inner">
+          <span class="footer-tt__marca">
+            🎙️ Tercer Tiempo es una producción de CREA Contenidos · Perote, Veracruz
+          </span>
+          <div class="footer-tt__hashtags">
+            <a href="https://www.facebook.com/hashtag/tercertiempo" target="_blank" rel="noopener noreferrer" class="hashtag-pill">#TercerTiempo</a>
+            <a href="https://www.facebook.com/hashtag/creacontenidos" target="_blank" rel="noopener noreferrer" class="hashtag-pill">#CreaContenidos</a>
+            <a href="https://www.facebook.com/hashtag/veracruzdeportes" target="_blank" rel="noopener noreferrer" class="hashtag-pill">#VeracruzDeportes</a>
+            <a href="https://www.facebook.com/hashtag/tercertiempoveracruz" target="_blank" rel="noopener noreferrer" class="hashtag-pill">#TercerTiempoVeracruz</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <div class="footer__logo">CREA<span>.</span></div>
+          <p class="footer__desc">CREA Contenidos es el medio digital de referencia para Perote y la región serrana de Veracruz. Periodismo local, humano, potenciado por inteligencia artificial.</p>
+          <div class="footer__redes">
+            <a href="https://www.facebook.com/profile.php?id=100079776720617" target="_blank" rel="noopener noreferrer" aria-label="Facebook CREA Contenidos"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+            <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+            <a href="#" aria-label="X / Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer__titulo-col">Tercer Tiempo</h4>
+          <ul class="footer__lista">
+            <li><a href="#episodios">Episodios</a></li>
+            <li><a href="#episodio-destacado">Episodio destacado</a></li>
+            <li><a href="#beisbol-historia">Historia del béisbol</a></li>
+            <li><a href="#proxima-emision">Próxima emisión</a></li>
+            <li><a href="https://www.facebook.com/profile.php?id=100079776720617" target="_blank" rel="noopener noreferrer">Facebook Live</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer__titulo-col">CREA</h4>
+          <ul class="footer__lista">
+            <li><a href="colaboradores.html">Equipo</a></li>
+            <li><a href="comunidad.html">Comunidad</a></li>
+            <li><a href="comercial.html">Publicidad</a></li>
+            <li><a href="#">Media Kit</a></li>
+            <li><a href="#">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer__titulo-col">Secciones</h4>
+          <ul class="footer__lista">
+            <li><a href="seccion.html">Local</a></li>
+            <li><a href="seccion.html">Cultura</a></li>
+            <li><a href="seccion.html">Economía</a></li>
+            <li><a href="seccion.html">Deportes</a></li>
+            <li><a href="seccion.html">Opinión</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© <span id="anio-actual">2026</span> CREA Contenidos. Todos los derechos reservados.</span>
+        <span class="footer__hecho">Hecho en Perote, Veracruz 🇲🇽</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/interactions.js"></script>
+  <script src="/assets/js/tercer-tiempo.js"></script>
+</body>
+</html>

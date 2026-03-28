@@ -42,6 +42,15 @@
   --transition-fast: 150ms ease; --transition-base: 250ms ease;
   --transition-slow: 400ms ease;
   --z-header: 100; --z-overlay: 200; --z-modal: 300;
+
+  /* === TERCER TIEMPO — Identidad visual del programa === */
+  --tt-primario: #1A1A2E;          /* Noche de estadio */
+  --tt-acento: #C0392B;            /* Rojo pasión */
+  --tt-acento-alt: #E67E22;        /* Naranja béisbol / histórico */
+  --tt-texto-claro: rgba(255,255,255,0.90);
+  --tt-texto-dimmed: rgba(255,255,255,0.55);
+  --tt-cancha: rgba(255,255,255,0.04); /* Textura de campo */
+  --tt-live-red: #FF3B30;          /* Rojo "live" más vibrante */
 }
 
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -85,6 +94,20 @@ blockquote { font-family:var(--font-accent); font-style:italic; }
 .reveal-delay-1{transition-delay:100ms} .reveal-delay-2{transition-delay:200ms}
 .reveal-delay-3{transition-delay:300ms} .reveal-delay-4{transition-delay:400ms}
 .reveal-delay-5{transition-delay:500ms} .reveal-delay-6{transition-delay:600ms}
+
+/* === TERCER TIEMPO — Animaciones === */
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+@keyframes tt-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(192,57,43,0.3); }
+  50% { box-shadow: 0 0 40px rgba(192,57,43,0.6); }
+}
 
 .aspect-16-9 { aspect-ratio:16/9; object-fit:cover; }
 .aspect-4-3 { aspect-ratio:4/3; object-fit:cover; }
