@@ -1,0 +1,49 @@
+{
+  "version": 2,
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "routes": [
+    {
+      "src": "^/$",
+      "dest": "/index.html"
+    },
+    {
+      "src": "^/nota$",
+      "dest": "/nota.html"
+    },
+    {
+      "src": "^/seccion$",
+      "dest": "/seccion.html"
+    },
+    {
+      "src": "^/comunidad$",
+      "dest": "/comunidad.html"
+    },
+    {
+      "src": "^/comercial$",
+      "dest": "/comercial.html"
+    },
+    {
+      "src": "^/colaboradores$",
+      "dest": "/colaboradores.html"
+    },
+    {
+      "src": "/(.*)",
+      "headers": {
+        "Cache-Control": "public, max-age=3600"
+      },
+      "dest": "/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, immutable"
+        }
+      ]
+    }
+  ]
+}
