@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "publication-completed.schema.json",
+  "title": "publication.completed.v1",
+  "type": "object",
+  "required": ["event_id", "event_name", "occurred_at", "producer", "payload"],
+  "properties": {
+    "event_id": { "type": "string", "minLength": 1 },
+    "event_name": { "const": "publication.completed.v1" },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "producer": { "type": "string", "minLength": 1 },
+    "payload": {
+      "type": "object",
+      "required": ["note_id", "url", "published_at", "channel"],
+      "properties": {
+        "note_id": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "format": "uri" },
+        "published_at": { "type": "string", "format": "date-time" },
+        "channel": { "type": "string", "enum": ["web", "social", "newsletter", "multi"] }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

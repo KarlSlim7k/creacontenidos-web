@@ -1,31 +1,35 @@
 {
   "version": 2,
   "buildCommand": null,
-  "outputDirectory": ".",
+  "outputDirectory": "apps/web",
   "routes": [
     {
       "src": "^/$",
       "dest": "/index.html"
     },
     {
-      "src": "^/nota$",
-      "dest": "/nota.html"
+      "src": "^/nota/?$",
+      "dest": "/pages/nota.html"
     },
     {
-      "src": "^/seccion$",
-      "dest": "/seccion.html"
+      "src": "^/seccion/?$",
+      "dest": "/pages/seccion.html"
     },
     {
-      "src": "^/comunidad$",
-      "dest": "/comunidad.html"
+      "src": "^/comunidad/?$",
+      "dest": "/pages/comunidad.html"
     },
     {
-      "src": "^/comercial$",
-      "dest": "/comercial.html"
+      "src": "^/comercial/?$",
+      "dest": "/pages/comercial.html"
     },
     {
-      "src": "^/colaboradores$",
-      "dest": "/colaboradores.html"
+      "src": "^/colaboradores/?$",
+      "dest": "/pages/colaboradores.html"
+    },
+    {
+      "src": "^/tercer-tiempo/?$",
+      "dest": "/pages/tercer-tiempo.html"
     },
     {
       "src": "/(.*)",

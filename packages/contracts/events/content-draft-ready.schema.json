@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "content-draft-ready.schema.json",
+  "title": "content.draft.ready.v1",
+  "type": "object",
+  "required": ["event_id", "event_name", "occurred_at", "producer", "payload"],
+  "properties": {
+    "event_id": { "type": "string", "minLength": 1 },
+    "event_name": { "const": "content.draft.ready.v1" },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "producer": { "type": "string", "minLength": 1 },
+    "payload": {
+      "type": "object",
+      "required": ["idea_id", "brief_id", "draft_id", "title", "body", "model_profile"],
+      "properties": {
+        "idea_id": { "type": "string", "minLength": 1 },
+        "brief_id": { "type": "string", "minLength": 1 },
+        "draft_id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "body": { "type": "string", "minLength": 1 },
+        "model_profile": { "type": "string", "enum": ["local", "cloud-premium", "hybrid"] },
+        "risk_flags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

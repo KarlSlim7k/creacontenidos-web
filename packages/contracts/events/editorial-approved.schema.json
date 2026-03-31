@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "editorial-approved.schema.json",
+  "title": "editorial.approved.v1",
+  "type": "object",
+  "required": ["event_id", "event_name", "occurred_at", "producer", "payload"],
+  "properties": {
+    "event_id": { "type": "string", "minLength": 1 },
+    "event_name": { "const": "editorial.approved.v1" },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "producer": { "type": "string", "minLength": 1 },
+    "payload": {
+      "type": "object",
+      "required": ["draft_id", "approved_by", "approval_reason", "note_version"],
+      "properties": {
+        "draft_id": { "type": "string", "minLength": 1 },
+        "approved_by": { "type": "string", "minLength": 1 },
+        "approval_reason": { "type": "string", "minLength": 1 },
+        "note_version": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

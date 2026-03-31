@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "idea-received.schema.json",
+  "title": "idea.received.v1",
+  "type": "object",
+  "required": ["event_id", "event_name", "occurred_at", "producer", "payload"],
+  "properties": {
+    "event_id": { "type": "string", "minLength": 1 },
+    "event_name": { "const": "idea.received.v1" },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "producer": { "type": "string", "minLength": 1 },
+    "payload": {
+      "type": "object",
+      "required": ["idea_id", "channel", "author", "content"],
+      "properties": {
+        "idea_id": { "type": "string", "minLength": 1 },
+        "channel": { "type": "string", "enum": ["whatsapp", "telegram", "web", "api"] },
+        "author": { "type": "string", "minLength": 1 },
+        "content": { "type": "string", "minLength": 1 },
+        "attachments": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

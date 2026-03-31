@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "collaborator-points-updated.schema.json",
+  "title": "collaborator.points.updated.v1",
+  "type": "object",
+  "required": ["event_id", "event_name", "occurred_at", "producer", "payload"],
+  "properties": {
+    "event_id": { "type": "string", "minLength": 1 },
+    "event_name": { "const": "collaborator.points.updated.v1" },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "producer": { "type": "string", "minLength": 1 },
+    "payload": {
+      "type": "object",
+      "required": ["collaborator_id", "delta", "new_total", "reason"],
+      "properties": {
+        "collaborator_id": { "type": "string", "minLength": 1 },
+        "delta": { "type": "integer" },
+        "new_total": { "type": "integer", "minimum": 0 },
+        "reason": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
