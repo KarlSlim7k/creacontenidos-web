@@ -13,6 +13,8 @@ services:
       - "traefik.http.routers.crea-web.tls.certresolver=letsencrypt"
       - "traefik.http.services.crea-web.loadbalancer.server.port=80"
       - "traefik.docker.network=dokploy-network"
+    environment:
+      - PHP_MEMORY_LIMIT=256M
 
 networks:
   dokploy-network:

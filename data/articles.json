@@ -1,0 +1,58 @@
+{
+  "articles": [
+    {
+      "id": "art-001",
+      "slug": "arranca-temporada-niebla-cofre-perote",
+      "titulo": "Arranca la temporada de niebla en el Cofre de Perote: guía completa para conductores",
+      "subtitulo": "Las autoridades de Protección Civil emitieron recomendaciones para transitar por la autopista Perote–Xalapa durante los meses de mayor incidencia de neblina en la sierra veracruzana.",
+      "extracto": "El fenómeno de la niebla es una constante en la zona del Cofre de Perote durante los meses de octubre a febrero, afectando la visibilidad en la autopista que conecta Perote con Xalapa.",
+      "contenido_html": "<p>El fenómeno de la niebla es una constante en la zona del Cofre de Perote durante los meses de octubre a febrero, afectando la visibilidad en la autopista que conecta Perote con Xalapa.</p><p>Protección Civil del estado de Veracruz emitió un comunicado con las siguientes recomendaciones para los conductores que transitan por la zona:</p><ul><li>Reducir la velocidad al mínimo de 40 km/h cuando la visibilidad sea menor a 50 metros</li><li>Encender luces bajas y niebla (no luces altas)</li><li>Mantener distancia de seguridad mínima de 100 metros con el vehículo adelante</li><li>Evitar adelantamientos en tramos con niebla densa</li></ul><p>Las autoridades explicaron que el fenómeno se debe a la convergencia de masas de aire frío provenientes de la Sierra Madre Oriental con la humedad de la zona, creando condiciones ideales para la formación de neblina intensa, especialmente durante las primeras horas de la mañana.</p>",
+      "imagen_destacada": "/assets/img/articles/niebla-cofre.jpg",
+      "imagen_alt": "Cofre de Perote cubierto de niebla",
+      "categoria": "local",
+      "autor": "Carlos Hernández Mora",
+      "estado": "publicada",
+      "keywords_seo": ["niebla", "Cofre de Perote", "Protección Civil", "Xalapa", "Perote", "Veracruz"],
+      "meta_description": "Inicia la temporada de niebla en el Cofre de Perote. Guía de recomendaciones para conductores que transitan la autopista Perote–Xalapa.",
+      "fecha_publicacion": "2026-03-27T10:00:00Z",
+      "created_at": "2026-03-27T09:00:00Z",
+      "updated_at": "2026-03-27T10:00:00Z"
+    },
+    {
+      "id": "art-002",
+      "slug": "feria-empresarial-perote-2026",
+      "titulo": "Más de 50 empresas participan en la Primera Feria Empresarial de Perote",
+      "subtitulo": "El evento busca fortalecer el tejido comercial y productivo de la región, conectando a emprendedores locales con potenciales clientes y socios.",
+      "extracto": "El próximo sábado 15 de abril se realizará en la plaza principal de Perote la Primera Feria Empresarial, con la participación de más de 50 pequeños negocios locales.",
+      "contenido_html": "<p>El próximo sábado 15 de abril se realizará en la plaza principal de Perote la Primera Feria Empresarial, con la participación de más de 50 pequeños negocios locales.</p><p>La iniciativa, organizada por la Cámara de Comercio local en coordinación con el Ayuntamiento, busca fortalecer el tejido comercial y productivo de la región.</p><p>Entre los sectores representados se encuentran: alimentos y bebidas artesanales, textiles, servicios digitales, artesanías y turismo local.</p><p>El horario de la feria será de 9:00 a 18:00 horas y届时 habrá actividades culturales, sorteos y presentaciones de productos.</p>",
+      "imagen_destacada": "/assets/img/articles/feria-empresarial.jpg",
+      "imagen_alt": "Stands de la feria empresarial en la plaza de Perote",
+      "categoria": "economia",
+      "autor": "María López Fernández",
+      "estado": "publicada",
+      "keywords_seo": ["feria empresarial", "Perote", "emprendedores", "comercio local", "Veracruz"],
+      "meta_description": "Más de 50 empresas participan en la Primera Feria Empresarial de Perote. Un evento para fortalecer el comercio local.",
+      "fecha_publicacion": "2026-03-26T14:00:00Z",
+      "created_at": "2026-03-26T13:00:00Z",
+      "updated_at": "2026-03-26T14:00:00Z"
+    },
+    {
+      "id": "art-003",
+      "slug": "nueva-ruta-turistica-perote",
+      "titulo": "Crean nueva ruta turística que conecta Perote con comunidades del Cofre",
+      "subtitulo": "El proyecto busca diversificar la oferta turística de la región y generar ingresos alternativos para las comunidades serranas.",
+      "extracto": "La Secretaría de Turismo estatal presentó la nueva Ruta de la Niebla, que conectará Perote con seis comunidades agrícolas del Cofre de Perote.",
+      "contenido_html": "<p>La Secretaría de Turismo estatal presentó la nueva Ruta de la Niebla, que conectará Perote con seis comunidades agrícolas del Cofre de Perote, ofreciendo experiencias ecoturísticas y agroturísticas.</p><p>El recorrido de 35 kilómetros incluirá visitas a fincas de café, senderos interpretativos y talleres de cocina tradicional.veracruzana.</p><p>El proyecto beneficiarán directamente a 120 familias de las comunidades participantes, quienes recibirán capacitación enospitalidad turística.</p>",
+      "imagen_destacada": "/assets/img/articles/ruta-turistica.jpg",
+      "imagen_alt": "Sendero en el Cofre de Perote",
+      "categoria": "turismo",
+      "autor": "Roberto Sánchez Ruiz",
+      "estado": "borrador",
+      "keywords_seo": ["turismo", "Cofre de Perote", "ruta turística", "Perote", "ecoturismo"],
+      "meta_description": "Nueva ruta turística conectará Perote con comunidades del Cofre de Perote. ecoturismo y agroturismo en Veracruz.",
+      "fecha_publicacion": null,
+      "created_at": "2026-03-25T11:00:00Z",
+      "updated_at": "2026-03-25T11:00:00Z"
+    }
+  ]
+}

@@ -1302,11 +1302,14 @@ Semana 2 — Editor inline
   [x] Probar flujo completo: login → editar → guardar → ver cambios
 
 Semana 3 — Artículos y despliegue
-  □ Implementar panel de gestión de artículos (admin/js/articles-panel.js)
-  □ Crear data/articles.json con primeros artículos
-  □ Implementar api/articles/crud.php (listado y creación)
-  □ Ajustar despliegue actual del CMS en DokPloy
-  □ Probar en entorno de producción
+  [x] Implementar panel de gestión de artículos (admin/js/articles-panel.js)
+  [x] Crear data/articles.json con primeros artículos
+  [x] Implementar api/articles/crud.php (listado y creación)
+  [x] Actualizar Dockerfile para soportar PHP-FPM
+  [x] Actualizar nginx.conf para procesar archivos PHP
+  [x] Actualizar docker-compose.yml con variables PHP
+  [x] Actualizar index.html para cargar articles-panel.js
+  [x] Actualizar checklist en SPEC.md
 
 Semana 4 — SEO y pulido
   □ Implementar edición de meta title, description, keywords
