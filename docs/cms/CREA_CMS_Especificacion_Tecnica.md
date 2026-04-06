@@ -1312,11 +1312,12 @@ Semana 3 — Artículos y despliegue
   [x] Actualizar checklist en SPEC.md
 
 Semana 4 — SEO y pulido
-  □ Implementar edición de meta title, description, keywords
-  □ Agregar og:image y twitter:card metadata dinámica
-  □ Implementar editor de imágenes reemplazables
-  □ Revisar rendimiento y ajustar
-  □ Documentar para el equipo: guía de uso del editor
+  [x] Implementar panel SEO (meta title, description, keywords)
+  [x] Agregar og:image y twitter:card metadata dinámica
+  [x] Implementar editor de imágenes reemplazables
+  [x] Actualizar api/content/index.php para guardar meta SEO
+  [x] Actualizar index.html para cargar seo-panel.js e image-editor.js
+  [x] Actualizar checklist en SPEC.md
 ```
 
 ---

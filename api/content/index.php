@@ -49,6 +49,7 @@ if ($method === 'POST' || $method === 'PATCH') {
   requireAuth();
   $data = json_decode(file_get_contents('php://input'), true);
   $blocks = $data['blocks'] ?? [];
+  $meta = $data['meta'] ?? [];
   $estado = $data['estado'] ?? null;
 
   if (!file_exists($dataPath)) {
@@ -65,8 +66,16 @@ if ($method === 'POST' || $method === 'PATCH') {
     $pages[$id]['bloques'] = [];
   }
 
+  if (!isset($pages[$id]['meta'])) {
+    $pages[$id]['meta'] = [];
+  }
+
   foreach ($blocks as $blockId => $content) {
     $pages[$id]['bloques'][$blockId] = $content;
+  }
+
+  foreach ($meta as $key => $value) {
+    $pages[$id]['meta'][$key] = $value;
   }
 
   if ($estado) {
@@ -74,8 +83,8 @@ if ($method === 'POST' || $method === 'PATCH') {
     $pages[$id]['updated_at'] = date('c');
   }
 
-  file_put_contents($dataPath, json_encode($pages, JSON_PRETTY_PRINT));
-  echo json_encode(['ok' => true, 'updated' => count($blocks)]);
+  file_put_contents($dataPath, json_encode($pages, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+  echo json_encode(['ok' => true, 'updated' => count($blocks), 'meta_updated' => count($meta)]);
   exit;
 }
 
