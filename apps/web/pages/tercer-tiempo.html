@@ -96,6 +96,27 @@
       line-height: 1.4;
       margin: 0;
     }
+
+    /* ── Video Background Hero ── */
+    .hero-tercer-tiempo {
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-tt__video-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 0.4; /* Opacidad para que el texto sea legible */
+      pointer-events: none;
+    }
+    .hero-tt__contenido, .hero-tt__scroll {
+      position: relative;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
@@ -162,6 +183,9 @@
 
     <!-- ═══ SECCIÓN 1 — HERO DEL PROGRAMA ═══ -->
     <section class="hero-tercer-tiempo" id="hero-tt">
+      <video class="hero-tt__video-bg" autoplay loop muted playsinline>
+        <source src="/assets/vid/public/video_fondo_tt.mp4" type="video/mp4">
+      </video>
       <div class="hero-tt__contenido">
         <div class="badge-live reveal reveal-delay-1">
           <span class="dot"></span>EN VIVO · LUN &amp; VIE · 8PM CDMX
