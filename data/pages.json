@@ -1,0 +1,24 @@
+{
+  "home": {
+    "meta": {
+      "titulo": "CREA Contenidos — El medio de Perote y su región",
+      "descripcion": "Medio digital local de Perote, Veracruz. Noticias, cultura, economía y comunidad del corredor Xalapa–Puebla.",
+      "imagen_og": "/assets/img/public/logo-crea.png"
+    },
+    "bloques": {
+      "hero-categoria": "Local",
+      "hero-titulo": "Arranca la temporada de niebla en el Cofre de Perote: guía completa para conductores",
+      "hero-bajada": "Las autoridades de Protección Civil emitieron recomendaciones para transitar por la autopista Perote–Xalapa durante los meses de mayor incidencia de neblina en la sierra veracruzana.",
+      "hero-autor": "Carlos Hernández Mora",
+      "hero-fecha": "27 de marzo, 2026",
+      "seccion-nosotros-titulo": "Sobre CREA",
+      "seccion-nosotros-texto": "CREA Contenidos es el medio digital de referencia para Perote y la región serrana de Veracruz. Periodismo local, humano, potenciado por inteligencia artificial.",
+      "newsletter-titulo": "Las noticias de Perote, en tu correo cada semana",
+      "newsletter-subtitulo": "Sin spam. Solo lo importante de tu región, cada viernes.",
+      "footer-texto": "© 2026 CREA Contenidos. Todos los derechos reservados.",
+      "footer-hecho": "Hecho en Perote, Veracruz"
+    },
+    "estado": "publicada",
+    "updated_at": "2026-03-27T10:00:00Z"
+  }
+}

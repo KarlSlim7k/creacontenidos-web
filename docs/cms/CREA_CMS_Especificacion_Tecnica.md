@@ -1290,16 +1290,16 @@ Semana 1 — Base funcional del CMS
   [x] Verificar login/logout en localhost
 
 Semana 2 — Editor inline
-  □ Cargar CKEditor 5 desde CDN
-  □ Implementar admin/js/store.js (estado global vanilla)
-  □ Implementar admin/js/login-button.js con modal
-  □ Implementar admin/js/editor-toolbar.js con guardar/publicar
-  □ Agregar atributos data-editable-block en index.html
-  □ Implementar admin/js/editable-block.js
-  □ Crear data/pages.json con contenido inicial de la portada
-  □ Implementar api/content/index.php (GET y POST)
-  □ Conectar editable-block con la API de guardado
-  □ Probar flujo completo: login → editar → guardar → ver cambios
+  [x] Cargar CKEditor 5 desde CDN
+  [x] Implementar admin/js/store.js (estado global vanilla)
+  [x] Implementar admin/js/login-button.js con modal
+  [x] Implementar admin/js/editor-toolbar.js con guardar/publicar
+  [x] Agregar atributos data-editable-block en index.html
+  [x] Implementar admin/js/editable-block.js
+  [x] Crear data/pages.json con contenido inicial de la portada
+  [x] Implementar api/content/index.php (GET y POST)
+  [x] Conectar editable-block con la API de guardado
+  [x] Probar flujo completo: login → editar → guardar → ver cambios
 
 Semana 3 — Artículos y despliegue
   □ Implementar panel de gestión de artículos (admin/js/articles-panel.js)

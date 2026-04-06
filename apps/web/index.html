@@ -31,7 +31,7 @@
     }
   </style>
 </head>
-<body>
+<body data-page-id="home">
 
   <!-- ═══ BARRA DE UTILIDAD ═══ -->
   <div class="barra-utilidad">
@@ -97,8 +97,8 @@
       <div class="hero-editorial__overlay"></div>
       <div class="hero-editorial__contenido">
         <span class="badge-categoria reveal reveal-delay-1">Local</span>
-        <h1 class="hero-editorial__titular reveal reveal-delay-2">Arranca la temporada de niebla en el Cofre de Perote: guía completa para conductores</h1>
-        <p class="hero-editorial__bajada reveal reveal-delay-3">Las autoridades de Protección Civil emitieron recomendaciones para transitar por la autopista Perote–Xalapa durante los meses de mayor incidencia de neblina en la sierra veracruzana.</p>
+        <h1 class="hero-editorial__titular reveal reveal-delay-2" data-editable-block="hero-titulo">Arranca la temporada de niebla en el Cofre de Perote: guía completa para conductores</h1>
+        <p class="hero-editorial__bajada reveal reveal-delay-3" data-editable-block="hero-bajada">Las autoridades de Protección Civil emitieron recomendaciones para transitar por la autopista Perote–Xalapa durante los meses de mayor incidencia de neblina en la sierra veracruzana.</p>
         <div class="hero-editorial__meta reveal reveal-delay-4">
           <span class="autor">Carlos Hernández Mora</span>
           <time datetime="2026-03-27">27 de marzo, 2026</time>
@@ -460,5 +460,11 @@
   <script src="/assets/js/main.js"></script>
   <script src="/assets/js/carousel.js"></script>
   <script src="/assets/js/interactions.js"></script>
+  <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+  <script src="/admin/js/store.js"></script>
+  <script src="/admin/js/auth.js"></script>
+  <script src="/admin/js/login-button.js"></script>
+  <script src="/admin/js/editor-toolbar.js"></script>
+  <script src="/admin/js/editable-block.js"></script>
 </body>
 </html>
