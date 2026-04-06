@@ -1,7 +1,5 @@
 FROM php:8.2-fpm-alpine
 
-RUN docker-php-ext-install pdo_json
-
 RUN apk add --no-cache nginx
 
 RUN echo "daemon off;" >> /etc/nginx/http.d/default.conf
