@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Opinión y análisis sobre Perote y la región. Columnas, editoriales y voces de la comunidad en CREA Contenidos.">
+  <title>Opinión — CREA Contenidos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <style>
+    .header__logo-img {
+      width: 110px; max-width: 100%; max-height: 52px;
+      height: auto; object-fit: contain; display: block;
+    }
+    .header-editorial.is-scrolled .header__logo-img { width: 130px; }
+    @media (min-width: 640px) { .header__logo-img { width: 130px; } }
+    @media (min-width: 1024px) { .header__logo-img { width: 150px; } }
+    .seccion-header { background: #6E2F1A; }
+
+    .columna-card {
+      display: flex; gap: var(--space-4);
+      padding: var(--space-5) 0;
+      border-bottom: 1px solid var(--color-gris-linea);
+    }
+    .columna-card__avatar {
+      width: 64px; height: 64px; border-radius: 50%;
+      object-fit: cover; flex-shrink: 0;
+    }
+    .columna-card__meta {
+      font-family: var(--font-body); font-size: var(--text-xs);
+      color: var(--color-dorado); font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      margin-bottom: var(--space-1);
+    }
+    .columna-card__titular {
+      font-family: var(--font-accent); font-size: var(--text-xl);
+      font-style: italic; color: var(--color-noche);
+      line-height: 1.3; margin-bottom: var(--space-2);
+    }
+    .columna-card__extracto {
+      font-size: var(--text-sm); color: var(--color-gris-medio); line-height: 1.6;
+    }
+    .columna-card__leer {
+      display: inline-block; margin-top: var(--space-3);
+      font-size: var(--text-xs); font-weight: 700;
+      color: var(--color-dorado); text-transform: uppercase; letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="barra-utilidad">
+    <div class="container">
+      <div class="barra-utilidad__izq">
+        <span id="fecha-actual"></span>
+        <span class="temp-perote">🌤 14°C Perote</span>
+        <a href="/#newsletter" class="newsletter-link">📩 Newsletter</a>
+      </div>
+      <div class="barra-utilidad__der">
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+        <a href="#" aria-label="X / Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+      </div>
+    </div>
+  </div>
+
+  <header class="header-editorial" id="header">
+    <div class="container">
+      <div class="header__top">
+        <div>
+          <a href="/" class="header__logo" aria-label="Inicio CREA Contenidos">
+            <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="header__logo-img" width="110" height="65">
+          </a>
+          <p class="header__tagline">El medio de Perote y su región</p>
+        </div>
+        <div class="header__actions">
+          <button class="search-toggle" id="search-toggle" aria-label="Buscar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <a href="/pages/comercial.html" class="btn-cta">Apoya a CREA</a>
+          <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false"><span></span><span></span><span></span></button>
+        </div>
+      </div>
+      <nav class="nav-principal" aria-label="Navegación principal">
+        <ul class="nav-principal__lista" id="nav-lista">
+          <li><a href="/" class="nav-principal__enlace">Inicio</a></li>
+          <li><a href="/pages/seccion.html" class="nav-principal__enlace">Local</a></li>
+          <li><a href="/pages/cultura.html" class="nav-principal__enlace">Cultura</a></li>
+          <li><a href="/pages/economia.html" class="nav-principal__enlace">Economía</a></li>
+          <li><a href="/pages/entretenimiento.html" class="nav-principal__enlace">Entretenimiento</a></li>
+          <li><a href="/pages/deportes.html" class="nav-principal__enlace">Deportes</a></li>
+          <li><a href="/pages/opinion.html" class="nav-principal__enlace activo">Opinión</a></li>
+          <li><a href="/pages/tercer-tiempo.html" class="nav-principal__enlace" style="color:var(--tt-acento);">⚽ Tercer Tiempo</a></li>
+        </ul>
+      </nav>
+      <div class="search-bar" id="search-bar"><input type="search" placeholder="Buscar en CREA Contenidos..." aria-label="Buscar"></div>
+    </div>
+  </header>
+
+  <main>
+    <div class="seccion-header">
+      <div class="container">
+        <nav class="breadcrumb" style="justify-content:center; color:rgba(250,247,242,0.5); margin-bottom:var(--space-4);">
+          <a href="/" style="color:rgba(250,247,242,0.6);">Inicio</a>
+          <span class="breadcrumb__sep">›</span>
+          <span style="color:var(--color-papel);">Opinión</span>
+        </nav>
+        <h1 class="seccion-header__nombre">Opinión</h1>
+        <p class="seccion-header__desc">Columnas, editoriales y voces de la comunidad que analizan la realidad de Perote y Veracruz.</p>
+      </div>
+    </div>
+
+    <!-- EDITORIAL DESTACADA -->
+    <section class="seccion">
+      <div class="container">
+        <div style="display:grid; grid-template-columns:1fr 300px; gap:var(--space-12); align-items:start;">
+
+          <!-- COLUMNA PRINCIPAL -->
+          <div>
+            <!-- Editorial de la semana -->
+            <div style="background:var(--color-papel-alt); border-left:4px solid var(--color-dorado); padding:var(--space-6); border-radius:0 var(--radius-base) var(--radius-base) 0; margin-bottom:var(--space-8);" class="reveal">
+              <p style="font-size:var(--text-xs); font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-dorado); margin-bottom:var(--space-3);">Editorial de la semana</p>
+              <h2 style="font-family:var(--font-accent); font-size:var(--text-2xl); font-style:italic; color:var(--color-noche); line-height:1.3; margin-bottom:var(--space-4);">El periodismo local no está en crisis: está renaciendo desde las comunidades</h2>
+              <p style="color:var(--color-gris-texto); line-height:1.8; margin-bottom:var(--space-4);">Mientras los grandes medios cierran redacciones y despiden reporteros, algo diferente ocurre en Perote. Un medio pequeño, sin recursos millonarios pero con raíces profundas, demuestra que informar bien a una comunidad es posible cuando hay compromiso genuino con ella. La crisis del periodismo no es la crisis del periodismo local.</p>
+              <div style="display:flex; align-items:center; gap:var(--space-3);">
+                <img src="https://i.pravatar.cc/40?img=15" alt="Emmanuel Reyes" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+                <div>
+                  <strong style="color:var(--color-noche); font-size:var(--text-sm);">Emmanuel Reyes Zapata</strong>
+                  <p style="font-size:var(--text-xs); color:var(--color-gris-medio);">Director general · CREA Contenidos</p>
+                </div>
+                <a href="/pages/nota.html" class="columna-card__leer" style="margin-left:auto; margin-top:0;">Leer editorial →</a>
+              </div>
+            </div>
+
+            <!-- Lista de columnas -->
+            <h2 style="font-family:var(--font-display); font-size:var(--text-2xl); color:var(--color-noche); margin-bottom:var(--space-2);">Columnistas</h2>
+            <hr class="editorial-divider--thick" style="margin-bottom:var(--space-6);">
+
+            <div class="columna-card reveal">
+              <img src="https://i.pravatar.cc/100?img=25" alt="Dr. Ricardo Fuentes" class="columna-card__avatar">
+              <div>
+                <p class="columna-card__meta">Dr. Ricardo Fuentes · Desde la Academia</p>
+                <h3 class="columna-card__titular">¿Puede la inteligencia artificial salvar al periodismo regional?</h3>
+                <p class="columna-card__extracto">Las herramientas de IA no son el fin del periodismo humano: son una oportunidad para que los medios pequeños compitan en igualdad de condiciones con los grandes corporativos mediáticos...</p>
+                <a href="/pages/nota.html" class="columna-card__leer">Leer columna →</a>
+              </div>
+            </div>
+
+            <div class="columna-card reveal">
+              <img src="https://i.pravatar.cc/100?img=5" alt="Gabriela Tláloc" class="columna-card__avatar">
+              <div>
+                <p class="columna-card__meta">Gabriela Tláloc Reyes · Economía en la Sierra</p>
+                <h3 class="columna-card__titular">El gas LP y la inequidad: por qué pagamos más los que menos tenemos</h3>
+                <p class="columna-card__extracto">Las zonas rurales de Veracruz pagan hasta 20% más por el gas LP que las ciudades. No es casualidad: es el resultado de décadas de abandono en infraestructura y falta de regulación...</p>
+                <a href="/pages/nota.html" class="columna-card__leer">Leer columna →</a>
+              </div>
+            </div>
+
+            <div class="columna-card reveal">
+              <img src="https://i.pravatar.cc/100?img=9" alt="Sofía Ríos" class="columna-card__avatar">
+              <div>
+                <p class="columna-card__meta">Sofía Ríos Castellanos · Raíces y Memoria</p>
+                <h3 class="columna-card__titular">El Cofre de Perote no es solo un volcán: es la identidad de un pueblo</h3>
+                <p class="columna-card__extracto">Cada mañana, los peroteños se despiertan mirando al Cofre. No es solo geografía: es un ancla emocional, una presencia constante que define quiénes somos y de dónde venimos como comunidad...</p>
+                <a href="/pages/nota.html" class="columna-card__leer">Leer columna →</a>
+              </div>
+            </div>
+
+            <div class="columna-card reveal">
+              <img src="https://i.pravatar.cc/100?img=28" alt="Lic. Mariana Cuevas" class="columna-card__avatar">
+              <div>
+                <p class="columna-card__meta">Lic. Mariana Cuevas · Desde Xalapa</p>
+                <h3 class="columna-card__titular">La reforma judicial y lo que significa para los municipios pequeños de Veracruz</h3>
+                <p class="columna-card__extracto">Los cambios en el sistema de justicia federal tendrán consecuencias que los medios estatales no están reportando. En los municipios como Perote, donde los recursos legales son escasos, el impacto será especialmente profundo...</p>
+                <a href="/pages/nota.html" class="columna-card__leer">Leer columna →</a>
+              </div>
+            </div>
+
+            <div class="columna-card reveal">
+              <img src="https://i.pravatar.cc/100?img=11" alt="Carlos Hernández" class="columna-card__avatar">
+              <div>
+                <p class="columna-card__meta">Carlos Hernández Mora · En el Terreno</p>
+                <h3 class="columna-card__titular">Por qué la carretera Perote–Puebla es más que una vía: es un derecho</h3>
+                <p class="columna-card__extracto">Doce años cubriendo esta región me han enseñado que las condiciones de la carretera federal no son un tema menor. Para miles de familias, esa vía es el acceso al trabajo, a la salud y a la educación...</p>
+                <a href="/pages/nota.html" class="columna-card__leer">Leer columna →</a>
+              </div>
+            </div>
+
+            <nav class="paginacion" style="margin-top:var(--space-8);" aria-label="Paginación">
+              <a href="#" class="paginacion__link paginacion__prev">← Anterior</a>
+              <a href="#" class="paginacion__link activo">1</a>
+              <a href="#" class="paginacion__link">2</a>
+              <a href="#" class="paginacion__link">3</a>
+              <a href="#" class="paginacion__link paginacion__next">Siguiente →</a>
+            </nav>
+          </div>
+
+          <!-- SIDEBAR -->
+          <aside class="articulo-sidebar" style="position:sticky; top:80px;">
+            <div style="margin-bottom:var(--space-8);">
+              <h3 style="font-size:var(--text-sm); font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--color-dorado); margin-bottom:var(--space-4); padding-bottom:var(--space-2); border-bottom:2px solid var(--color-dorado);">Nuestros columnistas</h3>
+              <div style="display:flex; flex-direction:column; gap:var(--space-3);">
+                <a href="/pages/colaboradores.html" style="display:flex; align-items:center; gap:var(--space-3);">
+                  <img src="https://i.pravatar.cc/40?img=15" alt="Emmanuel Reyes" style="width:40px; height:40px; border-radius:50%;">
+                  <div><strong style="color:var(--color-noche); font-size:var(--text-sm);">Emmanuel Reyes</strong><p style="font-size:var(--text-xs); color:var(--color-gris-medio);">Director · Editorial</p></div>
+                </a>
+                <a href="/pages/colaboradores.html" style="display:flex; align-items:center; gap:var(--space-3);">
+                  <img src="https://i.pravatar.cc/40?img=25" alt="Dr. Ricardo Fuentes" style="width:40px; height:40px; border-radius:50%;">
+                  <div><strong style="color:var(--color-noche); font-size:var(--text-sm);">Dr. Ricardo Fuentes</strong><p style="font-size:var(--text-xs); color:var(--color-gris-medio);">Tecnología y sociedad</p></div>
+                </a>
+                <a href="/pages/colaboradores.html" style="display:flex; align-items:center; gap:var(--space-3);">
+                  <img src="https://i.pravatar.cc/40?img=5" alt="Gabriela Tláloc" style="width:40px; height:40px; border-radius:50%;">
+                  <div><strong style="color:var(--color-noche); font-size:var(--text-sm);">Gabriela Tláloc</strong><p style="font-size:var(--text-xs); color:var(--color-gris-medio);">Economía regional</p></div>
+                </a>
+                <a href="/pages/colaboradores.html" style="display:flex; align-items:center; gap:var(--space-3);">
+                  <img src="https://i.pravatar.cc/40?img=9" alt="Sofía Ríos" style="width:40px; height:40px; border-radius:50%;">
+                  <div><strong style="color:var(--color-noche); font-size:var(--text-sm);">Sofía Ríos</strong><p style="font-size:var(--text-xs); color:var(--color-gris-medio);">Cultura e identidad</p></div>
+                </a>
+              </div>
+            </div>
+            <div>
+              <h3 style="font-size:var(--text-sm); font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--color-dorado); margin-bottom:var(--space-4);">Columnas más leídas</h3>
+              <ol class="lista-leidos">
+                <li class="lista-leidos__item"><h3 class="lista-leidos__titulo"><a href="/pages/nota.html">El periodismo local no está en crisis</a></h3></li>
+                <li class="lista-leidos__item"><h3 class="lista-leidos__titulo"><a href="/pages/nota.html">El gas LP y la inequidad regional</a></h3></li>
+                <li class="lista-leidos__item"><h3 class="lista-leidos__titulo"><a href="/pages/nota.html">El Cofre: identidad de un pueblo</a></h3></li>
+                <li class="lista-leidos__item"><h3 class="lista-leidos__titulo"><a href="/pages/nota.html">La IA puede salvar al periodismo</a></h3></li>
+                <li class="lista-leidos__item"><h3 class="lista-leidos__titulo"><a href="/pages/nota.html">La carretera Perote–Puebla, un derecho</a></h3></li>
+              </ol>
+            </div>
+          </aside>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div><div class="footer__logo">CREA<span>.</span></div><p class="footer__desc">Periodismo local, humano, potenciado por inteligencia artificial.</p></div>
+        <div><h4 class="footer__titulo-col">Secciones</h4><ul class="footer__lista"><li><a href="/pages/seccion.html">Local</a></li><li><a href="/pages/cultura.html">Cultura</a></li><li><a href="/pages/economia.html">Economía</a></li><li><a href="/pages/entretenimiento.html">Entretenimiento</a></li><li><a href="/pages/deportes.html">Deportes</a></li><li><a href="/pages/opinion.html">Opinión</a></li></ul></div>
+        <div><h4 class="footer__titulo-col">CREA</h4><ul class="footer__lista"><li><a href="/pages/colaboradores.html">Equipo</a></li><li><a href="/pages/comunidad.html">Comunidad</a></li><li><a href="/pages/comercial.html">Publicidad</a></li></ul></div>
+        <div><h4 class="footer__titulo-col">Legal</h4><ul class="footer__lista"><li><a href="#">Aviso de privacidad</a></li><li><a href="#">Términos</a></li></ul></div>
+      </div>
+      <div class="footer__bottom"><span>© <span id="anio-actual">2026</span> CREA Contenidos.</span><span class="footer__hecho">Hecho en Perote, Veracruz 🇲🇽</span></div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/interactions.js"></script>
+</body>
+</html>

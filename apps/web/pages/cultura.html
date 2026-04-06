@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cultura en Perote y la región serrana de Veracruz. Arte, tradiciones, festivales y patrimonio en CREA Contenidos.">
+  <title>Cultura — CREA Contenidos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <style>
+    .header__logo-img {
+      width: 110px; max-width: 100%; max-height: 52px;
+      height: auto; object-fit: contain; display: block;
+    }
+    .header-editorial.is-scrolled .header__logo-img { width: 130px; }
+    @media (min-width: 640px) { .header__logo-img { width: 130px; } }
+    @media (min-width: 1024px) { .header__logo-img { width: 150px; } }
+    .seccion-header { background: var(--color-naranja); }
+    .badge-seccion { background: var(--color-naranja); }
+  </style>
+</head>
+<body>
+
+  <div class="barra-utilidad">
+    <div class="container">
+      <div class="barra-utilidad__izq">
+        <span id="fecha-actual"></span>
+        <span class="temp-perote">🌤 14°C Perote</span>
+        <a href="/#newsletter" class="newsletter-link">📩 Newsletter</a>
+      </div>
+      <div class="barra-utilidad__der">
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+        <a href="#" aria-label="X / Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+      </div>
+    </div>
+  </div>
+
+  <header class="header-editorial" id="header">
+    <div class="container">
+      <div class="header__top">
+        <div>
+          <a href="/" class="header__logo" aria-label="Inicio CREA Contenidos">
+            <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="header__logo-img" width="110" height="65">
+          </a>
+          <p class="header__tagline">El medio de Perote y su región</p>
+        </div>
+        <div class="header__actions">
+          <button class="search-toggle" id="search-toggle" aria-label="Buscar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <a href="/pages/comercial.html" class="btn-cta">Apoya a CREA</a>
+          <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false"><span></span><span></span><span></span></button>
+        </div>
+      </div>
+      <nav class="nav-principal" aria-label="Navegación principal">
+        <ul class="nav-principal__lista" id="nav-lista">
+          <li><a href="/" class="nav-principal__enlace">Inicio</a></li>
+          <li><a href="/pages/seccion.html" class="nav-principal__enlace">Local</a></li>
+          <li><a href="/pages/cultura.html" class="nav-principal__enlace activo">Cultura</a></li>
+          <li><a href="/pages/economia.html" class="nav-principal__enlace">Economía</a></li>
+          <li><a href="/pages/entretenimiento.html" class="nav-principal__enlace">Entretenimiento</a></li>
+          <li><a href="/pages/deportes.html" class="nav-principal__enlace">Deportes</a></li>
+          <li><a href="/pages/opinion.html" class="nav-principal__enlace">Opinión</a></li>
+          <li><a href="/pages/tercer-tiempo.html" class="nav-principal__enlace" style="color:var(--tt-acento);">⚽ Tercer Tiempo</a></li>
+        </ul>
+      </nav>
+      <div class="search-bar" id="search-bar"><input type="search" placeholder="Buscar en CREA Contenidos..." aria-label="Buscar"></div>
+    </div>
+  </header>
+
+  <main>
+    <div class="seccion-header">
+      <div class="container">
+        <nav class="breadcrumb" style="justify-content:center; color:rgba(250,247,242,0.5); margin-bottom:var(--space-4);">
+          <a href="/" style="color:rgba(250,247,242,0.6);">Inicio</a>
+          <span class="breadcrumb__sep">›</span>
+          <span style="color:var(--color-papel);">Cultura</span>
+        </nav>
+        <h1 class="seccion-header__nombre">Cultura</h1>
+        <p class="seccion-header__desc">Arte, tradiciones, festivales y patrimonio de Perote y la sierra veracruzana.</p>
+      </div>
+    </div>
+
+    <!-- NOTA DESTACADA -->
+    <section class="seccion">
+      <div class="container">
+        <div class="hero-editorial reveal" style="min-height:40vh; border-radius:var(--radius-base); overflow:hidden;">
+          <div class="hero-editorial__imagen">
+            <img src="https://picsum.photos/seed/cultura-feria/1200/500" alt="Feria del café veracruzano en el Parque Central de Perote">
+          </div>
+          <div class="hero-editorial__overlay"></div>
+          <div class="hero-editorial__contenido" style="padding:var(--space-8);">
+            <span class="badge-categoria badge-categoria--cultura">Cultura</span>
+            <h2 class="hero-editorial__titular" style="font-size:clamp(1.8rem,3.5vw,3rem);">Feria del café veracruzano reúne a más de 30 productores en el Parque Central de Perote</h2>
+            <p class="hero-editorial__bajada" style="font-size:var(--text-base);">Por tercer año consecutivo, el evento celebra la riqueza cafetera de la región con catas, talleres y música tradicional veracruzana.</p>
+            <div class="hero-editorial__meta">
+              <span class="autor">Sofía Ríos Castellanos</span>
+              <time>2 abr 2026</time><span>5 min</span>
+            </div>
+            <a href="/pages/nota.html" class="btn-cta" style="background:var(--color-naranja);">Leer nota</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GRID DE NOTAS -->
+    <section class="seccion" style="padding-top:0;">
+      <div class="container">
+        <div class="articulo-layout" style="display:grid; grid-template-columns:1fr 300px; gap:var(--space-8);">
+          <div>
+            <div class="grid-notas" style="display:grid; grid-template-columns:repeat(3,1fr); gap:var(--col-gap);">
+
+              <article class="card-nota reveal"><a href="/pages/nota.html">
+                <div class="card-imagen"><img src="https://picsum.photos/seed/danza-folk/400/250" alt="Grupo de danza folklórica Xochiquetzal" loading="lazy"><span class="badge-categoria badge-categoria--cultura">Cultura</span></div>
+                <div class="card-contenido"><h3 class="card-titular">El grupo Xochiquetzal: 20 años preservando la danza folklórica veracruzana</h3><p class="card-bajada">Tres generaciones de bailarines formadas en la colonia Benito Juárez representan a Perote en festivales nacionales.</p><footer class="card-meta"><span class="autor">Sofía Ríos</span><time class="fecha">1 abr 2026</time><span class="tiempo-lectura">5 min</span></footer></div>
+              </a></article>
+
+              <article class="card-nota reveal"><a href="/pages/nota.html">
+                <div class="card-imagen"><img src="https://picsum.photos/seed/museo-perote/400/250" alt="Museo Comunitario de Perote" loading="lazy"><span class="badge-categoria badge-categoria--cultura">Cultura</span></div>
+                <div class="card-contenido"><h3 class="card-titular">Museo Comunitario de Perote estrena sala dedicada a la historia del Cofre</h3><p class="card-bajada">La nueva sala presenta fotografías históricas, artefactos y testimonios orales de los primeros pobladores de la sierra.</p><footer class="card-meta"><span class="autor">Carlos Hernández</span><time class="fecha">31 mar 2026</time><span class="tiempo-lectura">4 min</span></footer></div>
+              </a></article>
+
+              <article class="card-nota reveal"><a href="/pages/nota.html">
+                <div class="card-imagen"><img src="https://picsum.photos/seed/mural-perote/400/250" alt="Nuevo mural en el centro de Perote" loading="lazy"><span class="badge-categoria badge-categoria--cultura">Cultura</span></div>
+                <div class="card-contenido"><h3 class="card-titular">Artistas locales pintan mural de 30 metros en el mercado municipal</h3><p class="card-bajada">La obra retrata la historia del cultivo de papa en las laderas del Cofre de Perote, símbolo de identidad regional.</p><footer class="card-meta"><span class="autor">Miguel Á. Xochihua</span><time class="fecha">29 mar 2026</time><span class="tiempo-lectura">3 min</span></footer></div>
+              </a></article>
+
+              <article class="card-nota reveal"><a href="/pages/nota.html">
+                <div class="card-imagen"><img src="https://picsum.photos/seed/libro-sierra/400/250" alt="Presentación de libro sobre la sierra veracruzana" loading="lazy"><span class="badge-categoria badge-categoria--cultura">Cultura</span></div>
+                <div class="card-contenido"><h3 class="card-titular">Escritora de Perote presenta novela sobre la migración en la sierra veracruzana</h3><p class="card-bajada">«Entre nieblas» narra la historia de cuatro generaciones de una familia serrana entre 1940 y la actualidad.</p><footer class="card-meta"><span class="autor">Sofía Ríos</span><time class="fecha">27 mar 2026</time><span class="tiempo-lectura">6 min</span></footer></div>
+              </a></article>
+
+              <article class="card-nota reveal"><a href="/pages/nota.html">
+                <div class="card-imagen"><img src="https://picsum.photos/seed/cine-perote/400/250" alt="Ciclo de cine comunitario en Perote" loading="lazy"><span class="badge-categoria badge-categoria--cultura">Cultura</span></div>
+                <div class="card-contenido"><h3 class="card-titular">Inicia ciclo de cine comunitario gratuito en la plaza central</h3><p class="card-bajada">Todos los viernes de abril, proyecciones al aire libre de cine mexicano independiente para toda la familia.</p><footer class="card-meta"><span class="autor">Gabriela Tláloc</span><time class="fecha">25 mar 2026</time><span class="tiempo-lectura">2 min</span></footer></div>
+              </a></article>
+
+              <article class="card-nota reveal"><a href="/pages/nota.html">
+                <div class="card-imagen"><img src="https://picsum.photos/seed/artesania-per/400/250" alt="Artesanas de Perote vendiendo en mercado" loading="lazy"><span class="badge-categoria badge-categoria--cultura">Cultura</span></div>
+                <div class="card-contenido"><h3 class="card-titular">Artesanas de la región exponen su trabajo en la Feria de Xalapa</h3><p class="card-bajada">Doce mujeres tejedoras de Perote y Altotonga presentan textiles en el evento cultural más importante del estado.</p><footer class="card-meta"><span class="autor">Sofía Ríos</span><time class="fecha">22 mar 2026</time><span class="tiempo-lectura">4 min</span></footer></div>
+              </a></article>
+
+            </div>
+            <nav class="paginacion" aria-label="Paginación">
+              <a href="#" class="paginacion__link paginacion__prev">← Anterior</a>
+              <a href="#" class="paginacion__link activo">1</a>
+              <a href="#" class="paginacion__link">2</a>
+              <a href="#" class="paginacion__link">3</a>
+              <span class="paginacion__link" style="border:none;">…</span>
+              <a href="#" class="paginacion__link">8</a>
+              <a href="#" class="paginacion__link paginacion__next">Siguiente →</a>
+            </nav>
+          </div>
+
+          <aside class="articulo-sidebar">
+            <div class="banner-patrocinador" style="padding:var(--space-4); margin-bottom:var(--space-8);">
+              <span class="banner-patrocinador__etiqueta" style="font-size:0.65rem;">Patrocinador de sección</span>
+              <p style="font-family:var(--font-display); font-size:var(--text-lg); color:var(--color-noche); margin:var(--space-4) 0 var(--space-2);">Casa de la Cultura Perote</p>
+              <p style="font-size:var(--text-sm); color:var(--color-gris-medio);">Talleres, exposiciones y eventos culturales todo el año.</p>
+              <a href="#" class="btn-cta btn-cta--naranja" style="margin-top:var(--space-3); font-size:var(--text-xs);">Ver programación</a>
+            </div>
+            <div>
+              <h3 style="font-size:var(--text-sm); font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--color-naranja); margin-bottom:var(--space-4);">Lo más leído en Cultura</h3>
+              <ol class="lista-leidos">
+                <li class="lista-leidos__item"><h3 class="lista-leidos__titulo"><a href="/pages/nota.html">Feria del café veracruzano en Perote</a></h3></li>
+                <li class="lista-leidos__item"><h3 class="lista-leidos__titulo"><a href="/pages/nota.html">20 años de danza folklórica Xochiquetzal</a></h3></li>
+                <li class="lista-leidos__item"><h3 class="lista-leidos__titulo"><a href="/pages/nota.html">Mural de 30 metros en el mercado</a></h3></li>
+                <li class="lista-leidos__item"><h3 class="lista-leidos__titulo"><a href="/pages/nota.html">Novela sobre migración serrana</a></h3></li>
+                <li class="lista-leidos__item"><h3 class="lista-leidos__titulo"><a href="/pages/nota.html">Cine comunitario gratuito en la plaza</a></h3></li>
+              </ol>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div><div class="footer__logo">CREA<span>.</span></div><p class="footer__desc">Periodismo local, humano, potenciado por inteligencia artificial.</p></div>
+        <div><h4 class="footer__titulo-col">Secciones</h4><ul class="footer__lista"><li><a href="/pages/seccion.html">Local</a></li><li><a href="/pages/cultura.html">Cultura</a></li><li><a href="/pages/economia.html">Economía</a></li><li><a href="/pages/entretenimiento.html">Entretenimiento</a></li><li><a href="/pages/deportes.html">Deportes</a></li><li><a href="/pages/opinion.html">Opinión</a></li></ul></div>
+        <div><h4 class="footer__titulo-col">CREA</h4><ul class="footer__lista"><li><a href="/pages/colaboradores.html">Equipo</a></li><li><a href="/pages/comunidad.html">Comunidad</a></li><li><a href="/pages/comercial.html">Publicidad</a></li></ul></div>
+        <div><h4 class="footer__titulo-col">Legal</h4><ul class="footer__lista"><li><a href="#">Aviso de privacidad</a></li><li><a href="#">Términos</a></li></ul></div>
+      </div>
+      <div class="footer__bottom"><span>© <span id="anio-actual">2026</span> CREA Contenidos.</span><span class="footer__hecho">Hecho en Perote, Veracruz 🇲🇽</span></div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/interactions.js"></script>
+</body>
+</html>

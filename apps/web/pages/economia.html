@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Economía local de Perote y la región. Agricultura, comercio, empleo y finanzas en CREA Contenidos.">
+  <title>Economía — CREA Contenidos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <style>
+    .header__logo-img {
+      width: 110px; max-width: 100%; max-height: 52px;
+      height: auto; object-fit: contain; display: block;
+    }
+    .header-editorial.is-scrolled .header__logo-img { width: 130px; }
+    @media (min-width: 640px) { .header__logo-img { width: 130px; } }
+    @media (min-width: 1024px) { .header__logo-img { width: 150px; } }
+    :root { --color-economia: #2E86C1; }
+    .seccion-header { background: #1A5276; }
+  </style>
+</head>
+<body>
+
+  <div class="barra-utilidad">
+    <div class="container">
+      <div class="barra-utilidad__izq">
+        <span id="fecha-actual"></span>
+        <span class="temp-perote">🌤 14°C Perote</span>
+        <a href="/#newsletter" class="newsletter-link">📩 Newsletter</a>
+      </div>
+      <div class="barra-utilidad__der">
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+        <a href="#" aria-label="X / Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+      </div>
+    </div>
+  </div>
+
+  <header class="header-editorial" id="header">
+    <div class="container">
+      <div class="header__top">
+        <div>
+          <a href="/" class="header__logo" aria-label="Inicio CREA Contenidos">
+            <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="header__logo-img" width="110" height="65">
+          </a>
+          <p class="header__tagline">El medio de Perote y su región</p>
+        </div>
+        <div class="header__actions">
+          <button class="search-toggle" id="search-toggle" aria-label="Buscar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <a href="/pages/comercial.html" class="btn-cta">Apoya a CREA</a>
+          <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false"><span></span><span></span><span></span></button>
+        </div>
+      </div>
+      <nav class="nav-principal" aria-label="Navegación principal">
+        <ul class="nav-principal__lista" id="nav-lista">
+          <li><a href="/" class="nav-principal__enlace">Inicio</a></li>
+          <li><a href="/pages/seccion.html" class="nav-principal__enlace">Local</a></li>
+          <li><a href="/pages/cultura.html" class="nav-principal__enlace">Cultura</a></li>
+          <li><a href="/pages/economia.html" class="nav-principal__enlace activo">Economía</a></li>
+          <li><a href="/pages/entretenimiento.html" class="nav-principal__enlace">Entretenimiento</a></li>
+          <li><a href="/pages/deportes.html" class="nav-principal__enlace">Deportes</a></li>
+          <li><a href="/pages/opinion.html" class="nav-principal__enlace">Opinión</a></li>
+          <li><a href="/pages/tercer-tiempo.html" class="nav-principal__enlace" style="color:var(--tt-acento);">⚽ Tercer Tiempo</a></li>
+        </ul>
+      </nav>
+      <div class="search-bar" id="search-bar"><input type="search" placeholder="Buscar en CREA Contenidos..." aria-label="Buscar"></div>
+    </div>
+  </header>
+
+  <main>
+    <div class="seccion-header">
+      <div class="container">
+        <nav class="breadcrumb" style="justify-content:center; color:rgba(250,247,242,0.5); margin-bottom:var(--space-4);">
+          <a href="/" style="color:rgba(250,247,242,0.6);">Inicio</a>
+          <span class="breadcrumb__sep">›</span>
+          <span style="color:var(--color-papel);">Economía</span>
+        </nav>
+        <h1 class="seccion-header__nombre">Economía</h1>
+        <p class="seccion-header__desc">Agricultura, comercio, empleo y desarrollo económico en el corredor Perote–Xalapa–Puebla.</p>
+      </div>
+    </div>
+
+    <!-- NOTA DESTACADA -->
+    <section class="seccion">
+      <div class="container">
+        <div class="hero-editorial reveal" style="min-height:40vh; border-radius:var(--radius-base); overflow:hidden;">
+          <div class="hero-editorial__imagen">
+            <img src="https://picsum.photos/seed/papa-export/1200/500" alt="Productor de papa en campo de Perote">
+          </div>
+          <div class="hero-editorial__overlay"></div>
+          <div class="hero-editorial__contenido" style="padding:var(--space-8);">
+            <span class="badge-categoria badge-categoria--economia">Economía</span>
+            <h2 class="hero-editorial__titular" style="font-size:clamp(1.8rem,3.5vw,3rem);">El productor de papa que exporta a 5 estados desde las faldas del Cofre de Perote</h2>
+            <p class="hero-editorial__bajada" style="font-size:var(--text-base);">Don Refugio Martínez lleva 30 años cultivando papa en la sierra y hoy abastece mercados en CDMX, Puebla, Veracruz, Oaxaca e Hidalgo.</p>
+            <div class="hero-editorial__meta">
+              <span class="autor">Gabriela Tláloc Reyes</span>
+              <time>2 abr 2026</time><span>8 min</span>
+            </div>
+            <a href="/pages/nota.html" class="btn-cta" style="background:#2E86C1;">Leer nota</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GRID DE NOTAS -->
+    <section class="seccion" style="padding-top:0;">
+      <div class="container">
+        <div class="articulo-layout" style="display:grid; grid-template-columns:1fr 300px; gap:var(--space-8);">
+          <div>
+            <div class="grid-notas" style="display:grid; grid-template-columns:repeat(3,1fr); gap:var(--col-gap);">
+
+              <article class="card-nota reveal"><a href="/pages/nota.html">
+                <div class="card-imagen"><img src="https://picsum.photos/seed/gas-lp/400/250" alt="Tanque de gas LP" loading="lazy"><span class="badge-categoria badge-categoria--economia">Economía</span></div>
+                <div class="card-contenido"><h3 class="card-titular">Precio del gas LP sube 3% en la zona Perote-Altotonga</h3><p class="card-bajada">El incremento afecta a más de 4 mil hogares que dependen del combustible para cocinar y calentar el agua.</p><footer class="card-meta"><span class="autor">Gabriela Tláloc</span><time class="fecha">1 abr 2026</time><span class="tiempo-lectura">3 min</span></footer></div>
+              </a></article>
+
+              <article class="card-nota reveal"><a href="/pages/nota.html">
+                <div class="card-imagen"><img src="https://picsum.photos/seed/mercado-gas/400/250" alt="Mercado municipal de Perote" loading="lazy"><span class="badge-categoria badge-categoria--economia">Economía</span></div>
+                <div class="card-contenido"><h3 class="card-titular">Así afectan los precios del gas a los negocios del mercado municipal</h3><p class="card-bajada">Comerciantes reportan hasta 15% de aumento en costos operativos desde enero de 2026.</p><footer class="card-meta"><span class="autor">Miguel Á. Xochihua</span><time class="fecha">31 mar 2026</time><span class="tiempo-lectura">4 min</span></footer></div>
+              </a></article>
+
+              <article class="card-nota reveal"><a href="/pages/nota.html">
+                <div class="card-imagen"><img src="https://picsum.photos/seed/cafe-exporta/400/250" alt="Sacos de café listo para exportar" loading="lazy"><span class="badge-categoria badge-categoria--economia">Economía</span></div>
+                <div class="card-contenido"><h3 class="card-titular">Cooperativa de café de Perote consigue certificación orgánica y apunta a exportar</h3><p class="card-bajada">La agrupación de 18 productores obtuvo el sello que abre puertas a mercados de Estados Unidos y Europa.</p><footer class="card-meta"><span class="autor">Gabriela Tláloc</span><time class="fecha">29 mar 2026</time><span class="tiempo-lectura">5 min</span></footer></div>
+              </a></article>
+
+              <article class="card-nota reveal"><a href="/pages/nota.html">
+                <div class="card-imagen"><img src="https://picsum.photos/seed/turismo-eco/400/250" alt="Turistas en el Cofre de Perote" loading="lazy"><span class="badge-categoria badge-categoria--economia">Economía</span></div>
+                <div class="card-contenido"><h3 class="card-titular">Turismo ecológico deja más de 2 millones de pesos a la región en el primer trimestre</h3><p class="card-bajada">El Cofre de Perote y las rutas de senderismo atraen cada vez más visitantes del corredor Xalapa-Puebla.</p><footer class="card-meta"><span class="autor">Carlos Hernández</span><time class="fecha">27 mar 2026</time><span class="tiempo-lectura">4 min</span></footer></div>
+              </a></article>
+
+              <article class="card-nota reveal"><a href="/pages/nota.html">
+                <div class="card-imagen"><img src="https://picsum.photos/seed/empleo-perote/400/250" alt="Trabajadores en nave industrial" loading="lazy"><span class="badge-categoria badge-categoria--economia">Economía</span></div>
+                <div class="card-contenido"><h3 class="card-titular">Nueva planta empacadora generará 80 empleos directos en el municipio</h3><p class="card-bajada">La empresa Frutos de la Sierra instalará sus operaciones en el parque industrial de Perote en mayo.</p><footer class="card-meta"><span class="autor">Gabriela Tláloc</span><time class="fecha">25 mar 2026</time><span class="tiempo-lectura">3 min</span></footer></div>
+              </a></article>
+
+              <article class="card-nota reveal"><a href="/pages/nota.html">
+                <div class="card-imagen"><img src="https://picsum.photos/seed/micro-cr/400/250" alt="Mujer recibiendo microcrédito" loading="lazy"><span class="badge-categoria badge-categoria--economia">Economía</span></div>
+                <div class="card-contenido"><h3 class="card-titular">Programa de microcréditos para mujeres rurales llega a Perote con 500 beneficiarias</h3><p class="card-bajada">El programa estatal otorga hasta 15 mil pesos sin garantía a mujeres emprendedoras de zonas rurales.</p><footer class="card-meta"><span class="autor">Miguel Á. Xochihua</span><time class="fecha">23 mar 2026</time><span class="tiempo-lectura">4 min</span></footer></div>
+              </a></article>
+
+            </div>
+            <nav class="paginacion" aria-label="Paginación">
+              <a href="#" class="paginacion__link paginacion__prev">← Anterior</a>
+              <a href="#" class="paginacion__link activo">1</a>
+              <a href="#" class="paginacion__link">2</a>
+              <a href="#" class="paginacion__link">3</a>
+              <span class="paginacion__link" style="border:none;">…</span>
+              <a href="#" class="paginacion__link">9</a>
+              <a href="#" class="paginacion__link paginacion__next">Siguiente →</a>
+            </nav>
+          </div>
+
+          <aside class="articulo-sidebar">
+            <div class="banner-patrocinador" style="padding:var(--space-4); margin-bottom:var(--space-8);">
+              <span class="banner-patrocinador__etiqueta" style="font-size:0.65rem;">Patrocinador de sección</span>
+              <p style="font-family:var(--font-display); font-size:var(--text-lg); color:var(--color-noche); margin:var(--space-4) 0 var(--space-2);">Caja Popular Perote</p>
+              <p style="font-size:var(--text-sm); color:var(--color-gris-medio);">Créditos, ahorro e inversión para la región serrana.</p>
+              <a href="#" class="btn-cta" style="margin-top:var(--space-3); font-size:var(--text-xs); background:#2E86C1;">Conocer más</a>
+            </div>
+            <div>
+              <h3 style="font-size:var(--text-sm); font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:#2E86C1; margin-bottom:var(--space-4);">Lo más leído en Economía</h3>
+              <ol class="lista-leidos">
+                <li class="lista-leidos__item"><h3 class="lista-leidos__titulo"><a href="/pages/nota.html">Productor de papa exporta a 5 estados</a></h3></li>
+                <li class="lista-leidos__item"><h3 class="lista-leidos__titulo"><a href="/pages/nota.html">Gas LP sube 3% en la región</a></h3></li>
+                <li class="lista-leidos__item"><h3 class="lista-leidos__titulo"><a href="/pages/nota.html">Café orgánico apunta a exportar</a></h3></li>
+                <li class="lista-leidos__item"><h3 class="lista-leidos__titulo"><a href="/pages/nota.html">Turismo ecológico deja 2 MDP</a></h3></li>
+                <li class="lista-leidos__item"><h3 class="lista-leidos__titulo"><a href="/pages/nota.html">80 empleos con nueva planta empacadora</a></h3></li>
+              </ol>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div><div class="footer__logo">CREA<span>.</span></div><p class="footer__desc">Periodismo local, humano, potenciado por inteligencia artificial.</p></div>
+        <div><h4 class="footer__titulo-col">Secciones</h4><ul class="footer__lista"><li><a href="/pages/seccion.html">Local</a></li><li><a href="/pages/cultura.html">Cultura</a></li><li><a href="/pages/economia.html">Economía</a></li><li><a href="/pages/entretenimiento.html">Entretenimiento</a></li><li><a href="/pages/deportes.html">Deportes</a></li><li><a href="/pages/opinion.html">Opinión</a></li></ul></div>
+        <div><h4 class="footer__titulo-col">CREA</h4><ul class="footer__lista"><li><a href="/pages/colaboradores.html">Equipo</a></li><li><a href="/pages/comunidad.html">Comunidad</a></li><li><a href="/pages/comercial.html">Publicidad</a></li></ul></div>
+        <div><h4 class="footer__titulo-col">Legal</h4><ul class="footer__lista"><li><a href="#">Aviso de privacidad</a></li><li><a href="#">Términos</a></li></ul></div>
+      </div>
+      <div class="footer__bottom"><span>© <span id="anio-actual">2026</span> CREA Contenidos.</span><span class="footer__hecho">Hecho en Perote, Veracruz 🇲🇽</span></div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/interactions.js"></script>
+</body>
+</html>
