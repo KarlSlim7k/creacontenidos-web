@@ -11,6 +11,25 @@
   <link rel="stylesheet" href="/assets/css/components.css">
   <link rel="stylesheet" href="/assets/css/responsive.css">
   <style>
+    .header__logo-img {
+      width: 110px;
+      max-width: 100%;
+      max-height: 52px;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .header-editorial.is-scrolled .header__logo-img { width: 130px; }
+
+    @media (min-width: 640px) {
+      .header__logo-img { width: 130px; }
+    }
+
+    @media (min-width: 1024px) {
+      .header__logo-img { width: 150px; }
+    }
+
     #reading-progress {
       position: fixed; top: 0; left: 0; height: 3px;
       background: var(--color-rojo); z-index: 999;
@@ -42,7 +61,7 @@
       <div class="header__top">
         <div>
           <a href="/" class="header__logo" aria-label="Inicio CREA Contenidos">
-            <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="header__logo-img">
+            <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="header__logo-img" width="110" height="65">
           </a>
           <p class="header__tagline">El medio de Perote y su región</p>
         </div>
