@@ -391,12 +391,12 @@ Hostinger ofrece **OpenClaw con 1-click install** en todos los VPS KVM. Para CRE
 ## 9. Roadmap de Implementación
 
 ### Semana 1 — Setup Inicial
-- [ ] Crear cuenta en Hostinger
-- [ ] Comprar VPS KVM 2 (datacenter USA)
-- [ ] Registrar dominio creacontenidos.com (gratis 1er año)
-- [ ] Configurar DNS en Hostinger
-- [ ] Instalar Ubuntu 24.04 LTS
-- [ ] Configurar SSH keys y firewall (UFW)
+- [x] Crear cuenta en Hostinger
+- [x] Comprar VPS KVM 2 (datacenter USA)
+- [x] Registrar dominio creacontenidos.com (gratis 1er año)
+- [x] Configurar DNS en Hostinger
+- [x] Instalar Ubuntu 24.04 LTS
+- [x] Configurar SSH keys y firewall (UFW)
 
 ### Semana 2 — Infraestructura Base
 - [ ] Instalar Docker + Docker Compose

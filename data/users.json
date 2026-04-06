@@ -1,0 +1,9 @@
+[
+  {
+    "id": "editor-001",
+    "nombre": "Editor CREA",
+    "email": "editor@creacontenidos.com",
+    "password": "password123",
+    "rol": "director_editorial"
+  }
+]
