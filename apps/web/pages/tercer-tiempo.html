@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Tercer Tiempo — El programa deportivo de CREA Contenidos. Deportes, pasión y orgullo veracruzano en cada emisión. En vivo los jueves por Facebook.">
+  <meta name="description" content="Tercer Tiempo — El programa deportivo de CREA Contenidos. En vivo los lunes y viernes a las 8:00pm hora CDMX por Facebook. Deportes, pasión y orgullo veracruzano.">
   <meta name="keywords" content="Tercer Tiempo, CREA Contenidos, deportes Perote, Veracruz deportes, Facebook Live, básquetbol, béisbol">
   <meta property="og:title" content="Tercer Tiempo — CREA Contenidos">
-  <meta property="og:description" content="Deportes, pasión y orgullo veracruzano en cada emisión. En vivo los jueves.">
+  <meta property="og:description" content="Deportes, pasión y orgullo veracruzano en cada emisión. En vivo los lunes y viernes a las 8pm CDMX por Facebook.">
   <meta property="og:type" content="website">
   <title>Tercer Tiempo — Deportes en vivo · CREA Contenidos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,6 +33,69 @@
     @media (min-width: 1024px) {
       .header__logo-img { width: 150px; }
     }
+
+    /* ── Dual logo: CREA + | + Tercer Tiempo ── */
+    .header__logo-grupo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header__logo-div {
+      width: 1px;
+      height: 36px;
+      background: var(--color-gris-linea);
+      flex-shrink: 0;
+    }
+    .header__logo-tt {
+      height: 38px;
+      width: auto;
+      max-width: 110px;
+      object-fit: contain;
+    }
+    @media (max-width: 480px) {
+      .header__logo-tt { height: 26px; max-width: 80px; }
+      .header__logo-div { height: 26px; }
+    }
+
+    /* ── Sección "Sobre el programa" ── */
+    .sobre-tt {
+      background: var(--tt-primario, #0a0a14);
+      border-top: 3px solid var(--tt-acento, #e8a020);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: var(--space-8, 2rem) 0;
+    }
+    .sobre-tt__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-6, 1.5rem);
+    }
+    .sobre-tt__item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3, 0.75rem);
+    }
+    .sobre-tt__icono {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+      line-height: 1;
+    }
+    .sobre-tt__label {
+      display: block;
+      color: var(--tt-acento, #e8a020);
+      font-family: var(--font-display, 'Playfair Display', serif);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .sobre-tt__valor {
+      color: rgba(255,255,255,0.88);
+      font-size: var(--text-sm, 0.875rem);
+      line-height: 1.4;
+      margin: 0;
+    }
   </style>
 </head>
 <body>
@@ -58,10 +121,14 @@
     <div class="container">
       <div class="header__top">
         <div>
-          <a href="/" class="header__logo" aria-label="Inicio CREA Contenidos">
-            <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="header__logo-img" width="110" height="65">
-          </a>
-          <p class="header__tagline">El medio de Perote y su región</p>
+          <div class="header__logo-grupo">
+            <a href="/" class="header__logo" aria-label="Inicio CREA Contenidos">
+              <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="header__logo-img" width="110" height="65">
+            </a>
+            <div class="header__logo-div" aria-hidden="true"></div>
+            <img src="/assets/img/public/logo-tt.png" alt="Tercer Tiempo" class="header__logo-tt" width="110" height="60">
+          </div>
+          <p class="header__tagline">El programa deportivo de CREA Contenidos</p>
         </div>
         <div class="header__actions">
           <button class="search-toggle" id="search-toggle" aria-label="Buscar">
@@ -97,7 +164,7 @@
     <section class="hero-tercer-tiempo" id="hero-tt">
       <div class="hero-tt__contenido">
         <div class="badge-live reveal reveal-delay-1">
-          <span class="dot"></span>EN VIVO · JUEVES
+          <span class="dot"></span>EN VIVO · LUN &amp; VIE · 8PM CDMX
         </div>
         <h1 class="hero-tt__logo reveal reveal-delay-2">TERCER TIEMPO</h1>
         <div class="hero-tt__linea-acento reveal reveal-delay-3"></div>
@@ -121,6 +188,42 @@
       <div class="hero-tt__scroll" aria-hidden="true">
         <span class="hero-tt__scroll-arrow">↓</span>
         <span>Explorar</span>
+      </div>
+    </section>
+
+    <!-- ═══ SECCIÓN 1B — SOBRE EL PROGRAMA ═══ -->
+    <section class="sobre-tt" id="sobre-programa">
+      <div class="container">
+        <div class="sobre-tt__grid">
+          <div class="sobre-tt__item reveal">
+            <span class="sobre-tt__icono">📅</span>
+            <div>
+              <span class="sobre-tt__label">Horario de emisión</span>
+              <p class="sobre-tt__valor">Lunes y Viernes · <strong style="color:var(--tt-acento,#e8a020);">8:00 pm hora CDMX</strong></p>
+            </div>
+          </div>
+          <div class="sobre-tt__item reveal reveal-delay-1">
+            <span class="sobre-tt__icono">📡</span>
+            <div>
+              <span class="sobre-tt__label">Plataforma</span>
+              <p class="sobre-tt__valor">Facebook Live · CREA Contenidos</p>
+            </div>
+          </div>
+          <div class="sobre-tt__item reveal reveal-delay-2">
+            <span class="sobre-tt__icono">🎙️</span>
+            <div>
+              <span class="sobre-tt__label">¿Qué es Tercer Tiempo?</span>
+              <p class="sobre-tt__valor">El programa de deportes locales de Perote y la región serrana de Veracruz. Entrevistas, análisis y la historia viva del deporte peroteño.</p>
+            </div>
+          </div>
+          <div class="sobre-tt__item reveal reveal-delay-3">
+            <span class="sobre-tt__icono">🏆</span>
+            <div>
+              <span class="sobre-tt__label">Temporada actual</span>
+              <p class="sobre-tt__valor">Temporada 1 · 14 episodios publicados</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -333,6 +436,148 @@
             </div>
           </article>
 
+          <!-- EP. 7 — Tenis de mesa -->
+          <article class="card-episodio reveal reveal-delay-1" id="ep-7">
+            <div class="ep-thumbnail">
+              <img src="https://picsum.photos/seed/tenismesa/480/270" alt="Primer torneo municipal de tenis de mesa en Perote" loading="lazy">
+              <div class="play-overlay">
+                <span class="play-btn">▶</span>
+              </div>
+              <span class="ep-duracion">41:32</span>
+            </div>
+            <div class="ep-info">
+              <span class="ep-numero-card">EP. 7 · 5 dic 2025</span>
+              <h3 class="ep-titulo">Primer torneo municipal de tenis de mesa: el deporte que nadie vio venir</h3>
+              <p class="ep-descripcion">El polideportivo municipal fue escenario del primer torneo oficial de tenis de mesa de Perote, con 32 participantes de todas las edades y colonias de la ciudad.</p>
+              <div class="ep-meta">
+                <time>5 dic 2025</time>
+                <a href="https://www.facebook.com/profile.php?id=100079776720617" target="_blank" rel="noopener noreferrer">Ver en Facebook →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- EP. 6 — Gimnasio municipal -->
+          <article class="card-episodio reveal reveal-delay-2" id="ep-6">
+            <div class="ep-thumbnail">
+              <img src="https://picsum.photos/seed/gimnasioperote/480/270" alt="Inauguración del gimnasio olímpico municipal de Perote" loading="lazy">
+              <div class="play-overlay">
+                <span class="play-btn">▶</span>
+              </div>
+              <span class="ep-duracion">49:17</span>
+            </div>
+            <div class="ep-info">
+              <span class="ep-numero-card">EP. 6 · 21 nov 2025</span>
+              <h3 class="ep-titulo">El nuevo gimnasio municipal: instalaciones que Perote merecía</h3>
+              <p class="ep-descripcion">Recorrido y entrevistas en la inauguración del renovado gimnasio olímpico municipal, con capacidad para boxeo, gimnasia y artes marciales para jóvenes de la región.</p>
+              <div class="ep-meta">
+                <time>21 nov 2025</time>
+                <a href="https://www.facebook.com/profile.php?id=100079776720617" target="_blank" rel="noopener noreferrer">Ver en Facebook →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- EP. 5 — Ciclismo de montaña -->
+          <article class="card-episodio reveal reveal-delay-3" id="ep-5">
+            <div class="ep-thumbnail">
+              <img src="https://picsum.photos/seed/ciclismocofre/480/270" alt="Ciclismo de montaña en el Cofre de Perote, Veracruz" loading="lazy">
+              <div class="play-overlay">
+                <span class="play-btn">▶</span>
+              </div>
+              <span class="ep-duracion">53:44</span>
+              <span class="ep-badge-historia">🚵 ESPECIAL</span>
+            </div>
+            <div class="ep-info">
+              <span class="ep-numero-card">EP. 5 · 7 nov 2025</span>
+              <h3 class="ep-titulo">Ciclismo de montaña en el Cofre: adrenalina a 4,200 metros</h3>
+              <p class="ep-descripcion">Tercer Tiempo acompañó a los ciclistas peroteños en un descenso épico del Cofre de Perote. Entrevistas con los organizadores y el reto de hacer deporte extremo en la sierra veracruzana.</p>
+              <div class="ep-meta">
+                <time>7 nov 2025</time>
+                <a href="https://www.facebook.com/profile.php?id=100079776720617" target="_blank" rel="noopener noreferrer">Ver en Facebook →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- EP. 4 — Escuelas deportivas municipales -->
+          <article class="card-episodio reveal reveal-delay-1" id="ep-4">
+            <div class="ep-thumbnail">
+              <img src="https://picsum.photos/seed/escuelasdeportivas/480/270" alt="Escuelas deportivas municipales de Perote presentan resultados" loading="lazy">
+              <div class="play-overlay">
+                <span class="play-btn">▶</span>
+              </div>
+              <span class="ep-duracion">45:08</span>
+            </div>
+            <div class="ep-info">
+              <span class="ep-numero-card">EP. 4 · 24 oct 2025</span>
+              <h3 class="ep-titulo">Escuelas deportivas de Perote: 400 niños, una sola misión</h3>
+              <p class="ep-descripcion">Las escuelas municipales de deporte presentaron sus resultados de temporada. Más de 400 niños participaron en fútbol, básquetbol, atletismo y natación en el municipio de Perote.</p>
+              <div class="ep-meta">
+                <time>24 oct 2025</time>
+                <a href="https://www.facebook.com/profile.php?id=100079776720617" target="_blank" rel="noopener noreferrer">Ver en Facebook →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- EP. 3 — Voleibol femenino -->
+          <article class="card-episodio reveal reveal-delay-2" id="ep-3">
+            <div class="ep-thumbnail">
+              <img src="https://picsum.photos/seed/voleibolfemenino/480/270" alt="Liga de voleibol femenino inter-colonias Perote" loading="lazy">
+              <div class="play-overlay">
+                <span class="play-btn">▶</span>
+              </div>
+              <span class="ep-duracion">39:52</span>
+            </div>
+            <div class="ep-info">
+              <span class="ep-numero-card">EP. 3 · 10 oct 2025</span>
+              <h3 class="ep-titulo">Liga inter-colonias de voleibol femenino: las que sí juegan en serio</h3>
+              <p class="ep-descripcion">Reportaje sobre la liga de voleibol femenino que nació en la colonia Lázaro Cárdenas y ya reúne a 12 equipos de toda la ciudad. La historia de las mujeres que organizaron su propio campeonato.</p>
+              <div class="ep-meta">
+                <time>10 oct 2025</time>
+                <a href="https://www.facebook.com/profile.php?id=100079776720617" target="_blank" rel="noopener noreferrer">Ver en Facebook →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- EP. 2 — Natación estatal -->
+          <article class="card-episodio reveal reveal-delay-3" id="ep-2">
+            <div class="ep-thumbnail">
+              <img src="https://picsum.photos/seed/natacionperote/480/270" alt="Nadadores de Perote con medallas en el estatal de Veracruz" loading="lazy">
+              <div class="play-overlay">
+                <span class="play-btn">▶</span>
+              </div>
+              <span class="ep-duracion">36:29</span>
+            </div>
+            <div class="ep-info">
+              <span class="ep-numero-card">EP. 2 · 26 sep 2025</span>
+              <h3 class="ep-titulo">Natación: los primeros medallistas estatales que Perote no sabía que tenía</h3>
+              <p class="ep-descripcion">Tres jóvenes nadadores de Perote regresaron con medallas del Campeonato Estatal de Veracruz en Xalapa. Nadie los conocía. Tercer Tiempo los presenta.</p>
+              <div class="ep-meta">
+                <time>26 sep 2025</time>
+                <a href="https://www.facebook.com/profile.php?id=100079776720617" target="_blank" rel="noopener noreferrer">Ver en Facebook →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- EP. 1 — Episodio piloto -->
+          <article class="card-episodio reveal reveal-delay-1" id="ep-1">
+            <div class="ep-thumbnail">
+              <img src="https://picsum.photos/seed/pilototercer/480/270" alt="Episodio piloto de Tercer Tiempo en CREA Contenidos" loading="lazy">
+              <div class="play-overlay">
+                <span class="play-btn">▶</span>
+              </div>
+              <span class="ep-duracion">28:43</span>
+              <span class="ep-badge-historia">⭐ PILOTO</span>
+            </div>
+            <div class="ep-info">
+              <span class="ep-numero-card">EP. 1 · 12 sep 2025</span>
+              <h3 class="ep-titulo">El inicio: Tercer Tiempo llega a Perote para quedarse</h3>
+              <p class="ep-descripcion">El episodio que lo empezó todo. Presentamos el programa, el equipo y la visión: un espacio para el deporte local que merece tener su propia voz. El primer programa deportivo de CREA Contenidos.</p>
+              <div class="ep-meta">
+                <time>12 sep 2025</time>
+                <a href="https://www.facebook.com/profile.php?id=100079776720617" target="_blank" rel="noopener noreferrer">Ver en Facebook →</a>
+              </div>
+            </div>
+          </article>
+
         </div>
       </div>
     </section>
@@ -491,7 +736,7 @@
       <div class="proxima__inner">
         <p class="proxima__label">📅 Próxima emisión en vivo</p>
         <h2 class="proxima__titulo reveal">
-          El próximo jueves, en vivo a las 8:00 pm<br>por Facebook · CREA Contenidos
+          Lunes y viernes, en vivo a las 8:00 pm hora CDMX<br>por Facebook · CREA Contenidos
         </h2>
 
         <!-- Contador regresivo -->
@@ -592,10 +837,10 @@
           <h4 class="footer__titulo-col">Secciones</h4>
           <ul class="footer__lista">
             <li><a href="/pages/seccion.html">Local</a></li>
-            <li><a href="/pages/seccion.html">Cultura</a></li>
-            <li><a href="/pages/seccion.html">Economía</a></li>
-            <li><a href="/pages/seccion.html">Deportes</a></li>
-            <li><a href="/pages/seccion.html">Opinión</a></li>
+            <li><a href="/pages/cultura.html">Cultura</a></li>
+            <li><a href="/pages/economia.html">Economía</a></li>
+            <li><a href="/pages/deportes.html">Deportes</a></li>
+            <li><a href="/pages/opinion.html">Opinión</a></li>
           </ul>
         </div>
       </div>

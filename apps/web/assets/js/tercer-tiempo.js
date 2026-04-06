@@ -3,34 +3,38 @@
    CREA Contenidos · Perote, Veracruz
 ═══════════════════════════════════════════════════════ */
 
-/* 1. ── Contador regresivo al próximo jueves ── */
-function proximoJueves() {
+/* 1. ── Contador regresivo a la próxima emisión (Lunes y Viernes 8pm CDMX) ── */
+function proximaEmision() {
   const ahora = new Date();
-  // 4 = Thursday (0=Sun, 1=Mon, ... 4=Thu)
-  let diasHastaJueves = (4 - ahora.getDay() + 7) % 7;
-  if (diasHastaJueves === 0) {
-    // Si hoy es jueves, calcular si ya pasó la hora del programa (20:00)
-    const proxJuev = new Date(ahora);
-    proxJuev.setHours(20, 0, 0, 0);
-    if (ahora < proxJuev) {
-      // El programa de hoy aún no ha ocurrido
-      diasHastaJueves = 0;
-    } else {
-      // Ya pasó, ir al próximo jueves
-      diasHastaJueves = 7;
+  // Días de emisión: 1=Lunes, 5=Viernes
+  const diasEmision = [1, 5];
+
+  let menorDiff = Infinity;
+
+  for (const dia of diasEmision) {
+    let diff = (dia - ahora.getDay() + 7) % 7;
+    if (diff === 0) {
+      // Hoy es día de emisión — revisar si ya pasó la hora (20:00)
+      const hoyEmision = new Date(ahora);
+      hoyEmision.setHours(20, 0, 0, 0);
+      if (ahora >= hoyEmision) {
+        diff = 7; // Ya pasó, calcular la siguiente semana
+      }
     }
+    if (diff < menorDiff) menorDiff = diff;
   }
-  const proximoJuev = new Date(ahora);
-  proximoJuev.setDate(ahora.getDate() + diasHastaJueves);
-  proximoJuev.setHours(20, 0, 0, 0); // 8pm hora Veracruz (UTC-6)
-  return proximoJuev;
+
+  const proxEmision = new Date(ahora);
+  proxEmision.setDate(ahora.getDate() + menorDiff);
+  proxEmision.setHours(20, 0, 0, 0); // 8pm hora CDMX
+  return proxEmision;
 }
 
 function actualizarContador() {
   const countdownEl = document.getElementById('countdown');
   if (!countdownEl) return;
 
-  const objetivo = proximoJueves();
+  const objetivo = proximaEmision();
   const ahora = new Date();
   const diff = objetivo - ahora;
 
