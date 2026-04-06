@@ -189,7 +189,7 @@
               .split(',').map(k => k.trim()).filter(k => k)
           },
           estado: 'publicada'
-        });
+        })
       });
       if (res.ok) {
         showNotification('Meta SEO guardada');

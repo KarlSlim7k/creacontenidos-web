@@ -45,7 +45,7 @@ $token = base64_encode(json_encode([
 
 setcookie('crea_editor_session', $token, [
   'expires' => time() + (8 * 3600),
-  'httponly' => true,
+  'httponly' => false,
   'samesite' => 'Lax',
   'path' => '/'
 ]);
