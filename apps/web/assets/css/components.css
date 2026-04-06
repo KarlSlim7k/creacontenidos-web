@@ -55,8 +55,11 @@
   line-height: 1;
 }
 .header__logo-img {
-  width: 220px;
+  width: 150px;
+  max-width: 100%;
+  max-height: 52px;
   height: auto;
+  object-fit: contain;
 }
 .header__tagline {
   font-family: var(--font-accent);
@@ -71,7 +74,7 @@
   align-items: center;
 }
 .header-editorial.is-scrolled .header__top { padding: var(--space-2) 0; }
-.header-editorial.is-scrolled .header__logo-img { width: 180px; }
+.header-editorial.is-scrolled .header__logo-img { width: 130px; }
 .header-editorial.is-scrolled .header__tagline { display: none; }
 
 /* Búsqueda expandible */
