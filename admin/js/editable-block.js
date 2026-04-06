@@ -3,6 +3,24 @@
     scriptUrl: 'https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js'
   };
 
+  // CSS classes to auto-activate as editable blocks on section/TT pages
+  const AUTO_EDITABLE_CLASSES = [
+    { cls: 'seccion-header__nombre',   prefix: 'auto-seccion-nombre' },
+    { cls: 'seccion-header__desc',     prefix: 'auto-seccion-desc' },
+    { cls: 'hero-editorial__titular',  prefix: 'auto-hero-titular' },
+    { cls: 'hero-editorial__bajada',   prefix: 'auto-hero-bajada' },
+    { cls: 'card-titular',             prefix: 'auto-card-titular' },
+    { cls: 'card-bajada',              prefix: 'auto-card-bajada' },
+    { cls: 'columna-card__titular',    prefix: 'auto-columna-titular' },
+    { cls: 'columna-card__extracto',   prefix: 'auto-columna-extracto' },
+    { cls: 'hero-tt__tagline',         prefix: 'auto-tt-tagline' },
+    { cls: 'sobre-tt__valor',          prefix: 'auto-tt-sobre-valor' },
+    { cls: 'ep-destacado__titular',    prefix: 'auto-tt-ep-titular' },
+    { cls: 'ep-titulo',                prefix: 'auto-tt-ep-titulo' },
+    { cls: 'ep-descripcion',           prefix: 'auto-tt-ep-desc' },
+    { cls: 'seccion-tt__titulo',       prefix: 'auto-tt-seccion-titulo' },
+  ];
+
   function getCookie(name) {
     const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
     return match ? match[2] : null;
@@ -72,7 +90,17 @@
   async function initEditors() {
     if (!isAuthenticated()) return;
 
-    const blocks = document.querySelectorAll('[data-editable-block]');
+    const explicitBlocks = Array.from(document.querySelectorAll('[data-editable-block]'));
+
+    const autoBlocks = [];
+    AUTO_EDITABLE_CLASSES.forEach(({ cls, prefix }) => {
+      document.querySelectorAll(`.${cls}:not([data-editable-block])`).forEach((el, idx) => {
+        el.dataset.editableBlock = `${prefix}-${idx}`;
+        autoBlocks.push(el);
+      });
+    });
+
+    const blocks = [...explicitBlocks, ...autoBlocks];
     if (blocks.length === 0) return;
 
     if (typeof ClassicEditor === 'undefined') {

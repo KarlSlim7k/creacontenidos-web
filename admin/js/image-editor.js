@@ -4,6 +4,12 @@
     cookieName: 'crea_editor_session'
   };
 
+  const AUTO_IMAGE_CONTAINERS = [
+    { selector: '.hero-editorial__imagen img', prefix: 'auto-hero-img' },
+    { selector: '.card-imagen img',            prefix: 'auto-card-img' },
+    { selector: '.ep-thumbnail img',           prefix: 'auto-tt-thumb' },
+  ];
+
   function getCookie(name) {
     const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
     return match ? match[2] : null;
@@ -196,6 +202,14 @@
     images.forEach(img => {
       const blockId = img.dataset.editableImage;
       makeEditable(img, blockId);
+    });
+
+    AUTO_IMAGE_CONTAINERS.forEach(({ selector, prefix }) => {
+      document.querySelectorAll(`${selector}:not([data-editable-image])`).forEach((img, idx) => {
+        const blockId = `${prefix}-${idx}`;
+        img.dataset.editableImage = blockId;
+        makeEditable(img, blockId);
+      });
     });
   }
 
