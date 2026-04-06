@@ -448,7 +448,7 @@
 .footer__logo-img {
   width: 75px;
   max-width: 100%;
-  max-height: 26px;
+  max-height: 50px;
   height: auto;
   object-fit: contain;
 }
