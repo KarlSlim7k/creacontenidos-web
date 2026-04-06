@@ -49,16 +49,15 @@
   padding: var(--space-4) 0;
 }
 .header__logo {
-  font-family: var(--font-display);
-  font-size: var(--text-4xl);
-  font-weight: 900;
-  color: var(--color-noche);
-  letter-spacing: -0.02em;
+  display: inline-flex;
+  align-items: center;
   text-decoration: none;
   line-height: 1;
 }
-.header__logo span { color: var(--color-rojo); }
-.header__logo:hover { color: var(--color-noche); }
+.header__logo-img {
+  width: 220px;
+  height: auto;
+}
 .header__tagline {
   font-family: var(--font-accent);
   font-size: var(--text-sm);
@@ -72,7 +71,7 @@
   align-items: center;
 }
 .header-editorial.is-scrolled .header__top { padding: var(--space-2) 0; }
-.header-editorial.is-scrolled .header__logo { font-size: var(--text-2xl); }
+.header-editorial.is-scrolled .header__logo-img { width: 180px; }
 .header-editorial.is-scrolled .header__tagline { display: none; }
 
 /* Búsqueda expandible */

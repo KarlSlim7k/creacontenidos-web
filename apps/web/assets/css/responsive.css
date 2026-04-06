@@ -5,7 +5,7 @@
 .barra-utilidad__izq .newsletter-link { display: none; }
 
 .header__top { flex-wrap: wrap; }
-.header__logo { font-size: var(--text-2xl); }
+.header__logo-img { width: 150px; }
 .header__tagline { font-size: var(--text-xs); }
 
 .hamburger { display: flex; }
@@ -71,7 +71,7 @@
 @media (min-width: 640px) {
   .barra-utilidad__izq .temp-perote { display: inline; }
 
-  .header__logo { font-size: var(--text-3xl); }
+  .header__logo-img { width: 180px; }
 
   .grid-secundario { grid-template-columns: 1fr 1fr !important; }
 
@@ -106,7 +106,7 @@
   .nav-principal__enlace::after { display: block; }
   .nav-principal { position: static; }
 
-  .header__logo { font-size: var(--text-4xl); }
+  .header__logo-img { width: 220px; }
   .header__tagline { font-size: var(--text-sm); }
 
   .hero-editorial { min-height: 60vh; }
