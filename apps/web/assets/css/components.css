@@ -439,13 +439,19 @@
   margin-bottom: var(--space-12);
 }
 .footer__logo {
-  font-family: var(--font-display);
-  font-size: var(--text-3xl);
-  font-weight: 900;
-  color: var(--color-papel);
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  line-height: 1;
   margin-bottom: var(--space-3);
 }
-.footer__logo span { color: var(--color-rojo); }
+.footer__logo-img {
+  width: 150px;
+  max-width: 100%;
+  max-height: 52px;
+  height: auto;
+  object-fit: contain;
+}
 .footer__desc {
   font-size: var(--text-sm);
   line-height: 1.6;
