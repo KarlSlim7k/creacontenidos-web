@@ -4,3 +4,16 @@ services:
     expose:
       - "80"
     restart: unless-stopped
+    networks:
+      - dokploy-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.crea-web.rule=Host(`crea-contenidos.com`) || Host(`www.crea-contenidos.com`)"
+      - "traefik.http.routers.crea-web.entrypoints=web,websecure"
+      - "traefik.http.routers.crea-web.tls.certresolver=letsencrypt"
+      - "traefik.http.services.crea-web.loadbalancer.server.port=80"
+      - "traefik.docker.network=dokploy-network"
+
+networks:
+  dokploy-network:
+    external: true
