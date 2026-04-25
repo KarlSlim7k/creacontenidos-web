@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artículos — Panel Editorial CREA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/css/dashboard.css">
+  <!-- Include CKEditor for robust content editing -->
+  <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+  <style>
+    .cms-container { padding: 1.5rem; background: var(--crea-white); border-radius: 0.75rem; border: 1px solid var(--crea-gris-border); }
+    .cms-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .cms-table { width: 100%; border-collapse: collapse; }
+    .cms-table th, .cms-table td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--crea-gris-border); font-size: 0.875rem; }
+    .cms-table th { color: var(--crea-gris-text); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.75rem; }
+    .cms-table tr:hover { background: #f9fafb; }
+    .btn-primary { background: var(--crea-rojo); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-weight: 500; }
+    .btn-secondary { background: var(--crea-gris-bg); color: var(--crea-text); border: 1px solid var(--crea-gris-border); padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-weight: 500; }
+    .btn-danger { background: transparent; color: var(--crea-rojo); border: none; cursor: pointer; text-decoration: underline; font-size: 0.875rem; }
+    
+    /* Form */
+    #article-form-view { display: none; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.875rem; }
+    .form-group input, .form-group select { width: 100%; padding: 0.625rem; border: 1px solid var(--crea-gris-border); border-radius: 0.5rem; font-family: 'Inter', sans-serif; font-size: 0.875rem; }
+    .ck-editor__editable_inline { min-height: 400px; }
+  </style>
+</head>
+<body>
+  <!-- Sidebar (Same as dashboard) -->
+  <aside class="dash-sidebar" id="dash-sidebar">
+    <div class="dash-sidebar__header">
+      <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="dash-sidebar__logo">
+      <span class="dash-sidebar__badge">Panel Editorial</span>
+    </div>
+    <nav class="dash-sidebar__nav">
+      <div class="dash-nav__section-title">Principal</div>
+      <a href="/admin/dashboard.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Dashboard
+      </a>
+      <a href="/admin/articulos.html" class="dash-nav__link active">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+        Artículos
+      </a>
+      <div class="dash-nav__section-title">Programas y Secciones</div>
+      <a href="/admin/tercer-tiempo.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+        Tercer Tiempo
+      </a>
+      <a href="/admin/newsletter.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        Newsletter
+      </a>
+      <div class="dash-nav__section-title">Comercial</div>
+      <a href="/admin/comercial.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Paquetes / Comercial
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Topbar -->
+  <header class="dash-topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem;">
+      <span class="dash-topbar__title">Gestor de Artículos</span>
+    </div>
+    <div class="dash-topbar__user">
+      <a href="/" target="_blank" class="btn-secondary" style="font-size:0.75rem; text-decoration:none;">Ver sitio público</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dash-main">
+    
+    <!-- List View -->
+    <div class="cms-container" id="list-view">
+      <div class="cms-header">
+        <h2>Todos los Artículos</h2>
+        <button class="btn-primary" onclick="showForm()">+ Nuevo Artículo</button>
+      </div>
+      <table class="cms-table" id="articles-table">
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Categoría</th>
+            <th>Autor</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="6" style="text-align:center;">Cargando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Form View -->
+    <div class="cms-container" id="article-form-view">
+      <div class="cms-header">
+        <h2 id="form-title">Editar Artículo</h2>
+        <div>
+          <button class="btn-secondary" onclick="hideForm()">Cancelar</button>
+          <button class="btn-primary" onclick="saveArticle()" style="background:#0A8F6C;">Guardar Artículo</button>
+        </div>
+      </div>
+      
+      <form id="article-form">
+        <input type="hidden" id="art-id">
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+          <div>
+            <div class="form-group">
+              <label>Título *</label>
+              <input type="text" id="art-titulo" required>
+            </div>
+            <div class="form-group">
+              <label>Subtítulo / Bajada</label>
+              <input type="text" id="art-subtitulo">
+            </div>
+            <div class="form-group">
+              <label>Contenido HTML *</label>
+              <textarea id="art-contenido"></textarea>
+            </div>
+          </div>
+          
+          <div>
+            <div class="form-group">
+              <label>Estado</label>
+              <select id="art-estado">
+                <option value="borrador">Borrador</option>
+                <option value="publicada">Publicada</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Categoría</label>
+              <select id="art-categoria">
+                <option value="local">Local</option>
+                <option value="cultura">Cultura</option>
+                <option value="economia">Economía</option>
+                <option value="deportes">Deportes</option>
+                <option value="opinion">Opinión</option>
+                <option value="entretenimiento">Entretenimiento</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Autor</label>
+              <input type="text" id="art-autor">
+            </div>
+            <div class="form-group">
+              <label>URL Imagen Destacada</label>
+              <input type="text" id="art-imagen" placeholder="https://...">
+            </div>
+            <div class="form-group">
+              <label>Meta Descripción (SEO)</label>
+              <input type="text" id="art-meta-desc">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </main>
+
+  <script src="/admin/js/session-guard.js"></script>
+  <script>
+    const API = '/api/articles/crud.php';
+    let editorInstance;
+    let articles = [];
+
+    // Init CKEditor
+    ClassicEditor
+      .create(document.querySelector('#art-contenido'))
+      .then(editor => { editorInstance = editor; })
+      .catch(error => { console.error(error); });
+
+    async function loadArticles() {
+      const res = await fetch(API);
+      const data = await res.json();
+      articles = data.articles || [];
+      renderTable();
+    }
+
+    function renderTable() {
+      const tbody = document.querySelector('#articles-table tbody');
+      if (articles.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay artículos.</td></tr>';
+        return;
+      }
+      
+      tbody.innerHTML = articles.map(art => `
+        <tr>
+          <td style="font-weight:500;">${art.titulo}</td>
+          <td><span class="dash-badge">${art.categoria}</span></td>
+          <td>${art.autor}</td>
+          <td><span class="dash-badge dash-badge--${art.estado === 'publicada' ? 'published' : 'draft'}">${art.estado}</span></td>
+          <td>${new Date(art.fecha_publicacion || art.created_at).toLocaleDateString('es-MX')}</td>
+          <td>
+            <button class="btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" onclick="editArticle('${art.id}')">Editar</button>
+            <button class="btn-danger" style="margin-left:0.5rem;" onclick="deleteArticle('${art.id}')">Eliminar</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function showForm(art = null) {
+      document.getElementById('list-view').style.display = 'none';
+      document.getElementById('article-form-view').style.display = 'block';
+      
+      if (art) {
+        document.getElementById('form-title').textContent = 'Editar Artículo';
+        document.getElementById('art-id').value = art.id;
+        document.getElementById('art-titulo').value = art.titulo || '';
+        document.getElementById('art-subtitulo').value = art.subtitulo || art.extracto || '';
+        document.getElementById('art-estado').value = art.estado || 'borrador';
+        document.getElementById('art-categoria').value = art.categoria || 'local';
+        document.getElementById('art-autor').value = art.autor || '';
+        document.getElementById('art-imagen').value = art.imagen_destacada || '';
+        document.getElementById('art-meta-desc').value = art.meta_description || '';
+        if(editorInstance) editorInstance.setData(art.contenido_html || '');
+      } else {
+        document.getElementById('form-title').textContent = 'Nuevo Artículo';
+        document.getElementById('article-form').reset();
+        document.getElementById('art-id').value = '';
+        if(editorInstance) editorInstance.setData('');
+      }
+    }
+
+    function hideForm() {
+      document.getElementById('list-view').style.display = 'block';
+      document.getElementById('article-form-view').style.display = 'none';
+    }
+
+    function editArticle(id) {
+      const art = articles.find(a => a.id === id);
+      if (art) showForm(art);
+    }
+
+    async function deleteArticle(id) {
+      if (!confirm('¿Estás seguro de eliminar este artículo? Esta acción no se puede deshacer.')) return;
+      await fetch(`${API}?id=${id}`, { method: 'DELETE' });
+      loadArticles();
+    }
+
+    async function saveArticle() {
+      const id = document.getElementById('art-id').value;
+      const isNew = !id;
+      
+      const payload = {
+        id: id || undefined,
+        titulo: document.getElementById('art-titulo').value,
+        subtitulo: document.getElementById('art-subtitulo').value,
+        extracto: document.getElementById('art-subtitulo').value,
+        contenido_html: editorInstance ? editorInstance.getData() : '',
+        autor: document.getElementById('art-autor').value,
+        categoria: document.getElementById('art-categoria').value,
+        imagen_destacada: document.getElementById('art-imagen').value,
+        meta_description: document.getElementById('art-meta-desc').value,
+        estado: document.getElementById('art-estado').value,
+      };
+
+      if (!payload.titulo) {
+        alert('El título es requerido.');
+        return;
+      }
+
+      await fetch(API, {
+        method: isNew ? 'POST' : 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      hideForm();
+      loadArticles();
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', loadArticles);
+  </script>
+</body>
+</html>
