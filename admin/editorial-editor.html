@@ -47,6 +47,27 @@
     .status-badge--approved { background: #D1FAE5; color: #065F46; }
     .status-badge--rejected { background: #FEE2E2; color: #991B1B; }
     .status-badge--scheduled { background: #DBEAFE; color: #1E40AF; }
+    .distribution-section { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--crea-gris-border); }
+    .distribution-title { font-size: 0.8125rem; font-weight: 600; color: var(--crea-text); margin-bottom: 0.75rem; }
+    .platform-checkboxes { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .platform-checkbox { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; cursor: pointer; }
+    .platform-checkbox input { cursor: pointer; }
+    .publication-history { margin-top: 1rem; }
+    .pub-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: #F9FAFB; border-radius: 0.375rem; margin-bottom: 0.5rem; font-size: 0.75rem; }
+    .pub-item__icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.625rem; color: white; }
+    .pub-item__icon--facebook { background: #1877F2; }
+    .pub-item__icon--instagram { background: #E4405F; }
+    .pub-item__icon--tiktok { background: #000000; }
+    .pub-item__icon--website { background: var(--crea-verde); }
+    .pub-item__icon--whatsapp { background: #25D366; }
+    .pub-item__platform { font-weight: 600; }
+    .pub-item__status { margin-left: auto; }
+    .pub-status--pending { color: var(--crea-naranja); }
+    .pub-status--sent { color: var(--crea-verde); }
+    .pub-status--failed { color: var(--crea-rojo); }
+    .modal__platforms { display: flex; flex-direction: column; gap: 0.75rem; }
+    .modal__platform-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; }
+    .modal__platform-item input { width: 18px; height: 18px; }
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
     .modal-overlay.active { display: flex; }
     .modal { background: white; border-radius: 1rem; padding: 1.5rem; max-width: 400px; width: 90%; }
@@ -161,6 +182,7 @@
               <button class="btn btn--success" id="btn-approve" onclick="approveProposal()">Aprobar</button>
               <button class="btn btn--secondary" id="btn-schedule" onclick="openScheduleModal()">Programar</button>
               <button class="btn btn--danger" id="btn-reject" onclick="openRejectModal()">Rechazar</button>
+              <button class="btn btn--secondary" id="btn-distribute" onclick="openDistributionModal()">Distribuir</button>
             </div>
           </div>
 
@@ -193,6 +215,16 @@
               <span class="info-row__label">Programada</span>
               <span class="info-row__value" id="prop-scheduled">—</span>
             </div>
+          </div>
+
+          <div class="editor-card distribution-section">
+            <div class="editor-card__title">Distribución</div>
+            <div id="publication-history" class="publication-history">
+              <p style="font-size:0.75rem;color:var(--crea-gris-text);">Sin publicaciones aún</p>
+            </div>
+            <button class="btn btn--secondary" style="margin-top:0.75rem;width:100%;" onclick="openDistributionModal()">
+              + Nueva publicación
+            </button>
           </div>
 
           <div class="editor-card">
@@ -233,6 +265,15 @@
             </div>
           </div>
 
+          <div class="editor-card" id="assets-card" style="display:none;">
+            <div class="editor-card__title">Assets IA</div>
+            <div id="assets-list"></div>
+            <div class="editor-actions" style="margin-top:1rem;">
+              <button class="btn btn--secondary" id="btn-generate-audio" onclick="generateAsset('audio')">Generar Audio</button>
+              <button class="btn btn--secondary" id="btn-generate-image" onclick="generateAsset('image')">Generar Imagen</button>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -266,13 +307,52 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="distribution-modal">
+    <div class="modal">
+      <div class="modal__title">Distribución</div>
+      <div class="modal__body">
+        <p style="margin-bottom:1rem;font-size:0.875rem;color:var(--crea-gris-text);">Selecciona las plataformas donde quieres publicar esta propuesta:</p>
+        <div class="modal__platforms">
+          <label class="modal__platform-item">
+            <input type="checkbox" value="facebook" class="dist-platform">
+            <strong>Facebook</strong>
+          </label>
+          <label class="modal__platform-item">
+            <input type="checkbox" value="instagram" class="dist-platform">
+            <strong>Instagram</strong>
+          </label>
+          <label class="modal__platform-item">
+            <input type="checkbox" value="tiktok" class="dist-platform">
+            <strong>TikTok</strong> <span style="color:var(--crea-gris-text);font-size:0.75rem;">(genera asset listo)</span>
+          </label>
+          <label class="modal__platform-item">
+            <input type="checkbox" value="website" class="dist-platform">
+            <strong>Sitio Web</strong>
+          </label>
+          <label class="modal__platform-item">
+            <input type="checkbox" value="whatsapp" class="dist-platform">
+            <strong>WhatsApp</strong> <span style="color:var(--crea-gris-text);font-size:0.75rem;">(link para compartir)</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal__actions">
+        <button class="btn btn--secondary" onclick="closeDistributionModal()">Cancelar</button>
+        <button class="btn btn--primary" onclick="confirmDistribution()">Publicar</button>
+      </div>
+    </div>
+  </div>
+
   <script src="/admin/js/session-guard.js"></script>
   <script>
     const API = {
       proposals: '/api/content-proposals/crud.php',
       approve: '/api/content-proposals/approve.php',
       reject: '/api/content-proposals/reject.php',
-      schedule: '/api/content-proposals/schedule.php'
+      schedule: '/api/content-proposals/schedule.php',
+      assets: '/api/assets/crud.php',
+      assetsGenerate: '/api/assets/generate.php',
+      publications: '/api/publications/crud.php',
+      publish: '/api/publications/publish.php'
     };
 
     let proposalId = null;
@@ -330,6 +410,7 @@
 
         proposal = data.proposal;
         renderProposal();
+        loadPublications();
       } catch (err) {
         console.error('Error loading proposal:', err);
         document.getElementById('loading-state').textContent = 'Error cargando propuesta';
@@ -394,10 +475,12 @@
         document.getElementById('btn-approve').style.display = 'none';
         document.getElementById('btn-schedule').style.display = 'none';
         document.getElementById('btn-reject').style.display = 'none';
+        document.getElementById('btn-distribute').style.display = 'none';
       }
 
       updatePreview();
       initEditor();
+      loadAssets();
     }
 
     function initEditor() {
@@ -452,6 +535,7 @@
           proposal = data.proposal;
           alert('Cambios guardados');
           renderProposal();
+          loadPublications();
         } else {
           alert(data.error || 'Error al guardar');
         }
@@ -568,10 +652,131 @@
       if (avatarEl) avatarEl.textContent = (user.nombre || user.email || 'E')[0].toUpperCase();
     }
 
+    async function loadAssets() {
+      try {
+        const res = await fetch(`${API.assets}?proposal_id=${proposalId}`);
+        const data = await res.json();
+        if (data.assets && data.assets.length > 0) {
+          document.getElementById('assets-card').style.display = 'block';
+          renderAssetsList(data.assets);
+        }
+      } catch (err) {
+        console.error('Error loading assets:', err);
+      }
+    }
+
+    function renderAssetsList(assets) {
+      const container = document.getElementById('assets-list');
+      container.innerHTML = assets.map(a => `
+        <div class="info-row">
+          <span class="info-row__label">${a.type}</span>
+          <span class="info-row__value">${a.status}</span>
+        </div>
+      `).join('');
+    }
+
+    async function generateAsset(type) {
+      if (!confirm(`¿Generar ${type} con IA? (PLACEHOLDER)`)) return;
+
+      let params = {};
+      if (type === 'audio') {
+        params.text = editorInstance ? editorInstance.getData() : '';
+      } else if (type === 'image') {
+        params.prompt = document.getElementById('prop-image-prompt').value;
+      }
+
+      try {
+        const res = await fetch(API.assetsGenerate, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type, proposal_id: proposalId, params })
+        });
+
+        const data = await res.json();
+        if (data.ok) {
+          alert(`Asset ${type} generado (PLACEHOLDER): ${data.message}`);
+          loadAssets();
+        } else {
+          alert(data.error || 'Error al generar asset');
+        }
+      } catch (err) {
+        alert('Error al generar asset');
+      }
+    }
+
     document.getElementById('btn-menu').addEventListener('click', toggleSidebar);
     document.getElementById('dash-overlay').addEventListener('click', toggleSidebar);
 
     document.getElementById('prop-title').addEventListener('input', updatePreview);
+
+    async function loadPublications() {
+      try {
+        const res = await fetch(`${API.publications}?proposal_id=${proposalId}`);
+        const data = await res.json();
+        if (data.publications && data.publications.length > 0) {
+          renderPublicationsList(data.publications);
+        }
+      } catch (err) {
+        console.error('Error loading publications:', err);
+      }
+    }
+
+    function renderPublicationsList(publications) {
+      const container = document.getElementById('publication-history');
+      const platformIcons = {
+        facebook: 'F',
+        instagram: 'I',
+        tiktok: 'T',
+        website: 'W',
+        whatsapp: 'W'
+      };
+      
+      container.innerHTML = publications.map(p => `
+        <div class="pub-item">
+          <span class="pub-item__icon pub-item__icon--${p.platform}">${platformIcons[p.platform] || '?'}</span>
+          <span class="pub-item__platform">${p.platform}</span>
+          <span class="pub-item__status pub-status--${p.status}">${p.status}</span>
+        </div>
+      `).join('');
+    }
+
+    function openDistributionModal() {
+      document.querySelectorAll('.dist-platform').forEach(cb => cb.checked = false);
+      document.getElementById('distribution-modal').classList.add('active');
+    }
+
+    function closeDistributionModal() {
+      document.getElementById('distribution-modal').classList.remove('active');
+    }
+
+    async function confirmDistribution() {
+      const checkboxes = document.querySelectorAll('.dist-platform:checked');
+      const platforms = Array.from(checkboxes).map(cb => cb.value);
+      
+      if (platforms.length === 0) {
+        alert('Selecciona al menos una plataforma');
+        return;
+      }
+
+      try {
+        const res = await fetch(API.publish, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ proposal_id: proposalId, platforms })
+        });
+
+        const data = await res.json();
+        if (data.ok) {
+          alert(`Publicaciones creadas para: ${platforms.join(', ')}`);
+          closeDistributionModal();
+          loadPublications();
+        } else {
+          alert(data.error || 'Error al crear publicaciones');
+        }
+      } catch (err) {
+        alert('Error al crear publicaciones');
+      }
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
       renderUserInfo();

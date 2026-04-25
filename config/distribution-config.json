@@ -1,0 +1,21 @@
+{
+  "facebook": {
+    "enabled": false,
+    "page_id": "",
+    "access_token": "",
+    "api_version": "v18.0"
+  },
+  "instagram": {
+    "enabled": false,
+    "account_id": "",
+    "access_token": ""
+  },
+  "tiktok": {
+    "enabled": false,
+    "api_key": ""
+  },
+  "website": {
+    "auto_publish": true,
+    "publish_endpoint": "api/articles/crud.php"
+  }
+}
