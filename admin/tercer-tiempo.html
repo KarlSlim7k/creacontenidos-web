@@ -9,13 +9,30 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/admin/css/dashboard.css">
   <style>
-    .cms-container { padding: 1.5rem; background: var(--crea-white); border-radius: 0.75rem; border: 1px solid var(--crea-gris-border); }
-    .cms-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-    .btn-primary { background: var(--crea-rojo); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-weight: 500; }
-    .form-group { margin-bottom: 1.25rem; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.875rem; }
-    .form-group input, .form-group textarea { width: 100%; padding: 0.625rem; border: 1px solid var(--crea-gris-border); border-radius: 0.5rem; font-family: 'Inter', sans-serif; font-size: 0.875rem; }
-    .form-group textarea { min-height: 120px; resize: vertical; }
+    .cms-section { background: var(--crea-white); border-radius: 0.75rem; border: 1px solid var(--crea-gris-border); padding: 1.5rem; margin-bottom: 1.5rem; }
+    .cms-section__title { font-size: 1rem; font-weight: 700; color: var(--crea-noche); margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--crea-gris-border); display: flex; align-items: center; gap: 0.5rem; }
+    .cms-section__title span.icon { font-size: 1.1rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-grid--full { grid-column: 1 / -1; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 0.375rem; font-size: 0.8125rem; color: #374151; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid var(--crea-gris-border); border-radius: 0.5rem; font-family: 'Inter', sans-serif; font-size: 0.875rem; color: #111827; background: #fafafa; transition: border-color .15s; box-sizing: border-box; }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #0A8F6C; background: white; }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+    .form-group textarea.mono { font-family: 'Courier New', monospace; font-size: 0.8125rem; min-height: 110px; }
+    .form-group .hint { font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem; }
+    .btn-save { background: #0A8F6C; color: white; border: none; padding: 0.625rem 1.5rem; border-radius: 0.5rem; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: background .15s; }
+    .btn-save:hover { background: #078059; }
+    .topbar-actions { display: flex; gap: 0.75rem; align-items: center; }
+    .btn-secondary-link { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-weight: 500; font-size: 0.8125rem; text-decoration: none; transition: background .15s; }
+    .btn-secondary-link:hover { background: #e5e7eb; }
+    .status-badge { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+    .status-badge--live { background: #fef2f2; color: #dc2626; }
+    .status-badge--active { background: #f0fdf4; color: #16a34a; }
+    .status-badge--replay { background: #eff6ff; color: #2563eb; }
+    #toast { position: fixed; bottom: 1.5rem; right: 1.5rem; padding: 0.75rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; z-index: 9999; display: none; }
+    #toast.ok { background: #0A8F6C; color: white; }
+    #toast.err { background: #dc2626; color: white; }
   </style>
 </head>
 <body>
@@ -54,82 +71,168 @@
   <header class="dash-topbar">
     <div style="display:flex;align-items:center;gap:0.75rem;">
       <span class="dash-topbar__title">Gestor: Tercer Tiempo</span>
+      <span class="status-badge status-badge--active" id="estado-badge">● Activo</span>
     </div>
-    <div class="dash-topbar__user">
-      <a href="/pages/tercer-tiempo.html" target="_blank" class="btn-secondary" style="font-size:0.75rem; text-decoration:none;">Ver sitio público</a>
+    <div class="topbar-actions">
+      <a href="/pages/tercer-tiempo.html" target="_blank" class="btn-secondary-link">Ver página pública ↗</a>
+      <button class="btn-save" onclick="saveContent()">Guardar cambios</button>
     </div>
   </header>
 
   <main class="dash-main">
-    <div class="cms-container">
-      <div class="cms-header">
-        <h2>Contenido de Tercer Tiempo</h2>
-        <button class="btn-primary" onclick="saveContent()" style="background:#0A8F6C;">Guardar Cambios</button>
-      </div>
-      
-      <form id="content-form">
-        <div style="max-width: 800px;">
-          <div class="form-group">
-            <label>Título de la Sección</label>
-            <input type="text" id="tt-titulo" placeholder="Tercer Tiempo en Vivo">
-          </div>
-          <div class="form-group">
-            <label>Descripción / Bajada</label>
-            <textarea id="tt-desc" placeholder="El resumen deportivo de la semana..."></textarea>
-          </div>
-          <div class="form-group">
-            <label>Código Embed de Facebook (Iframe)</label>
-            <textarea id="tt-embed" placeholder='<iframe src="https://www.facebook.com/plugins/video.php?href=..." ...></iframe>' style="font-family: monospace;"></textarea>
-            <p style="font-size:0.75rem; color:#6b7280; margin-top:0.25rem;">Pega aquí el código iframe que te da Facebook para insertar el video en vivo o grabado.</p>
-          </div>
+
+    <!-- SECCIÓN: Info del programa -->
+    <div class="cms-section">
+      <div class="cms-section__title"><span class="icon">📺</span> Información del programa</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Estado del programa</label>
+          <select id="tt-estado">
+            <option value="activo">Activo (grabado disponible)</option>
+            <option value="en-vivo">En vivo ahora</option>
+            <option value="inactivo">Inactivo / Pausa</option>
+          </select>
+          <p class="hint">Controla el badge que aparece en el hero de la página.</p>
         </div>
-      </form>
+        <div class="form-group">
+          <label>Texto del badge / estado en vivo</label>
+          <input type="text" id="tt-badge" placeholder="EN VIVO · LUN &amp; VIE · 8PM CDMX">
+          <p class="hint">Texto corto en la franja superior del hero.</p>
+        </div>
+        <div class="form-group">
+          <label>Tagline del programa</label>
+          <input type="text" id="tt-tagline" placeholder="Deportes, pasión y orgullo veracruzano en cada emisión">
+        </div>
+        <div class="form-group">
+          <label>Horario de emisión</label>
+          <input type="text" id="tt-horario" placeholder="Lunes y Viernes · 8:00 pm hora CDMX">
+        </div>
+        <div class="form-group">
+          <label>Plataforma</label>
+          <input type="text" id="tt-plataforma" placeholder="Facebook Live · CREA Contenidos">
+        </div>
+        <div class="form-group">
+          <label>Temporada actual</label>
+          <input type="text" id="tt-temporada" placeholder="Temporada 1 · 20 episodios publicados">
+        </div>
+        <div class="form-group form-grid--full">
+          <label>Descripción del programa</label>
+          <textarea id="tt-descripcion" placeholder="El programa de deportes locales de Perote y la región serrana de Veracruz..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>URL de Facebook (perfil/página)</label>
+          <input type="url" id="tt-fb-url" placeholder="https://www.facebook.com/profile.php?id=...">
+        </div>
+        <div class="form-group">
+          <label>Próxima emisión</label>
+          <input type="text" id="tt-proxima" placeholder="Próximo lunes 4 de abril · 8:00 pm CDMX">
+        </div>
+      </div>
     </div>
+
+    <!-- SECCIÓN: Episodio destacado -->
+    <div class="cms-section">
+      <div class="cms-section__title"><span class="icon">🎬</span> Episodio destacado (el más reciente)</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Número y fecha del episodio</label>
+          <input type="text" id="tt-ep-numero" placeholder="T1 · EP. 20 · 30 de marzo de 2026">
+        </div>
+        <div class="form-group">
+          <label>URL del episodio en Facebook</label>
+          <input type="url" id="tt-ep-url-fb" placeholder="https://www.facebook.com/100079776720617/videos/...">
+          <p class="hint">Usada en el botón "Ver episodio completo" y el botón del hero.</p>
+        </div>
+        <div class="form-group form-grid--full">
+          <label>Título del episodio</label>
+          <input type="text" id="tt-ep-titulo" placeholder="Boxeadores peroteños con pase al nacional — y la Jornada 7 de la Liga...">
+        </div>
+        <div class="form-group form-grid--full">
+          <label>Descripción del episodio</label>
+          <textarea id="tt-ep-desc" style="min-height:130px;" placeholder="Describe de qué trató el episodio..."></textarea>
+        </div>
+        <div class="form-group form-grid--full">
+          <label>Código embed iframe de Facebook</label>
+          <textarea id="tt-ep-embed" class="mono" placeholder='<iframe src="https://www.facebook.com/plugins/video.php?href=..." width="560" height="315" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>'></textarea>
+          <p class="hint">En Facebook: abre el video → ... → Insertar → copia el código iframe completo.</p>
+        </div>
+        <div class="form-group form-grid--full">
+          <label>Temas / Tags del episodio</label>
+          <input type="text" id="tt-ep-tags" placeholder="🥊 Boxeo · 🏀 Primera Fuerza · 🏃 Atletismo Infantil">
+          <p class="hint">Aparece como banda de temas debajo de la descripción del episodio.</p>
+        </div>
+      </div>
+    </div>
+
   </main>
+
+  <div id="toast"></div>
 
   <script src="/admin/js/session-guard.js"></script>
   <script>
     const API = '/api/content/index.php?id=tercer-tiempo';
 
+    const FIELDS = [
+      'tt-estado','tt-badge','tt-tagline','tt-horario','tt-plataforma',
+      'tt-temporada','tt-descripcion','tt-fb-url','tt-proxima',
+      'tt-ep-numero','tt-ep-url-fb','tt-ep-titulo','tt-ep-desc',
+      'tt-ep-embed','tt-ep-tags'
+    ];
+
+    function showToast(msg, type) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = type;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3000);
+    }
+
+    function updateEstadoBadge(val) {
+      const b = document.getElementById('estado-badge');
+      if (val === 'en-vivo') { b.className = 'status-badge status-badge--live'; b.textContent = '● En vivo'; }
+      else if (val === 'activo') { b.className = 'status-badge status-badge--active'; b.textContent = '● Activo'; }
+      else { b.className = 'status-badge status-badge--replay'; b.textContent = '● Inactivo'; }
+    }
+
     async function loadContent() {
       try {
         const res = await fetch(API);
-        if (res.ok) {
-          const data = await res.json();
-          const blocks = data.bloques || {};
-          document.getElementById('tt-titulo').value = blocks['tt-titulo'] || '';
-          document.getElementById('tt-desc').value = blocks['tt-desc'] || '';
-          document.getElementById('tt-embed').value = blocks['tt-embed'] || '';
-        }
+        if (!res.ok) return;
+        const data = await res.json();
+        const blocks = data.bloques || {};
+        FIELDS.forEach(id => {
+          const el = document.getElementById(id);
+          if (el && blocks[id] !== undefined) el.value = blocks[id];
+        });
+        if (blocks['tt-estado']) updateEstadoBadge(blocks['tt-estado']);
+        document.getElementById('tt-estado').addEventListener('change', e => updateEstadoBadge(e.target.value));
       } catch (e) {
-        console.error('No se pudo cargar el contenido o no existe aún.', e);
+        console.warn('Sin datos previos, formulario vacío.');
+        document.getElementById('tt-estado').addEventListener('change', e => updateEstadoBadge(e.target.value));
       }
     }
 
     async function saveContent() {
-      const payload = {
-        blocks: {
-          'tt-titulo': document.getElementById('tt-titulo').value,
-          'tt-desc': document.getElementById('tt-desc').value,
-          'tt-embed': document.getElementById('tt-embed').value
-        },
-        estado: 'publicada'
-      };
+      const blocks = {};
+      FIELDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) blocks[id] = el.value.trim();
+      });
 
       try {
         const res = await fetch(API, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify({ blocks, estado: 'publicada' })
         });
-        
         if (res.ok) {
-          alert('¡Cambios guardados exitosamente!');
+          showToast('Cambios guardados correctamente', 'ok');
+          updateEstadoBadge(blocks['tt-estado']);
         } else {
-          alert('Error al guardar. Verifica tu sesión.');
+          showToast('Error al guardar. Verifica tu sesión.', 'err');
         }
       } catch (e) {
-        alert('Error de red al guardar.');
+        showToast('Error de red al guardar.', 'err');
       }
     }
 

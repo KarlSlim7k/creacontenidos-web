@@ -187,12 +187,12 @@
         <source src="/assets/vid/public/video_fondo_tt.mp4" type="video/mp4">
       </video>
       <div class="hero-tt__contenido">
-        <div class="badge-live reveal reveal-delay-1">
-          <span class="dot"></span>EN VIVO · LUN &amp; VIE · 8PM CDMX
+        <div class="badge-live reveal reveal-delay-1" id="tt-badge-live">
+          <span class="dot"></span><span id="tt-badge-text">EN VIVO · LUN &amp; VIE · 8PM CDMX</span>
         </div>
         <h1 class="hero-tt__logo reveal reveal-delay-2">TERCER TIEMPO</h1>
         <div class="hero-tt__linea-acento reveal reveal-delay-3"></div>
-        <p class="hero-tt__tagline reveal reveal-delay-4">
+        <p class="hero-tt__tagline reveal reveal-delay-4" id="tt-tagline">
           Deportes, pasión y orgullo veracruzano en cada emisión
         </p>
         <div class="hero-tt__ctas reveal reveal-delay-5">
@@ -201,7 +201,7 @@
              class="btn-tt-primario" id="btn-ver-ultimo-ep">
             ▶ Ver último episodio
           </a>
-          <a href="https://www.facebook.com/profile.php?id=100079776720617" 
+          <a href="https://www.facebook.com/profile.php?id=100079776720617"
              target="_blank" rel="noopener noreferrer"
              class="btn-tt-outline" id="btn-seguir-fb">
             <svg style="width:16px;height:16px;fill:currentColor;" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
@@ -223,28 +223,28 @@
             <span class="sobre-tt__icono">📅</span>
             <div>
               <span class="sobre-tt__label">Horario de emisión</span>
-              <p class="sobre-tt__valor">Lunes y Viernes · <strong style="color:var(--tt-acento,#e8a020);">8:00 pm hora CDMX</strong></p>
+              <p class="sobre-tt__valor" id="tt-horario">Lunes y Viernes · <strong style="color:var(--tt-acento,#e8a020);">8:00 pm hora CDMX</strong></p>
             </div>
           </div>
           <div class="sobre-tt__item reveal reveal-delay-1">
             <span class="sobre-tt__icono">📡</span>
             <div>
               <span class="sobre-tt__label">Plataforma</span>
-              <p class="sobre-tt__valor">Facebook Live · CREA Contenidos</p>
+              <p class="sobre-tt__valor" id="tt-plataforma">Facebook Live · CREA Contenidos</p>
             </div>
           </div>
           <div class="sobre-tt__item reveal reveal-delay-2">
             <span class="sobre-tt__icono">🎙️</span>
             <div>
               <span class="sobre-tt__label">¿Qué es Tercer Tiempo?</span>
-              <p class="sobre-tt__valor">El programa de deportes locales de Perote y la región serrana de Veracruz. Entrevistas, análisis y la historia viva del deporte peroteño.</p>
+              <p class="sobre-tt__valor" id="tt-descripcion">El programa de deportes locales de Perote y la región serrana de Veracruz. Entrevistas, análisis y la historia viva del deporte peroteño.</p>
             </div>
           </div>
           <div class="sobre-tt__item reveal reveal-delay-3">
             <span class="sobre-tt__icono">🏆</span>
             <div>
               <span class="sobre-tt__label">Temporada actual</span>
-              <p class="sobre-tt__valor">Temporada 1 · 14 episodios publicados</p>
+              <p class="sobre-tt__valor" id="tt-temporada">Temporada 1 · 14 episodios publicados</p>
             </div>
           </div>
         </div>
@@ -263,9 +263,9 @@
         </div>
 
         <div class="ep-destacado reveal">
-          <!-- Columna izquierda: Embed Facebook EP 20 -->
-          <div class="ep-destacado__media">
-            <div class="fb-video-wrapper">
+          <!-- Columna izquierda: Embed Facebook EP destacado -->
+          <div class="ep-destacado__media" id="tt-ep-media">
+            <div class="fb-video-wrapper" id="tt-ep-embed-wrapper">
               <iframe
                 data-src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F100079776720617%2Fvideos%2F1254634283431466%2F&width=560&show_text=false"
                 src="about:blank"
@@ -276,26 +276,26 @@
                 frameborder="0"
                 allowfullscreen="true"
                 allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                title="Tercer Tiempo 20x1 — Boxeadores peroteños con pase al nacional">
+                title="Tercer Tiempo — Episodio destacado">
               </iframe>
             </div>
           </div>
 
-          <!-- Columna derecha: Información editorial EP 20 -->
+          <!-- Columna derecha: Información editorial del episodio -->
           <div class="ep-destacado__info">
             <div>
               <span class="badge-categoria" style="background:var(--tt-acento); margin-bottom:var(--space-3); display:inline-block;">ÚLTIMO EPISODIO</span>
-              <span class="ep-numero">T1 · EP. 20 · 30 de marzo de 2026</span>
+              <span class="ep-numero" id="tt-ep-numero">T1 · EP. 20 · 30 de marzo de 2026</span>
             </div>
-            <h3 class="ep-destacado__titular">
+            <h3 class="ep-destacado__titular" id="tt-ep-titulo">
               🥊 Boxeadores peroteños con pase al nacional — y la Jornada 7 de la Liga Luis Pirata Fuente
             </h3>
-            <div class="ep-destacado__desc">
+            <div class="ep-destacado__desc" id="tt-ep-desc">
               <p>En este episodio platicamos con los boxeadores peroteños que ya tienen su clasificación al evento nacional. Historias de disciplina, sacrificio y orgullo regional que merece ser contada.</p>
               <p>Además, analizamos la jornada 7 de la Liga Luis Pirata Fuente y revisamos las finales del campeonato de básquetbol Primera Fuerza. Un programa cargado de deporte local en su máxima expresión.</p>
               <p>Cerramos con el desempeño de los atletas infantiles de Perote representando a su municipio en Guanajuato. Pequeños grandes deportistas que llevan el nombre de Perote a nivel nacional.</p>
             </div>
-            <div class="ep-dato-especial">
+            <div class="ep-dato-especial" id="tt-ep-tags">
               🥊 Boxeo · 🏀 Primera Fuerza · 🏃 Atletismo Infantil · Liga Luis Pirata Fuente
             </div>
             <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;align-items:center;">
@@ -1008,5 +1008,51 @@
   <script src="/assets/js/main.js"></script>
   <script src="/assets/js/interactions.js"></script>
   <script src="/assets/js/tercer-tiempo.js"></script>
+  <script>
+  (function() {
+    fetch('/api/content/index.php?id=tercer-tiempo')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (!data || !data.bloques) return;
+        const b = data.bloques;
+
+        const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val; };
+        const setHref = (id, val) => { const el = document.getElementById(id); if (el && val) el.href = val; };
+
+        if (b['tt-badge']) set('tt-badge-text', b['tt-badge']);
+        if (b['tt-tagline']) set('tt-tagline', b['tt-tagline']);
+        if (b['tt-horario']) set('tt-horario', b['tt-horario']);
+        if (b['tt-plataforma']) set('tt-plataforma', b['tt-plataforma']);
+        if (b['tt-descripcion']) set('tt-descripcion', b['tt-descripcion']);
+        if (b['tt-temporada']) set('tt-temporada', b['tt-temporada']);
+        if (b['tt-ep-numero']) set('tt-ep-numero', b['tt-ep-numero']);
+        if (b['tt-ep-titulo']) set('tt-ep-titulo', b['tt-ep-titulo']);
+        if (b['tt-ep-tags']) set('tt-ep-tags', b['tt-ep-tags']);
+
+        if (b['tt-ep-desc']) {
+          const el = document.getElementById('tt-ep-desc');
+          if (el) el.innerHTML = b['tt-ep-desc'].split('\n').filter(l => l.trim()).map(l => `<p>${l}</p>`).join('');
+        }
+
+        if (b['tt-ep-embed']) {
+          const wrapper = document.getElementById('tt-ep-embed-wrapper');
+          if (wrapper) wrapper.innerHTML = b['tt-ep-embed'];
+        }
+
+        if (b['tt-ep-url-fb']) {
+          setHref('btn-ep-completo', b['tt-ep-url-fb']);
+          setHref('btn-ver-ultimo-ep', b['tt-ep-url-fb']);
+        }
+
+        if (b['tt-fb-url']) setHref('btn-seguir-fb', b['tt-fb-url']);
+
+        if (b['tt-estado'] === 'en-vivo') {
+          const badge = document.getElementById('tt-badge-live');
+          if (badge) badge.style.animation = 'pulse 1.5s infinite';
+        }
+      })
+      .catch(() => {});
+  })();
+  </script>
 </body>
 </html>

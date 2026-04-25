@@ -20,5 +20,49 @@
     },
     "estado": "publicada",
     "updated_at": "2026-03-27T10:00:00Z"
+  },
+  "tercer-tiempo": {
+    "meta": {
+      "titulo": "Tercer Tiempo — Deportes en vivo · CREA Contenidos",
+      "descripcion": "El programa deportivo de CREA Contenidos. En vivo los lunes y viernes a las 8pm CDMX por Facebook."
+    },
+    "bloques": {
+      "tt-estado": "activo",
+      "tt-badge": "EN VIVO · LUN & VIE · 8PM CDMX",
+      "tt-tagline": "Deportes, pasión y orgullo veracruzano en cada emisión",
+      "tt-horario": "Lunes y Viernes · 8:00 pm hora CDMX",
+      "tt-plataforma": "Facebook Live · CREA Contenidos",
+      "tt-descripcion": "El programa de deportes locales de Perote y la región serrana de Veracruz. Entrevistas, análisis y la historia viva del deporte peroteño.",
+      "tt-temporada": "Temporada 1 · 20 episodios publicados",
+      "tt-fb-url": "https://www.facebook.com/profile.php?id=100079776720617",
+      "tt-proxima": "Próximo lunes · 8:00 pm CDMX",
+      "tt-ep-numero": "T1 · EP. 20 · 30 de marzo de 2026",
+      "tt-ep-url-fb": "https://www.facebook.com/100079776720617/videos/1254634283431466",
+      "tt-ep-titulo": "🥊 Boxeadores peroteños con pase al nacional — y la Jornada 7 de la Liga Luis Pirata Fuente",
+      "tt-ep-desc": "En este episodio platicamos con los boxeadores peroteños que ya tienen su clasificación al evento nacional. Historias de disciplina, sacrificio y orgullo regional que merece ser contada.\nAdemás, analizamos la jornada 7 de la Liga Luis Pirata Fuente y revisamos las finales del campeonato de básquetbol Primera Fuerza. Un programa cargado de deporte local en su máxima expresión.\nCerramos con el desempeño de los atletas infantiles de Perote representando a su municipio en Guanajuato. Pequeños grandes deportistas que llevan el nombre de Perote a nivel nacional.",
+      "tt-ep-embed": "<iframe src=\"https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F100079776720617%2Fvideos%2F1254634283431466%2F&width=560&show_text=false\" width=\"560\" height=\"315\" style=\"border:none;overflow:hidden;width:100%;height:100%;\" scrolling=\"no\" frameborder=\"0\" allowfullscreen=\"true\" allow=\"autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share\"></iframe>",
+      "tt-ep-tags": "🥊 Boxeo · 🏀 Primera Fuerza · 🏃 Atletismo Infantil · Liga Luis Pirata Fuente"
+    },
+    "estado": "publicada",
+    "updated_at": "2026-04-24T00:00:00Z"
+  },
+  "comercial": {
+    "meta": {
+      "titulo": "Publicidad — CREA Contenidos",
+      "descripcion": "Conecta tu negocio con Perote y la región. Descubre los productos publicitarios de CREA Contenidos."
+    },
+    "bloques": {
+      "com-hero-titulo": "Conecta tu negocio con Perote",
+      "com-hero-desc": "Llega a la audiencia que importa. CREA Contenidos es el medio digital más leído del corredor Perote–Xalapa–Puebla.",
+      "com-m-visitantes": "45000",
+      "com-m-seguidores": "12500",
+      "com-m-alcance": "85000",
+      "com-m-suscriptores": "3400",
+      "com-whatsapp": "522285550000",
+      "com-contacto-texto": "Completa el formulario o escríbenos directo por WhatsApp",
+      "com-paquetes": "[{\"nombre\":\"Patrocinio de sección\",\"precio_min\":2500,\"precio_max\":5000,\"unidad\":\"MXN/mes\",\"descripcion\":\"Tu marca presente en una sección completa. Logo, mención editorial y banner integrado en cada nota de la sección.\",\"destacado\":false},{\"nombre\":\"Branded Content Premium\",\"precio_min\":4000,\"precio_max\":8000,\"unidad\":\"MXN\",\"descripcion\":\"Nota editorial de alto impacto sobre tu negocio. Incluye entrevista, fotografía profesional, video corto y difusión en redes.\",\"destacado\":true},{\"nombre\":\"Branded Content Básico\",\"precio_min\":1500,\"precio_max\":3000,\"unidad\":\"MXN\",\"descripcion\":\"Nota informativa sobre tu negocio o evento con fotografía y distribución en redes sociales de CREA.\",\"destacado\":false},{\"nombre\":\"Cobertura de evento\",\"precio_min\":3000,\"precio_max\":6000,\"unidad\":\"MXN\",\"descripcion\":\"Cobertura profesional de tu evento: nota, galería fotográfica, video resumen y difusión en plataformas CREA.\",\"destacado\":false},{\"nombre\":\"Publicidad display\",\"precio_min\":800,\"precio_max\":1500,\"unidad\":\"MXN/mes\",\"descripcion\":\"Banner visual integrado al flujo editorial. Diseño a cargo de CREA para que tu anuncio se vea profesional y nativo.\",\"destacado\":false}]"
+    },
+    "estado": "publicada",
+    "updated_at": "2026-04-24T00:00:00Z"
   }
 }

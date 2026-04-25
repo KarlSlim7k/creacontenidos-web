@@ -8,16 +8,48 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/admin/css/dashboard.css">
-  <!-- Include CKEditor for rich text editing of packages -->
-  <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
   <style>
-    .cms-container { padding: 1.5rem; background: var(--crea-white); border-radius: 0.75rem; border: 1px solid var(--crea-gris-border); }
-    .cms-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-    .btn-primary { background: var(--crea-rojo); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-weight: 500; }
-    .form-group { margin-bottom: 1.25rem; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.875rem; }
-    .form-group input, .form-group textarea { width: 100%; padding: 0.625rem; border: 1px solid var(--crea-gris-border); border-radius: 0.5rem; font-family: 'Inter', sans-serif; font-size: 0.875rem; }
-    .ck-editor__editable_inline { min-height: 250px; }
+    .cms-section { background: var(--crea-white); border-radius: 0.75rem; border: 1px solid var(--crea-gris-border); padding: 1.5rem; margin-bottom: 1.5rem; }
+    .cms-section__title { font-size: 1rem; font-weight: 700; color: var(--crea-noche); margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--crea-gris-border); display: flex; align-items: center; gap: 0.5rem; }
+    .cms-section__title span.icon { font-size: 1.1rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-grid--3 { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; }
+    .form-grid--full { grid-column: 1 / -1; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 0.375rem; font-size: 0.8125rem; color: #374151; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid var(--crea-gris-border); border-radius: 0.5rem; font-family: 'Inter', sans-serif; font-size: 0.875rem; color: #111827; background: #fafafa; transition: border-color .15s; box-sizing: border-box; }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--crea-rojo); background: white; }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+    .form-group .hint { font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem; }
+    .btn-save { background: #0A8F6C; color: white; border: none; padding: 0.625rem 1.5rem; border-radius: 0.5rem; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: background .15s; }
+    .btn-save:hover { background: #078059; }
+    .btn-secondary-link { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-weight: 500; font-size: 0.8125rem; text-decoration: none; transition: background .15s; }
+    .btn-secondary-link:hover { background: #e5e7eb; }
+    /* Paquetes CRUD */
+    .pkg-list { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
+    .pkg-item { border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 1rem; background: #f9fafb; position: relative; }
+    .pkg-item.destacado { border-color: var(--crea-rojo); background: #fff5f5; }
+    .pkg-item__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+    .pkg-item__nombre { font-weight: 700; font-size: 0.9rem; }
+    .pkg-item__actions { display: flex; gap: 0.5rem; }
+    .btn-edit-pkg { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 0.25rem 0.75rem; border-radius: 0.375rem; cursor: pointer; font-size: 0.75rem; font-weight: 500; }
+    .btn-del-pkg { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 0.25rem 0.75rem; border-radius: 0.375rem; cursor: pointer; font-size: 0.75rem; font-weight: 500; }
+    .pkg-item__meta { font-size: 0.8125rem; color: #6b7280; }
+    .pkg-item__precio { font-weight: 700; color: var(--crea-rojo); font-size: 0.875rem; }
+    .pkg-destacado-badge { background: var(--crea-rojo); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 9999px; margin-left: 0.5rem; }
+    .btn-add-pkg { background: white; color: #374151; border: 2px dashed #d1d5db; padding: 0.75rem; border-radius: 0.5rem; cursor: pointer; font-size: 0.875rem; font-weight: 500; width: 100%; transition: all .15s; }
+    .btn-add-pkg:hover { border-color: #0A8F6C; color: #0A8F6C; }
+    /* Modal paquete */
+    .pkg-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 999; align-items: center; justify-content: center; }
+    .pkg-modal-overlay.open { display: flex; }
+    .pkg-modal { background: white; border-radius: 0.75rem; padding: 1.5rem; width: 540px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
+    .pkg-modal__title { font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem; }
+    .pkg-modal__actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.25rem; }
+    .btn-cancel { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 0.5rem 1.25rem; border-radius: 0.5rem; cursor: pointer; font-weight: 500; }
+    .checkbox-label { display: flex; align-items: center; gap: 0.5rem; font-weight: 500; font-size: 0.875rem; cursor: pointer; }
+    #toast { position: fixed; bottom: 1.5rem; right: 1.5rem; padding: 0.75rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; z-index: 9999; display: none; }
+    #toast.ok { background: #0A8F6C; color: white; }
+    #toast.err { background: #dc2626; color: white; }
   </style>
 </head>
 <body>
@@ -57,94 +89,252 @@
     <div style="display:flex;align-items:center;gap:0.75rem;">
       <span class="dash-topbar__title">Gestor: Paquetes y Comercial</span>
     </div>
-    <div class="dash-topbar__user">
-      <a href="/pages/comercial.html" target="_blank" class="btn-secondary" style="font-size:0.75rem; text-decoration:none;">Ver sitio público</a>
+    <div style="display:flex;gap:0.75rem;align-items:center;">
+      <a href="/pages/comercial.html" target="_blank" class="btn-secondary-link">Ver página pública ↗</a>
+      <button class="btn-save" onclick="saveContent()">Guardar cambios</button>
     </div>
   </header>
 
   <main class="dash-main">
-    <div class="cms-container">
-      <div class="cms-header">
-        <h2>Contenido de Ventas y Paquetes</h2>
-        <button class="btn-primary" onclick="saveContent()" style="background:#0A8F6C;">Guardar Cambios</button>
-      </div>
-      
-      <form id="content-form">
-        <div style="max-width: 800px;">
-          <div class="form-group">
-            <label>Título Principal de Ventas</label>
-            <input type="text" id="com-titulo" placeholder="Publicítate con CREA">
-          </div>
-          <div class="form-group">
-            <label>Descripción / Texto Introductorio</label>
-            <textarea id="com-desc" placeholder="Llega a miles de peroteños..."></textarea>
-          </div>
-          
-          <div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid #e5e7eb;">
-            <h3>Detalles de Paquetes</h3>
-            <p style="font-size:0.875rem; color:#6b7280; margin-bottom:1rem;">Describe aquí los paquetes, precios y beneficios usando el editor.</p>
-            <div class="form-group">
-              <textarea id="com-paquetes"></textarea>
-            </div>
-          </div>
+
+    <!-- SECCIÓN: Hero -->
+    <div class="cms-section">
+      <div class="cms-section__title"><span class="icon">🎯</span> Hero — Cabecera de la página</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Título principal</label>
+          <input type="text" id="com-hero-titulo" placeholder="Conecta tu negocio con Perote">
         </div>
-      </form>
+        <div class="form-group">
+          <label>Subtítulo / descripción</label>
+          <input type="text" id="com-hero-desc" placeholder="Llega a la audiencia que importa...">
+        </div>
+      </div>
     </div>
+
+    <!-- SECCIÓN: Métricas -->
+    <div class="cms-section">
+      <div class="cms-section__title"><span class="icon">📊</span> Métricas de audiencia</div>
+      <div class="form-grid--3">
+        <div class="form-group">
+          <label>Visitantes mensuales</label>
+          <input type="number" id="com-m-visitantes" placeholder="45000">
+        </div>
+        <div class="form-group">
+          <label>Seguidores en redes</label>
+          <input type="number" id="com-m-seguidores" placeholder="12500">
+        </div>
+        <div class="form-group">
+          <label>Alcance estimado</label>
+          <input type="number" id="com-m-alcance" placeholder="85000">
+        </div>
+        <div class="form-group">
+          <label>Suscriptores newsletter</label>
+          <input type="number" id="com-m-suscriptores" placeholder="3400">
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: Paquetes -->
+    <div class="cms-section">
+      <div class="cms-section__title"><span class="icon">📦</span> Paquetes publicitarios</div>
+      <p style="font-size:0.875rem;color:#6b7280;margin-bottom:1rem;">Agrega, edita o elimina paquetes. El orden en que aparecen aquí es el orden en la página.</p>
+      <div class="pkg-list" id="pkg-list">
+        <div style="color:#9ca3af;font-size:0.875rem;text-align:center;padding:1rem;">Cargando paquetes...</div>
+      </div>
+      <button class="btn-add-pkg" onclick="openPkgModal()">+ Agregar nuevo paquete</button>
+    </div>
+
+    <!-- SECCIÓN: Contacto -->
+    <div class="cms-section">
+      <div class="cms-section__title"><span class="icon">📞</span> Información de contacto</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Número de WhatsApp (sin +)</label>
+          <input type="text" id="com-whatsapp" placeholder="522285550000">
+          <p class="hint">Formato internacional sin +. Ej: 522285551234</p>
+        </div>
+        <div class="form-group">
+          <label>Texto de contacto</label>
+          <input type="text" id="com-contacto-texto" placeholder="Completa el formulario o escríbenos directo por WhatsApp">
+        </div>
+      </div>
+    </div>
+
   </main>
+
+  <!-- Modal paquete -->
+  <div class="pkg-modal-overlay" id="pkg-modal-overlay">
+    <div class="pkg-modal">
+      <div class="pkg-modal__title" id="pkg-modal-title">Nuevo paquete</div>
+      <input type="hidden" id="pkg-edit-index" value="-1">
+      <div class="form-group">
+        <label>Nombre del paquete</label>
+        <input type="text" id="pkg-nombre" placeholder="Branded Content Premium">
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Precio mínimo (MXN)</label>
+          <input type="number" id="pkg-precio-min" placeholder="4000">
+        </div>
+        <div class="form-group">
+          <label>Precio máximo (MXN)</label>
+          <input type="number" id="pkg-precio-max" placeholder="8000">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Unidad / periodo</label>
+        <input type="text" id="pkg-unidad" placeholder="MXN (pago único) o MXN/mes">
+      </div>
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea id="pkg-descripcion" placeholder="Nota editorial de alto impacto sobre tu negocio..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="pkg-destacado"> Paquete destacado (resaltado visualmente)
+        </label>
+      </div>
+      <div class="pkg-modal__actions">
+        <button class="btn-cancel" onclick="closePkgModal()">Cancelar</button>
+        <button class="btn-save" onclick="savePkg()">Guardar paquete</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
 
   <script src="/admin/js/session-guard.js"></script>
   <script>
     const API = '/api/content/index.php?id=comercial';
-    let editorInstance;
+    let paquetes = [];
 
-    ClassicEditor
-      .create(document.querySelector('#com-paquetes'))
-      .then(editor => { editorInstance = editor; loadContent(); })
-      .catch(error => { console.error(error); });
+    const TEXT_FIELDS = ['com-hero-titulo','com-hero-desc','com-whatsapp','com-contacto-texto'];
+    const NUM_FIELDS = ['com-m-visitantes','com-m-seguidores','com-m-alcance','com-m-suscriptores'];
+
+    function showToast(msg, type) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = type;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3000);
+    }
+
+    function renderPaquetes() {
+      const list = document.getElementById('pkg-list');
+      if (!paquetes.length) {
+        list.innerHTML = '<div style="color:#9ca3af;font-size:0.875rem;text-align:center;padding:1rem;">No hay paquetes. Agrega el primero.</div>';
+        return;
+      }
+      list.innerHTML = paquetes.map((p, i) => `
+        <div class="pkg-item${p.destacado ? ' destacado' : ''}">
+          <div class="pkg-item__header">
+            <div class="pkg-item__nombre">
+              ${p.nombre || '(sin nombre)'}
+              ${p.destacado ? '<span class="pkg-destacado-badge">DESTACADO</span>' : ''}
+            </div>
+            <div class="pkg-item__actions">
+              <button class="btn-edit-pkg" onclick="openPkgModal(${i})">Editar</button>
+              <button class="btn-del-pkg" onclick="deletePkg(${i})">Eliminar</button>
+            </div>
+          </div>
+          <div class="pkg-item__meta">
+            <span class="pkg-item__precio">$${(p.precio_min||0).toLocaleString()} – $${(p.precio_max||0).toLocaleString()} ${p.unidad||''}</span>
+            <br><span style="margin-top:0.25rem;display:inline-block;">${(p.descripcion||'').substring(0,100)}${(p.descripcion||'').length>100?'...':''}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openPkgModal(idx) {
+      const modal = document.getElementById('pkg-modal-overlay');
+      document.getElementById('pkg-edit-index').value = idx !== undefined ? idx : -1;
+      document.getElementById('pkg-modal-title').textContent = idx !== undefined ? 'Editar paquete' : 'Nuevo paquete';
+      if (idx !== undefined) {
+        const p = paquetes[idx];
+        document.getElementById('pkg-nombre').value = p.nombre || '';
+        document.getElementById('pkg-precio-min').value = p.precio_min || '';
+        document.getElementById('pkg-precio-max').value = p.precio_max || '';
+        document.getElementById('pkg-unidad').value = p.unidad || '';
+        document.getElementById('pkg-descripcion').value = p.descripcion || '';
+        document.getElementById('pkg-destacado').checked = !!p.destacado;
+      } else {
+        ['pkg-nombre','pkg-precio-min','pkg-precio-max','pkg-unidad','pkg-descripcion'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('pkg-destacado').checked = false;
+      }
+      modal.classList.add('open');
+    }
+
+    function closePkgModal() {
+      document.getElementById('pkg-modal-overlay').classList.remove('open');
+    }
+
+    function savePkg() {
+      const idx = parseInt(document.getElementById('pkg-edit-index').value);
+      const pkg = {
+        nombre: document.getElementById('pkg-nombre').value.trim(),
+        precio_min: parseInt(document.getElementById('pkg-precio-min').value) || 0,
+        precio_max: parseInt(document.getElementById('pkg-precio-max').value) || 0,
+        unidad: document.getElementById('pkg-unidad').value.trim(),
+        descripcion: document.getElementById('pkg-descripcion').value.trim(),
+        destacado: document.getElementById('pkg-destacado').checked
+      };
+      if (!pkg.nombre) { showToast('El nombre del paquete es obligatorio.', 'err'); return; }
+      if (idx >= 0) { paquetes[idx] = pkg; } else { paquetes.push(pkg); }
+      renderPaquetes();
+      closePkgModal();
+    }
+
+    function deletePkg(idx) {
+      if (!confirm('¿Eliminar este paquete?')) return;
+      paquetes.splice(idx, 1);
+      renderPaquetes();
+    }
 
     async function loadContent() {
       try {
         const res = await fetch(API);
-        if (res.ok) {
-          const data = await res.json();
-          const blocks = data.bloques || {};
-          document.getElementById('com-titulo').value = blocks['com-titulo'] || '';
-          document.getElementById('com-desc').value = blocks['com-desc'] || '';
-          if (editorInstance) {
-            editorInstance.setData(blocks['com-paquetes'] || '');
-          }
-        }
+        if (!res.ok) { renderPaquetes(); return; }
+        const data = await res.json();
+        const blocks = data.bloques || {};
+        TEXT_FIELDS.concat(NUM_FIELDS).forEach(id => {
+          const el = document.getElementById(id);
+          if (el && blocks[id] !== undefined) el.value = blocks[id];
+        });
+        try { paquetes = JSON.parse(blocks['com-paquetes'] || '[]'); } catch { paquetes = []; }
+        renderPaquetes();
       } catch (e) {
-        console.error('No se pudo cargar el contenido o no existe aún.', e);
+        console.warn('Sin datos previos.');
+        renderPaquetes();
       }
     }
 
     async function saveContent() {
-      const payload = {
-        blocks: {
-          'com-titulo': document.getElementById('com-titulo').value,
-          'com-desc': document.getElementById('com-desc').value,
-          'com-paquetes': editorInstance ? editorInstance.getData() : ''
-        },
-        estado: 'publicada'
-      };
+      const blocks = {};
+      TEXT_FIELDS.concat(NUM_FIELDS).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) blocks[id] = el.value.trim();
+      });
+      blocks['com-paquetes'] = JSON.stringify(paquetes);
 
       try {
         const res = await fetch(API, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify({ blocks, estado: 'publicada' })
         });
-        
-        if (res.ok) {
-          alert('¡Cambios guardados exitosamente!');
-        } else {
-          alert('Error al guardar. Verifica tu sesión.');
-        }
+        if (res.ok) { showToast('Cambios guardados correctamente', 'ok'); }
+        else { showToast('Error al guardar. Verifica tu sesión.', 'err'); }
       } catch (e) {
-        alert('Error de red al guardar.');
+        showToast('Error de red al guardar.', 'err');
       }
     }
+
+    document.getElementById('pkg-modal-overlay').addEventListener('click', e => {
+      if (e.target === document.getElementById('pkg-modal-overlay')) closePkgModal();
+    });
+
+    document.addEventListener('DOMContentLoaded', loadContent);
   </script>
 </body>
 </html>
