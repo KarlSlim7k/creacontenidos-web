@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor de Propuesta — CREA Contenidos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/css/dashboard.css">
+  <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+  <style>
+    .editor-container { max-width: 1200px; }
+    .editor-grid { display: grid; grid-template-columns: 1fr 320px; gap: 1.5rem; }
+    .editor-main { display: flex; flex-direction: column; gap: 1.5rem; }
+    .editor-sidebar { display: flex; flex-direction: column; gap: 1rem; }
+    .editor-card { background: var(--crea-white); border-radius: 0.75rem; border: 1px solid var(--crea-gris-border); padding: 1.25rem; }
+    .editor-card__title { font-size: 0.875rem; font-weight: 600; color: var(--crea-text); margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--crea-gris-border); }
+    .form-group { margin-bottom: 1rem; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-group label { display: block; font-weight: 500; margin-bottom: 0.375rem; font-size: 0.8125rem; color: var(--crea-text); }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.625rem 0.75rem; border: 1px solid var(--crea-gris-border); border-radius: 0.5rem; font-family: 'Inter', sans-serif; font-size: 0.875rem; }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-group input[readonly], .form-group textarea[readonly] { background: #F9FAFB; color: var(--crea-gris-text); }
+    .form-group--readonly label { color: var(--crea-gris-text); }
+    .info-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--crea-gris-border); font-size: 0.8125rem; }
+    .info-row:last-child { border-bottom: none; }
+    .info-row__label { color: var(--crea-gris-text); }
+    .info-row__value { font-weight: 500; color: var(--crea-text); }
+    .preview-box { background: #F9FAFB; border: 1px solid var(--crea-gris-border); border-radius: 0.5rem; padding: 1rem; min-height: 200px; }
+    .preview-box h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .preview-box h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .preview-box p { font-size: 1rem; line-height: 1.7; margin-bottom: 1rem; color: #374151; }
+    .preview-box img { max-width: 100%; height: auto; border-radius: 0.5rem; margin: 1rem 0; }
+    .editor-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .btn { padding: 0.625rem 1.25rem; font-size: 0.875rem; font-weight: 500; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; border: none; }
+    .btn--primary { background: var(--crea-rojo); color: white; }
+    .btn--primary:hover { background: #B0232E; }
+    .btn--success { background: var(--crea-verde); color: white; }
+    .btn--success:hover { background: #086A51; }
+    .btn--secondary { background: var(--crea-gris-bg); color: var(--crea-text); border: 1px solid var(--crea-gris-border); }
+    .btn--secondary:hover { background: var(--crea-gris-border); }
+    .btn--danger { background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; }
+    .btn--danger:hover { background: #FECACA; }
+    .status-badge { display: inline-flex; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+    .status-badge--pending { background: #FEF3C7; color: #92400E; }
+    .status-badge--approved { background: #D1FAE5; color: #065F46; }
+    .status-badge--rejected { background: #FEE2E2; color: #991B1B; }
+    .status-badge--scheduled { background: #DBEAFE; color: #1E40AF; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: white; border-radius: 1rem; padding: 1.5rem; max-width: 400px; width: 90%; }
+    .modal__title { font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; }
+    .modal__body { margin-bottom: 1.5rem; }
+    .modal__body input, .modal__body textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--crea-gris-border); border-radius: 0.5rem; font-family: 'Inter', sans-serif; font-size: 0.875rem; }
+    .modal__body textarea { resize: vertical; min-height: 100px; }
+    .modal__actions { display: flex; gap: 0.75rem; justify-content: flex-end; }
+    .loading-state { text-align: center; padding: 3rem; color: var(--crea-gris-text); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--crea-rojo); font-size: 0.875rem; font-weight: 500; text-decoration: none; margin-bottom: 1rem; }
+    .back-link:hover { text-decoration: underline; }
+    @media (max-width: 900px) {
+      .editor-grid { grid-template-columns: 1fr; }
+      .editor-sidebar { order: -1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dash-overlay" id="dash-overlay"></div>
+
+  <aside class="dash-sidebar" id="dash-sidebar">
+    <div class="dash-sidebar__header">
+      <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="dash-sidebar__logo">
+      <span class="dash-sidebar__badge">Panel Editorial</span>
+    </div>
+    <nav class="dash-sidebar__nav">
+      <div class="dash-nav__section-title">Principal</div>
+      <a href="/admin/dashboard.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Dashboard
+      </a>
+      <a href="/admin/articulos.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+        Artículos
+      </a>
+      <a href="/admin/editorial.html" class="dash-nav__link active">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+        Propuestas IA
+      </a>
+      <a href="/admin/calendario.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Calendario
+      </a>
+      <div class="dash-nav__section-title">Programas y Secciones</div>
+      <a href="/admin/tercer-tiempo.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+        Tercer Tiempo
+      </a>
+      <a href="/admin/newsletter.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        Newsletter
+      </a>
+    </nav>
+    <div class="dash-sidebar__footer">
+      <a href="/" class="dash-sidebar__site-link" target="_blank">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        Ver sitio público
+      </a>
+    </div>
+  </aside>
+
+  <header class="dash-topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem;">
+      <button class="dash-topbar__menu-btn" id="btn-menu" aria-label="Menú">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <span class="dash-topbar__title">Editor de Propuesta</span>
+    </div>
+    <div class="dash-topbar__user">
+      <div class="dash-topbar__avatar" id="user-avatar">E</div>
+      <span id="user-name">Editor</span>
+    </div>
+  </header>
+
+  <main class="dash-main">
+    <div class="editor-container">
+      <a href="/admin/editorial.html" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        Volver al panel
+      </a>
+
+      <div id="loading-state" class="loading-state">Cargando propuesta...</div>
+
+      <div class="editor-grid" id="editor-content" style="display:none;">
+        <div class="editor-main">
+          
+          <div class="editor-card">
+            <div class="editor-card__title">Contenido</div>
+            <div class="form-group">
+              <label>Título</label>
+              <input type="text" id="prop-title" placeholder="Título de la propuesta">
+            </div>
+            <div class="form-group">
+              <label>Cuerpo</label>
+              <textarea id="prop-body"></textarea>
+            </div>
+          </div>
+
+          <div class="editor-card">
+            <div class="editor-card__title">Preview</div>
+            <div class="preview-box" id="preview-box">
+              <h1 id="preview-title">Título de la propuesta</h1>
+              <div id="preview-body"><p>El contenido aparecerá aquí...</p></div>
+            </div>
+          </div>
+
+          <div class="editor-card">
+            <div class="editor-card__title">Acciones</div>
+            <div class="editor-actions">
+              <button class="btn btn--primary" id="btn-save" onclick="saveProposal()">Guardar cambios</button>
+              <button class="btn btn--success" id="btn-approve" onclick="approveProposal()">Aprobar</button>
+              <button class="btn btn--secondary" id="btn-schedule" onclick="openScheduleModal()">Programar</button>
+              <button class="btn btn--danger" id="btn-reject" onclick="openRejectModal()">Rechazar</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="editor-sidebar">
+          
+          <div class="editor-card">
+            <div class="editor-card__title">Estado</div>
+            <div style="margin-bottom: 1rem;">
+              <span class="status-badge" id="prop-status">pending</span>
+            </div>
+            <div class="info-row">
+              <span class="info-row__label">ID</span>
+              <span class="info-row__value" id="prop-id">—</span>
+            </div>
+            <div class="info-row">
+              <span class="info-row__label">Creada</span>
+              <span class="info-row__value" id="prop-created">—</span>
+            </div>
+            <div class="info-row" id="row-approved" style="display:none;">
+              <span class="info-row__label">Aprobada</span>
+              <span class="info-row__value" id="prop-approved">—</span>
+            </div>
+            <div class="info-row" id="row-rejected" style="display:none;">
+              <span class="info-row__label">Rechazada</span>
+              <span class="info-row__value" id="prop-rejected">—</span>
+            </div>
+            <div class="info-row" id="row-scheduled" style="display:none;">
+              <span class="info-row__label">Programada</span>
+              <span class="info-row__value" id="prop-scheduled">—</span>
+            </div>
+          </div>
+
+          <div class="editor-card">
+            <div class="editor-card__title">Topic Origen</div>
+            <div class="info-row" id="row-topic" style="display:none;">
+              <span class="info-row__label">Topic</span>
+              <span class="info-row__value" id="prop-topic">—</span>
+            </div>
+            <div class="info-row" id="row-sentiment" style="display:none;">
+              <span class="info-row__label">Sentimiento</span>
+              <span class="info-row__value" id="prop-sentiment">—</span>
+            </div>
+          </div>
+
+          <div class="editor-card">
+            <div class="editor-card__title">Metadatos</div>
+            <div class="form-group">
+              <label>Formato</label>
+              <select id="prop-format">
+                <option value="articulo">Artículo</option>
+                <option value="video">Video</option>
+                <option value="podcast">Podcast</option>
+                <option value="newsletter">Newsletter</option>
+                <option value="social">Social</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Label IA</label>
+              <select id="prop-label">
+                <option value="IA_GENERATED">IA Generada</option>
+                <option value="IA_ASSISTED">IA Asistida</option>
+                <option value="HUMAN">Humana</option>
+              </select>
+            </div>
+            <div class="form-group form-group--readonly">
+              <label>Image Prompt</label>
+              <textarea id="prop-image-prompt" readonly></textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="schedule-modal">
+    <div class="modal">
+      <div class="modal__title">Programar propuesta</div>
+      <div class="modal__body">
+        <label style="display:block;font-weight:500;margin-bottom:0.5rem;font-size:0.875rem;">Fecha y hora de publicación</label>
+        <input type="datetime-local" id="schedule-datetime">
+      </div>
+      <div class="modal__actions">
+        <button class="btn btn--secondary" onclick="closeScheduleModal()">Cancelar</button>
+        <button class="btn btn--success" onclick="confirmSchedule()">Programar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="reject-modal">
+    <div class="modal">
+      <div class="modal__title">Rechazar propuesta</div>
+      <div class="modal__body">
+        <label style="display:block;font-weight:500;margin-bottom:0.5rem;font-size:0.875rem;">Motivo del rechazo</label>
+        <textarea id="reject-reason" placeholder="Explica por qué se rechaza..."></textarea>
+      </div>
+      <div class="modal__actions">
+        <button class="btn btn--secondary" onclick="closeRejectModal()">Cancelar</button>
+        <button class="btn btn--danger" onclick="confirmReject()">Rechazar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin/js/session-guard.js"></script>
+  <script>
+    const API = {
+      proposals: '/api/content-proposals/crud.php',
+      approve: '/api/content-proposals/approve.php',
+      reject: '/api/content-proposals/reject.php',
+      schedule: '/api/content-proposals/schedule.php'
+    };
+
+    let proposalId = null;
+    let proposal = null;
+    let editorInstance = null;
+    let isViewMode = false;
+
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? match[2] : null;
+    }
+
+    function getUserFromToken() {
+      const token = getCookie('crea_editor_session');
+      if (!token) return null;
+      try { return JSON.parse(atob(token)); } catch { return null; }
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      return new Date(dateStr).toLocaleString('es-MX', {
+        day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    function getStatusClass(status) {
+      const map = {
+        'pending': 'status-badge--pending',
+        'approved': 'status-badge--approved',
+        'rejected': 'status-badge--rejected',
+        'scheduled': 'status-badge--scheduled'
+      };
+      return map[status] || 'status-badge--pending';
+    }
+
+    async function loadProposal() {
+      const params = new URLSearchParams(window.location.search);
+      proposalId = params.get('id');
+      const mode = params.get('mode') || 'edit';
+      isViewMode = mode === 'view';
+
+      if (!proposalId) {
+        document.getElementById('loading-state').textContent = 'ID de propuesta no proporcionado';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API.proposals}?id=${proposalId}`);
+        const data = await res.json();
+        
+        if (!data.proposal) {
+          document.getElementById('loading-state').textContent = 'Propuesta no encontrada';
+          return;
+        }
+
+        proposal = data.proposal;
+        renderProposal();
+      } catch (err) {
+        console.error('Error loading proposal:', err);
+        document.getElementById('loading-state').textContent = 'Error cargando propuesta';
+      }
+    }
+
+    function renderProposal() {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('editor-content').style.display = 'grid';
+
+      document.getElementById('prop-id').textContent = proposal.id;
+      document.getElementById('prop-title').value = proposal.title || '';
+      document.getElementById('prop-format').value = proposal.format || 'articulo';
+      document.getElementById('prop-label').value = proposal.ai_label || 'IA_GENERATED';
+      document.getElementById('prop-image-prompt').value = proposal.image_prompt || '';
+      document.getElementById('prop-created').textContent = formatDate(proposal.created_at);
+
+      const statusEl = document.getElementById('prop-status');
+      statusEl.textContent = proposal.status || 'pending';
+      statusEl.className = 'status-badge ' + getStatusClass(proposal.status);
+
+      if (proposal.topic_id) {
+        document.getElementById('row-topic').style.display = 'flex';
+        document.getElementById('prop-topic').textContent = proposal.topic_title || proposal.topic_id;
+      }
+
+      if (proposal.topic_sentiment) {
+        document.getElementById('row-sentiment').style.display = 'flex';
+        document.getElementById('prop-sentiment').textContent = proposal.topic_sentiment;
+      }
+
+      if (proposal.approved_at) {
+        document.getElementById('row-approved').style.display = 'flex';
+        document.getElementById('prop-approved').textContent = formatDate(proposal.approved_at);
+      }
+
+      if (proposal.rejected_at) {
+        document.getElementById('row-rejected').style.display = 'flex';
+        document.getElementById('prop-rejected').textContent = formatDate(proposal.rejected_at);
+      }
+
+      if (proposal.scheduled_at) {
+        document.getElementById('row-scheduled').style.display = 'flex';
+        document.getElementById('prop-scheduled').textContent = formatDate(proposal.scheduled_at);
+      }
+
+      if (isViewMode) {
+        document.getElementById('prop-title').readOnly = true;
+        document.getElementById('prop-format').disabled = true;
+        document.getElementById('prop-label').disabled = true;
+        document.getElementById('btn-save').style.display = 'none';
+        document.getElementById('btn-approve').style.display = 'none';
+        document.getElementById('btn-schedule').style.display = 'none';
+        document.getElementById('btn-reject').style.display = 'none';
+      }
+
+      if (proposal.status === 'approved' || proposal.status === 'scheduled') {
+        document.getElementById('btn-approve').style.display = 'none';
+      }
+
+      if (proposal.status === 'rejected') {
+        document.getElementById('btn-approve').style.display = 'none';
+        document.getElementById('btn-schedule').style.display = 'none';
+        document.getElementById('btn-reject').style.display = 'none';
+      }
+
+      updatePreview();
+      initEditor();
+    }
+
+    function initEditor() {
+      ClassicEditor
+        .create(document.querySelector('#prop-body'))
+        .then(editor => {
+          editorInstance = editor;
+          editor.model.document.on('change:data', () => {
+            updatePreview();
+          });
+          if (proposal.body) {
+            editor.setData(proposal.body);
+          }
+        })
+        .catch(error => console.error(error));
+    }
+
+    function updatePreview() {
+      const title = document.getElementById('prop-title').value || 'Título de la propuesta';
+      const body = editorInstance ? editorInstance.getData() : (proposal.body || '<p>El contenido aparecerá aquí...</p>');
+
+      document.getElementById('preview-title').textContent = title;
+      document.getElementById('preview-body').innerHTML = body;
+    }
+
+    async function saveProposal() {
+      const title = document.getElementById('prop-title').value;
+      const body = editorInstance ? editorInstance.getData() : '';
+      const format = document.getElementById('prop-format').value;
+      const label = document.getElementById('prop-label').value;
+
+      if (!title) {
+        alert('El título es requerido');
+        return;
+      }
+
+      try {
+        const res = await fetch(API.proposals, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: proposalId,
+            title,
+            body,
+            format,
+            ai_label: label
+          })
+        });
+
+        const data = await res.json();
+        if (data.ok) {
+          proposal = data.proposal;
+          alert('Cambios guardados');
+          renderProposal();
+        } else {
+          alert(data.error || 'Error al guardar');
+        }
+      } catch (err) {
+        alert('Error al guardar cambios');
+      }
+    }
+
+    async function approveProposal() {
+      if (!confirm('¿Aprobar esta propuesta?')) return;
+
+      try {
+        const res = await fetch(API.approve, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: proposalId })
+        });
+
+        const data = await res.json();
+        if (data.ok) {
+          proposal = data.proposal;
+          renderProposal();
+        } else {
+          alert(data.error || 'Error al aprobar');
+        }
+      } catch (err) {
+        alert('Error al aprobar propuesta');
+      }
+    }
+
+    function openScheduleModal() {
+      document.getElementById('schedule-datetime').value = '';
+      document.getElementById('schedule-modal').classList.add('active');
+    }
+
+    function closeScheduleModal() {
+      document.getElementById('schedule-modal').classList.remove('active');
+    }
+
+    async function confirmSchedule() {
+      const scheduledAt = document.getElementById('schedule-datetime').value;
+      if (!scheduledAt) {
+        alert('Selecciona una fecha y hora');
+        return;
+      }
+
+      try {
+        const res = await fetch(API.schedule, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: proposalId, scheduled_at: new Date(scheduledAt).toISOString() })
+        });
+
+        const data = await res.json();
+        if (data.ok) {
+          proposal = data.proposal;
+          closeScheduleModal();
+          renderProposal();
+        } else {
+          alert(data.error || 'Error al programar');
+        }
+      } catch (err) {
+        alert('Error al programar propuesta');
+      }
+    }
+
+    function openRejectModal() {
+      document.getElementById('reject-reason').value = '';
+      document.getElementById('reject-modal').classList.add('active');
+    }
+
+    function closeRejectModal() {
+      document.getElementById('reject-modal').classList.remove('active');
+    }
+
+    async function confirmReject() {
+      const reason = document.getElementById('reject-reason').value;
+      if (!reason) {
+        alert('Ingresa un motivo de rechazo');
+        return;
+      }
+
+      try {
+        const res = await fetch(API.reject, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: proposalId, reason })
+        });
+
+        const data = await res.json();
+        if (data.ok) {
+          proposal = data.proposal;
+          closeRejectModal();
+          renderProposal();
+        } else {
+          alert(data.error || 'Error al rechazar');
+        }
+      } catch (err) {
+        alert('Error al rechazar propuesta');
+      }
+    }
+
+    function toggleSidebar() {
+      document.getElementById('dash-sidebar').classList.toggle('open');
+      document.getElementById('dash-overlay').classList.toggle('active');
+    }
+
+    function renderUserInfo() {
+      const user = getUserFromToken();
+      if (!user) return;
+      const nameEl = document.getElementById('user-name');
+      const avatarEl = document.getElementById('user-avatar');
+      if (nameEl) nameEl.textContent = user.nombre || user.email;
+      if (avatarEl) avatarEl.textContent = (user.nombre || user.email || 'E')[0].toUpperCase();
+    }
+
+    document.getElementById('btn-menu').addEventListener('click', toggleSidebar);
+    document.getElementById('dash-overlay').addEventListener('click', toggleSidebar);
+
+    document.getElementById('prop-title').addEventListener('input', updatePreview);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderUserInfo();
+      loadProposal();
+    });
+  </script>
+</body>
+</html>

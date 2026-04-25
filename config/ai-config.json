@@ -1,0 +1,22 @@
+{
+  "claude": {
+    "enabled": false,
+    "model": "claude-sonnet-4-20250514",
+    "max_tokens": 1024,
+    "system_prompt_file": "config/system-prompt-crea.md"
+  },
+  "perplexity": {
+    "enabled": false,
+    "model": "sonar-pro"
+  },
+  "dalle": {
+    "enabled": false,
+    "model": "dall-e-3",
+    "size": "1024x1024"
+  },
+  "elevenlabs": {
+    "enabled": false,
+    "voice_id": "EXAVITQu4vr4xnSDxMaL",
+    "model_id": "eleven_multilingual_v2"
+  }
+}

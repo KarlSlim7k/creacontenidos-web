@@ -1,0 +1,49 @@
+{
+  "sources": {
+    "perplexity": {
+      "enabled": false,
+      "query": "noticias hoy Perote Veracruz Mexico",
+      "frequency_minutes": 30,
+      "api_key_env": "PERPLEXITY_API_KEY"
+    },
+    "google_trends": {
+      "enabled": false,
+      "region": "mx",
+      "frequency_minutes": 60
+    },
+    "rss_feeds": [
+      {
+        "name": "El Universal Veracruz",
+        "url": "https://www.eluniversal.com.mx/rss/veracruz.xml",
+        "frequency_minutes": 15
+      },
+      {
+        "name": "Diario de Xalapa",
+        "url": "https://www.diariodexalapa.com.mx/rss/veracruz.xml",
+        "frequency_minutes": 15
+      },
+      {
+        "name": "Milenio Veracruz",
+        "url": "https://www.milenio.com/rss/veracruz.xml",
+        "frequency_minutes": 15
+      }
+    ],
+    "facebook": {
+      "enabled": false,
+      "groups": ["noticias_perote", "perote_veracruz"],
+      "frequency_minutes": 30
+    },
+    "twitter": {
+      "enabled": false,
+      "hashtags": ["Perote", "Veracruz", "Xico"],
+      "frequency_minutes": 30
+    }
+  },
+  "sentiment_keywords": {
+    "positive": ["excelente", "logro", "celebración", "éxito", "felicidades", "gran noticia"],
+    "negative": ["accidente", "crimen", "crisis", "protesta", "alerta", "emergencia", "sismo", "temblor", "inundación", "robo", "asesinato", "detención"],
+    "neutral": ["anuncio", "inauguración", "reunión", "conferencia", "presentación", "evento"]
+  },
+  "topics_retention_days": 30,
+  "auto_approve_high_mentions": 100
+}

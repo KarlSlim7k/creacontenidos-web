@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radar de Temas — Panel Editorial CREA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/css/dashboard.css">
+  <style>
+    .radar-container { padding: 1.5rem; background: var(--crea-white); border-radius: 0.75rem; border: 1px solid var(--crea-gris-border); }
+    .radar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+    .radar-filters { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .radar-filters select { padding: 0.5rem 0.75rem; border: 1px solid var(--crea-gris-border); border-radius: 0.5rem; font-size: 0.8125rem; background: white; }
+    .radar-stats { display: flex; gap: 2rem; margin-bottom: 1.5rem; }
+    .radar-stat { text-align: center; }
+    .radar-stat__value { font-size: 1.5rem; font-weight: 700; }
+    .radar-stat__label { font-size: 0.75rem; color: var(--crea-gris-text); text-transform: uppercase; }
+    .radar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+    .topic-card { background: var(--crea-gris-bg); border-radius: 0.5rem; padding: 1rem; border: 1px solid var(--crea-gris-border); transition: box-shadow 0.2s; }
+    .topic-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .topic-card__header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
+    .topic-card__source { font-size: 0.6875rem; color: var(--crea-gris-text); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+    .topic-card__mentions { font-size: 0.75rem; font-weight: 600; color: var(--crea-text); background: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; }
+    .topic-card__title { font-size: 0.9375rem; font-weight: 500; color: var(--crea-text); margin-bottom: 0.5rem; line-height: 1.4; }
+    .topic-card__meta { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .topic-card__actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .sentiment-positive { color: #0A8F6C; }
+    .sentiment-negative { color: #CC2936; }
+    .sentiment-neutral { color: #6b7280; }
+    .status-badge { font-size: 0.625rem; padding: 0.125rem 0.5rem; border-radius: 9999px; font-weight: 600; text-transform: uppercase; }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-reviewed { background: #dbeafe; color: #1e40af; }
+    .status-approved { background: #d1fae5; color: #065f46; }
+    .status-rejected { background: #fee2e2; color: #991b1b; }
+    .btn-investigar { background: var(--crea-noche); color: white; border: none; padding: 0.375rem 0.75rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+    .btn-investigar:hover { background: var(--crea-rojo); }
+    .btn-status { background: white; border: 1px solid var(--crea-gris-border); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.6875rem; cursor: pointer; transition: all 0.2s; }
+    .btn-status:hover { border-color: var(--crea-verde); }
+    .btn-delete { background: transparent; border: none; color: var(--crea-rojo); font-size: 0.6875rem; cursor: pointer; }
+    .refresh-indicator { font-size: 0.75rem; color: var(--crea-gris-text); display: flex; align-items: center; gap: 0.5rem; }
+    .refresh-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--crea-verde); }
+    .empty-state { text-align: center; padding: 3rem 1rem; color: var(--crea-gris-text); }
+    .empty-state__icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .empty-state__title { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--crea-text); }
+    .empty-state__text { font-size: 0.875rem; }
+  </style>
+</head>
+<body>
+
+  <div class="dash-overlay" id="dash-overlay"></div>
+
+  <aside class="dash-sidebar" id="dash-sidebar">
+    <div class="dash-sidebar__header">
+      <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="dash-sidebar__logo">
+      <span class="dash-sidebar__badge">Panel Editorial</span>
+    </div>
+    <nav class="dash-sidebar__nav">
+      <div class="dash-nav__section-title">Principal</div>
+      <a href="/admin/dashboard.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Dashboard
+      </a>
+      <a href="/admin/articulos.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+        Artículos
+      </a>
+      <div class="dash-nav__section-title">Social Media</div>
+      <a href="/admin/radar.html" class="dash-nav__link active">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        Radar de Temas
+      </a>
+      <div class="dash-nav__section-title">Programas y Secciones</div>
+      <a href="/admin/tercer-tiempo.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+        Tercer Tiempo
+      </a>
+      <a href="/admin/newsletter.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        Newsletter
+      </a>
+      <div class="dash-nav__section-title">Comercial</div>
+      <a href="/admin/comercial.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Paquetes / Comercial
+      </a>
+    </nav>
+  </aside>
+
+  <header class="dash-topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem;">
+      <button class="dash-topbar__menu-btn" id="btn-menu" aria-label="Menú">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <span class="dash-topbar__title">Radar de Temas</span>
+    </div>
+    <div class="dash-topbar__user">
+      <span class="refresh-indicator">
+        <span class="refresh-dot"></span>
+        Auto-refresh en <span id="countdown">5:00</span>
+      </span>
+    </div>
+  </header>
+
+  <main class="dash-main">
+    
+    <div class="radar-container">
+      <div class="radar-header">
+        <h2 style="font-size:1.125rem;font-weight:600;">Temas Detectados</h2>
+        <div class="radar-filters">
+          <select id="filter-status">
+            <option value="">Todos los estados</option>
+            <option value="pending">Pendiente</option>
+            <option value="reviewed">Revisado</option>
+            <option value="approved">Aprobado</option>
+            <option value="rejected">Rechazado</option>
+          </select>
+          <select id="filter-source">
+            <option value="">Todas las fuentes</option>
+            <option value="perplexity">Perplexity</option>
+            <option value="google_trends">Google Trends</option>
+            <option value="rss">RSS Feeds</option>
+            <option value="facebook">Facebook</option>
+            <option value="twitter">Twitter/X</option>
+            <option value="manual">Manual</option>
+          </select>
+          <select id="filter-sentiment">
+            <option value="">Todos los sentimientos</option>
+            <option value="positive">Positivo</option>
+            <option value="negative">Negativo</option>
+            <option value="neutral">Neutral</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="radar-stats" id="radar-stats">
+        <div class="radar-stat">
+          <div class="radar-stat__value" id="stat-total">0</div>
+          <div class="radar-stat__label">Total</div>
+        </div>
+        <div class="radar-stat">
+          <div class="radar-stat__value sentiment-negative" id="stat-negative">0</div>
+          <div class="radar-stat__label">Negativos</div>
+        </div>
+        <div class="radar-stat">
+          <div class="radar-stat__value sentiment-positive" id="stat-positive">0</div>
+          <div class="radar-stat__label">Positivos</div>
+        </div>
+        <div class="radar-stat">
+          <div class="radar-stat__value" id="stat-pending">0</div>
+          <div class="radar-stat__label">Pendientes</div>
+        </div>
+      </div>
+
+      <div class="radar-grid" id="topics-grid">
+        <div class="empty-state">
+          <div class="empty-state__icon">📡</div>
+          <div class="empty-state__title">Sin temas detectados</div>
+          <div class="empty-state__text">El radar de social listening está vacío. Los temas se detectarán automáticamente cada 30 minutos.</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/admin/js/session-guard.js"></script>
+  <script>
+    const API = '/api/radar/topics.php';
+    let topics = [];
+    let refreshInterval;
+    let countdownSeconds = 300;
+
+    async function loadTopics() {
+      const params = new URLSearchParams();
+      const status = document.getElementById('filter-status').value;
+      const source = document.getElementById('filter-source').value;
+      const sentiment = document.getElementById('filter-sentiment').value;
+      
+      if (status) params.set('status', status);
+      if (source) params.set('source', source);
+      if (sentiment) params.set('sentiment', sentiment);
+      
+      const url = API + (params.toString() ? '?' + params.toString() : '');
+      const res = await fetch(url);
+      const data = await res.json();
+      topics = data.topics || [];
+      renderTopics();
+      updateStats();
+    }
+
+    function updateStats() {
+      document.getElementById('stat-total').textContent = topics.length;
+      document.getElementById('stat-negative').textContent = topics.filter(t => t.sentiment === 'negative').length;
+      document.getElementById('stat-positive').textContent = topics.filter(t => t.sentiment === 'positive').length;
+      document.getElementById('stat-pending').textContent = topics.filter(t => t.status === 'pending').length;
+    }
+
+    function renderTopics() {
+      const grid = document.getElementById('topics-grid');
+      
+      if (topics.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state__icon">📡</div>
+            <div class="empty-state__title">Sin temas detectados</div>
+            <div class="empty-state__text">No hay temas que coincidan con los filtros seleccionados.</div>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = topics.map(topic => {
+        const sentimentClass = `sentiment-${topic.sentiment}`;
+        const formats = topic.suggested_formats?.join(', ') || 'nota';
+        const sourceLabel = topic.source.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        
+        return `
+          <div class="topic-card" data-id="${topic.id}">
+            <div class="topic-card__header">
+              <div>
+                <div class="topic-card__source">${sourceLabel}</div>
+                <div style="font-size:0.6875rem;color:var(--crea-gris-text);margin-top:0.25rem;">
+                  ${new Date(topic.detected_at).toLocaleDateString('es-MX', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })}
+                </div>
+              </div>
+              <div class="topic-card__mentions">${topic.mentions} menciones</div>
+            </div>
+            <div class="topic-card__title">${topic.topic}</div>
+            <div class="topic-card__meta">
+              <span class="status-badge status-${topic.status}">${topic.status}</span>
+              <span class="${sentimentClass}" style="font-size:0.75rem;font-weight:500;">
+                ${topic.sentiment === 'positive' ? 'Positivo' : topic.sentiment === 'negative' ? 'Negativo' : 'Neutral'}
+              </span>
+              <span style="font-size:0.6875rem;color:var(--crea-gris-text);">Sugerido: ${formats}</span>
+            </div>
+            <div class="topic-card__actions">
+              <button class="btn-investigar" onclick="investigarTopic('${topic.id}')">Investigar →</button>
+              ${topic.status === 'pending' ? `<button class="btn-status" onclick="updateStatus('${topic.id}', 'reviewed')">Revisar</button>` : ''}
+              ${topic.status === 'reviewed' ? `<button class="btn-status" onclick="updateStatus('${topic.id}', 'approved')">Aprobar</button>` : ''}
+              ${topic.status !== 'rejected' ? `<button class="btn-status" onclick="updateStatus('${topic.id}', 'rejected')">Rechazar</button>` : ''}
+              <button class="btn-delete" onclick="deleteTopic('${topic.id}')">×</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function investigarTopic(id) {
+      const topic = topics.find(t => t.id === id);
+      if (!topic) return;
+      alert(`Enviando "${topic.topic}" al Motor IA para investigación...\n\n(Capa 2 - Esta funcionalidad se implementará en la siguiente fase)`);
+    }
+
+    async function updateStatus(id, newStatus) {
+      await fetch(API, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: newStatus })
+      });
+      loadTopics();
+    }
+
+    async function deleteTopic(id) {
+      if (!confirm('¿Eliminar este tema?')) return;
+      await fetch(`${API}?id=${id}`, { method: 'DELETE' });
+      loadTopics();
+    }
+
+    function startCountdown() {
+      countdownSeconds = 300;
+      const countdownEl = document.getElementById('countdown');
+      clearInterval(refreshInterval);
+      refreshInterval = setInterval(() => {
+        countdownSeconds--;
+        const mins = Math.floor(countdownSeconds / 60);
+        const secs = countdownSeconds % 60;
+        countdownEl.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        if (countdownSeconds <= 0) {
+          loadTopics();
+          countdownSeconds = 300;
+        }
+      }, 1000);
+    }
+
+    document.getElementById('btn-menu').addEventListener('click', () => {
+      document.getElementById('dash-sidebar').classList.toggle('open');
+      document.getElementById('dash-overlay').classList.toggle('active');
+    });
+    document.getElementById('dash-overlay').addEventListener('click', () => {
+      document.getElementById('dash-sidebar').classList.remove('open');
+      document.getElementById('dash-overlay').classList.remove('active');
+    });
+
+    document.getElementById('filter-status').addEventListener('change', loadTopics);
+    document.getElementById('filter-source').addEventListener('change', loadTopics);
+    document.getElementById('filter-sentiment').addEventListener('change', loadTopics);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadTopics();
+      startCountdown();
+    });
+  </script>
+</body>
+</html>

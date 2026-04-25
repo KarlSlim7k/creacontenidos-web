@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Editorial — CREA Contenidos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/css/dashboard.css">
+  <style>
+    .editorial-container { max-width: 1400px; }
+    .editorial-tabs { display: flex; gap: 0; margin-bottom: 1.5rem; border-bottom: 2px solid var(--crea-gris-border); }
+    .editorial-tab { padding: 0.75rem 1.5rem; font-size: 0.875rem; font-weight: 500; color: var(--crea-gris-text); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+    .editorial-tab:hover { color: var(--crea-text); }
+    .editorial-tab.active { color: var(--crea-rojo); border-bottom-color: var(--crea-rojo); }
+    .editorial-tab .count { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px; background: var(--crea-gris-bg); border-radius: 10px; font-size: 0.75rem; margin-left: 0.5rem; }
+    .editorial-tab.active .count { background: #FEE2E2; color: var(--crea-rojo); }
+    .editorial-filters { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: var(--crea-white); border-radius: 0.75rem; border: 1px solid var(--crea-gris-border); }
+    .filter-group { display: flex; flex-direction: column; gap: 0.375rem; }
+    .filter-group label { font-size: 0.75rem; font-weight: 600; color: var(--crea-gris-text); text-transform: uppercase; letter-spacing: 0.05em; }
+    .filter-group select, .filter-group input { padding: 0.5rem 0.75rem; border: 1px solid var(--crea-gris-border); border-radius: 0.5rem; font-size: 0.875rem; font-family: 'Inter', sans-serif; }
+    .editorial-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .proposal-card { background: var(--crea-white); border-radius: 0.75rem; border: 1px solid var(--crea-gris-border); margin-bottom: 1rem; overflow: hidden; transition: box-shadow 0.2s; }
+    .proposal-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .proposal-card__header { display: flex; align-items: flex-start; justify-content: space-between; padding: 1rem 1.25rem; border-bottom: 1px solid var(--crea-gris-border); }
+    .proposal-card__meta { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .proposal-card__title { font-size: 1rem; font-weight: 600; color: var(--crea-text); margin: 0.5rem 0 0.25rem; }
+    .proposal-card__topic { font-size: 0.8125rem; color: var(--crea-gris-text); }
+    .proposal-card__topic a { color: var(--crea-rojo); text-decoration: none; }
+    .proposal-card__topic a:hover { text-decoration: underline; }
+    .proposal-card__body { padding: 1rem 1.25rem; font-size: 0.875rem; color: #4B5563; line-height: 1.6; }
+    .proposal-card__body p { margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .proposal-card__footer { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1.25rem; background: #F9FAFB; border-top: 1px solid var(--crea-gris-border); }
+    .proposal-card__date { font-size: 0.75rem; color: var(--crea-gris-text); }
+    .proposal-card__actions { display: flex; gap: 0.5rem; }
+    .btn-sm { padding: 0.375rem 0.75rem; font-size: 0.8125rem; font-weight: 500; border-radius: 0.375rem; cursor: pointer; transition: all 0.2s; border: none; }
+    .btn-sm--view { background: var(--crea-gris-bg); color: var(--crea-text); border: 1px solid var(--crea-gris-border); }
+    .btn-sm--view:hover { background: var(--crea-gris-border); }
+    .btn-sm--edit { background: #DBEAFE; color: #1E40AF; border: 1px solid #BFDBFE; }
+    .btn-sm--edit:hover { background: #BFDBFE; }
+    .btn-sm--approve { background: #D1FAE5; color: #065F46; border: 1px solid #A7F3D0; }
+    .btn-sm--approve:hover { background: #A7F3D0; }
+    .btn-sm--reject { background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; }
+    .btn-sm--reject:hover { background: #FECACA; }
+    .badge-format { font-size: 0.625rem; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-weight: 600; text-transform: uppercase; }
+    .badge-format--articulo { background: #DBEAFE; color: #1E40AF; }
+    .badge-format--video { background: #FEE2E2; color: #991B1B; }
+    .badge-format--podcast { background: #D1FAE5; color: #065F46; }
+    .badge-format--newsletter { background: #FEF3C7; color: #92400E; }
+    .badge-format--social { background: #F3E8FF; color: #6B21A8; }
+    .badge-label { font-size: 0.625rem; padding: 0.25rem 0.5rem; border-radius: 9999px; font-weight: 600; text-transform: uppercase; background: #F3F4F6; color: #374151; }
+    .badge-sentiment { font-size: 0.625rem; padding: 0.125rem 0.375rem; border-radius: 9999px; font-weight: 500; }
+    .badge-sentiment--positivo { background: #D1FAE5; color: #065F46; }
+    .badge-sentiment--negativo { background: #FEE2E2; color: #991B1B; }
+    .badge-sentiment--neutral { background: #F3F4F6; color: #374151; }
+    .empty-state { text-align: center; padding: 3rem 1rem; }
+    .empty-state__icon { font-size: 3rem; margin-bottom: 1rem; }
+    .empty-state__text { font-size: 1rem; color: var(--crea-gris-text); margin-bottom: 0.5rem; }
+    .empty-state__sub { font-size: 0.875rem; color: #9CA3AF; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: white; border-radius: 1rem; padding: 1.5rem; max-width: 400px; width: 90%; }
+    .modal__title { font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; }
+    .modal__body { margin-bottom: 1.5rem; }
+    .modal__body textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--crea-gris-border); border-radius: 0.5rem; font-family: 'Inter', sans-serif; font-size: 0.875rem; resize: vertical; min-height: 100px; }
+    .modal__actions { display: flex; gap: 0.75rem; justify-content: flex-end; }
+    .btn-cancel { background: var(--crea-gris-bg); color: var(--crea-text); border: 1px solid var(--crea-gris-border); padding: 0.625rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; cursor: pointer; }
+    .btn-confirm { background: var(--crea-rojo); color: white; border: none; padding: 0.625rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; cursor: pointer; }
+    @media (max-width: 768px) {
+      .editorial-tabs { overflow-x: auto; }
+      .editorial-tab { white-space: nowrap; }
+      .editorial-filters { flex-direction: column; }
+      .proposal-card__footer { flex-direction: column; gap: 0.75rem; align-items: stretch; }
+      .proposal-card__actions { justify-content: center; flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dash-overlay" id="dash-overlay"></div>
+
+  <aside class="dash-sidebar" id="dash-sidebar">
+    <div class="dash-sidebar__header">
+      <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="dash-sidebar__logo">
+      <span class="dash-sidebar__badge">Panel Editorial</span>
+    </div>
+    <nav class="dash-sidebar__nav">
+      <div class="dash-nav__section-title">Principal</div>
+      <a href="/admin/dashboard.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Dashboard
+      </a>
+      <a href="/admin/articulos.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+        Artículos
+      </a>
+      <a href="/admin/editorial.html" class="dash-nav__link active">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+        Propuestas IA
+      </a>
+      <a href="/admin/calendario.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Calendario
+      </a>
+      <div class="dash-nav__section-title">Programas y Secciones</div>
+      <a href="/admin/tercer-tiempo.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+        Tercer Tiempo
+      </a>
+      <a href="/admin/newsletter.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        Newsletter
+      </a>
+      <div class="dash-nav__section-title">Comercial</div>
+      <a href="/admin/comercial.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Paquetes / Comercial
+      </a>
+    </nav>
+    <div class="dash-sidebar__footer">
+      <a href="/" class="dash-sidebar__site-link" target="_blank">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        Ver sitio público
+      </a>
+    </div>
+  </aside>
+
+  <header class="dash-topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem;">
+      <button class="dash-topbar__menu-btn" id="btn-menu" aria-label="Menú">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <span class="dash-topbar__title">Panel Editorial — Propuestas IA</span>
+    </div>
+    <div class="dash-topbar__user">
+      <div class="dash-topbar__avatar" id="user-avatar">E</div>
+      <span id="user-name">Editor</span>
+    </div>
+  </header>
+
+  <main class="dash-main">
+    <div class="editorial-container">
+      
+      <div class="editorial-stats" id="stats-container">
+        <div class="dash-stat-card">
+          <div class="dash-stat-card__label">Pendientes</div>
+          <div class="dash-stat-card__value amber" id="stat-pending">—</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-card__label">Aprobadas hoy</div>
+          <div class="dash-stat-card__value green" id="stat-approved-today">—</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-card__label">Rechazadas hoy</div>
+          <div class="dash-stat-card__value red" id="stat-rejected-today">—</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-card__label">Programadas</div>
+          <div class="dash-stat-card__value" id="stat-scheduled">—</div>
+        </div>
+      </div>
+
+      <div class="editorial-tabs">
+        <button class="editorial-tab active" data-tab="pending">Pendientes <span class="count" id="count-pending">0</span></button>
+        <button class="editorial-tab" data-tab="approved">Aprobadas <span class="count" id="count-approved">0</span></button>
+        <button class="editorial-tab" data-tab="rejected">Rechazadas <span class="count" id="count-rejected">0</span></button>
+        <button class="editorial-tab" data-tab="scheduled">Programadas <span class="count" id="count-scheduled">0</span></button>
+      </div>
+
+      <div class="editorial-filters">
+        <div class="filter-group">
+          <label>Formato</label>
+          <select id="filter-format">
+            <option value="">Todos</option>
+            <option value="articulo">Artículo</option>
+            <option value="video">Video</option>
+            <option value="podcast">Podcast</option>
+            <option value="newsletter">Newsletter</option>
+            <option value="social">Social</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Label IA</label>
+          <select id="filter-label">
+            <option value="">Todos</option>
+            <option value="IA_GENERATED">IA Generada</option>
+            <option value="IA_ASSISTED">IA Asistida</option>
+            <option value="HUMAN">Humana</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Desde</label>
+          <input type="date" id="filter-date-from">
+        </div>
+        <div class="filter-group">
+          <label>Hasta</label>
+          <input type="date" id="filter-date-to">
+        </div>
+      </div>
+
+      <div id="proposals-list">
+        <div class="empty-state">
+          <div class="empty-state__icon">⏳</div>
+          <div class="empty-state__text">Cargando propuestas...</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="reject-modal">
+    <div class="modal">
+      <div class="modal__title">Rechazar propuesta</div>
+      <div class="modal__body">
+        <label style="display:block;font-weight:500;margin-bottom:0.5rem;font-size:0.875rem;">Motivo del rechazo</label>
+        <textarea id="reject-reason" placeholder="Explica por qué se rechaza esta propuesta..."></textarea>
+      </div>
+      <div class="modal__actions">
+        <button class="btn-cancel" onclick="closeRejectModal()">Cancelar</button>
+        <button class="btn-confirm" id="confirm-reject-btn">Rechazar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin/js/session-guard.js"></script>
+  <script>
+    const API = {
+      proposals: '/api/content-proposals/crud.php',
+      approve: '/api/content-proposals/approve.php',
+      reject: '/api/content-proposals/reject.php',
+      schedule: '/api/content-proposals/schedule.php'
+    };
+
+    let currentTab = 'pending';
+    let allProposals = [];
+    let pendingRejectId = null;
+
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? match[2] : null;
+    }
+
+    function getUserFromToken() {
+      const token = getCookie('crea_editor_session');
+      if (!token) return null;
+      try { return JSON.parse(atob(token)); } catch { return null; }
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return 'Sin fecha';
+      return new Date(dateStr).toLocaleDateString('es-MX', {
+        day: 'numeric', month: 'short', year: 'numeric'
+      });
+    }
+
+    function formatDateInput(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      return d.toISOString().split('T')[0];
+    }
+
+    function getSentimentClass(sentiment) {
+      if (sentiment === 'positivo' || sentiment === 'positive') return 'badge-sentiment--positivo';
+      if (sentiment === 'negativo' || sentiment === 'negative') return 'badge-sentiment--negativo';
+      return 'badge-sentiment--neutral';
+    }
+
+    function getSentimentLabel(sentiment) {
+      if (sentiment === 'positivo' || sentiment === 'positive') return 'Positivo';
+      if (sentiment === 'negativo' || sentiment === 'negative') return 'Negativo';
+      return 'Neutral';
+    }
+
+    function getFormatBadgeClass(format) {
+      const map = {
+        'articulo': 'badge-format--articulo',
+        'video': 'badge-format--video',
+        'podcast': 'badge-format--podcast',
+        'newsletter': 'badge-format--newsletter',
+        'social': 'badge-format--social'
+      };
+      return map[format] || 'badge-format--articulo';
+    }
+
+    async function loadProposals() {
+      try {
+        const res = await fetch(API.proposals);
+        const data = await res.json();
+        allProposals = data.proposals || [];
+        updateStats();
+        renderProposals();
+      } catch (err) {
+        console.error('Error loading proposals:', err);
+        document.getElementById('proposals-list').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state__icon">⚠️</div>
+            <div class="empty-state__text">Error cargando propuestas</div>
+          </div>
+        `;
+      }
+    }
+
+    function updateStats() {
+      const today = new Date().toISOString().split('T')[0];
+      const pending = allProposals.filter(p => (p.status || 'pending') === 'pending');
+      const approvedToday = allProposals.filter(p => {
+        if ((p.status || '') !== 'approved') return false;
+        if (!p.approved_at) return false;
+        return p.approved_at.startsWith(today);
+      });
+      const rejectedToday = allProposals.filter(p => {
+        if ((p.status || '') !== 'rejected') return false;
+        if (!p.rejected_at) return false;
+        return p.rejected_at.startsWith(today);
+      });
+      const scheduled = allProposals.filter(p => (p.status || '') === 'scheduled' || p.scheduled_at);
+
+      document.getElementById('stat-pending').textContent = pending.length;
+      document.getElementById('stat-approved-today').textContent = approvedToday.length;
+      document.getElementById('stat-rejected-today').textContent = rejectedToday.length;
+      document.getElementById('stat-scheduled').textContent = scheduled.length;
+
+      document.getElementById('count-pending').textContent = pending.length;
+      document.getElementById('count-approved').textContent = allProposals.filter(p => (p.status || '') === 'approved').length;
+      document.getElementById('count-rejected').textContent = allProposals.filter(p => (p.status || '') === 'rejected').length;
+      document.getElementById('count-scheduled').textContent = scheduled.length;
+    }
+
+    function getFilteredProposals() {
+      let filtered = [...allProposals];
+
+      if (currentTab === 'scheduled') {
+        filtered = filtered.filter(p => (p.status || '') === 'scheduled' || p.scheduled_at);
+      } else {
+        filtered = filtered.filter(p => (p.status || 'pending') === currentTab);
+      }
+
+      const format = document.getElementById('filter-format').value;
+      if (format) {
+        filtered = filtered.filter(p => (p.format || '') === format);
+      }
+
+      const label = document.getElementById('filter-label').value;
+      if (label) {
+        filtered = filtered.filter(p => (p.ai_label || '') === label);
+      }
+
+      const dateFrom = document.getElementById('filter-date-from').value;
+      const dateTo = document.getElementById('filter-date-to').value;
+      
+      if (dateFrom) {
+        filtered = filtered.filter(p => {
+          if (!p.created_at) return false;
+          return p.created_at.split('T')[0] >= dateFrom;
+        });
+      }
+      if (dateTo) {
+        filtered = filtered.filter(p => {
+          if (!p.created_at) return false;
+          return p.created_at.split('T')[0] <= dateTo;
+        });
+      }
+
+      return filtered;
+    }
+
+    function renderProposals() {
+      const list = document.getElementById('proposals-list');
+      const proposals = getFilteredProposals();
+
+      if (proposals.length === 0) {
+        const emptyMessages = {
+          pending: { icon: '📝', text: 'No hay propuestas pendientes', sub: 'Las nuevas propuestas aparecerán aquí' },
+          approved: { icon: '✅', text: 'No hay propuestas aprobadas', sub: 'Las propuestas aprobadas aparecerán aquí' },
+          rejected: { icon: '❌', text: 'No hay propuestas rechazadas', sub: 'Las propuestas rechazadas aparecerán aquí' },
+          scheduled: { icon: '📅', text: 'No hay propuestas programadas', sub: 'Las propuestas programadas aparecerán aquí' }
+        };
+        const msg = emptyMessages[currentTab] || emptyMessages.pending;
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state__icon">${msg.icon}</div>
+            <div class="empty-state__text">${msg.text}</div>
+            <div class="empty-state__sub">${msg.sub}</div>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = proposals.map(p => `
+        <div class="proposal-card" data-id="${p.id}">
+          <div class="proposal-card__header">
+            <div>
+              <div class="proposal-card__meta">
+                <span class="badge-format ${getFormatBadgeClass(p.format)}">${p.format || 'articulo'}</span>
+                <span class="badge-label">${p.ai_label || 'IA_GENERATED'}</span>
+                ${p.topic_sentiment ? `<span class="badge-sentiment ${getSentimentClass(p.topic_sentiment)}">${getSentimentLabel(p.topic_sentiment)}</span>` : ''}
+              </div>
+              <div class="proposal-card__title">${escapeHtml(p.title || 'Sin título')}</div>
+              <div class="proposal-card__topic">
+                ${p.topic_id ? `Topic: <a href="/admin/radar.html?topic=${p.topic_id}" target="_blank">${escapeHtml(p.topic_title || p.topic_id)}</a>` : ''}
+              </div>
+            </div>
+          </div>
+          <div class="proposal-card__body">
+            <p>${escapeHtml(p.body || 'Sin contenido')}</p>
+          </div>
+          <div class="proposal-card__footer">
+            <div class="proposal-card__date">
+              Creada: ${formatDate(p.created_at)}
+              ${p.scheduled_at ? `<br>Programada: ${formatDate(p.scheduled_at)}` : ''}
+            </div>
+            <div class="proposal-card__actions">
+              <button class="btn-sm btn-sm--view" onclick="viewProposal('${p.id}')">Ver</button>
+              ${currentTab === 'pending' ? `
+                <button class="btn-sm btn-sm--edit" onclick="editProposal('${p.id}')">Editar</button>
+                <button class="btn-sm btn-sm--approve" onclick="approveProposal('${p.id}')">Aprobar</button>
+                <button class="btn-sm btn-sm--reject" onclick="openRejectModal('${p.id}')">Rechazar</button>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function viewProposal(id) {
+      window.location.href = `/admin/editorial-editor.html?id=${id}&mode=view`;
+    }
+
+    function editProposal(id) {
+      window.location.href = `/admin/editorial-editor.html?id=${id}&mode=edit`;
+    }
+
+    async function approveProposal(id) {
+      if (!confirm('¿Aprobar esta propuesta?')) return;
+      try {
+        const res = await fetch(API.approve, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          loadProposals();
+        } else {
+          alert(data.error || 'Error al aprobar');
+        }
+      } catch (err) {
+        alert('Error al aprobar propuesta');
+      }
+    }
+
+    function openRejectModal(id) {
+      pendingRejectId = id;
+      document.getElementById('reject-reason').value = '';
+      document.getElementById('reject-modal').classList.add('active');
+    }
+
+    function closeRejectModal() {
+      pendingRejectId = null;
+      document.getElementById('reject-modal').classList.remove('active');
+    }
+
+    async function confirmReject() {
+      if (!pendingRejectId) return;
+      const reason = document.getElementById('reject-reason').value;
+      try {
+        const res = await fetch(API.reject, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: pendingRejectId, reason })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          closeRejectModal();
+          loadProposals();
+        } else {
+          alert(data.error || 'Error al rechazar');
+        }
+      } catch (err) {
+        alert('Error al rechazar propuesta');
+      }
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.editorial-tab').forEach(t => t.classList.remove('active'));
+      document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+      renderProposals();
+    }
+
+    function toggleSidebar() {
+      document.getElementById('dash-sidebar').classList.toggle('open');
+      document.getElementById('dash-overlay').classList.toggle('active');
+    }
+
+    function renderUserInfo() {
+      const user = getUserFromToken();
+      if (!user) return;
+      const nameEl = document.getElementById('user-name');
+      const avatarEl = document.getElementById('user-avatar');
+      if (nameEl) nameEl.textContent = user.nombre || user.email;
+      if (avatarEl) avatarEl.textContent = (user.nombre || user.email || 'E')[0].toUpperCase();
+    }
+
+    document.getElementById('btn-menu').addEventListener('click', toggleSidebar);
+    document.getElementById('dash-overlay').addEventListener('click', toggleSidebar);
+
+    document.querySelectorAll('.editorial-tab').forEach(tab => {
+      tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+    });
+
+    document.getElementById('filter-format').addEventListener('change', renderProposals);
+    document.getElementById('filter-label').addEventListener('change', renderProposals);
+    document.getElementById('filter-date-from').addEventListener('change', renderProposals);
+    document.getElementById('filter-date-to').addEventListener('change', renderProposals);
+
+    document.getElementById('confirm-reject-btn').addEventListener('click', confirmReject);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderUserInfo();
+      loadProposals();
+    });
+  </script>
+</body>
+</html>
