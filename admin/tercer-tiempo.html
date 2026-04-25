@@ -36,6 +36,7 @@
   </style>
 </head>
 <body>
+  <div class="dash-overlay" id="dash-overlay"></div>
   <aside class="dash-sidebar" id="dash-sidebar">
     <div class="dash-sidebar__header">
       <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="dash-sidebar__logo">
@@ -50,6 +51,10 @@
       <a href="/admin/articulos.html" class="dash-nav__link">
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
         Artículos
+      </a>
+      <a href="/admin/paginas.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        Páginas
       </a>
       <div class="dash-nav__section-title">Programas y Secciones</div>
       <a href="/admin/tercer-tiempo.html" class="dash-nav__link active">
@@ -70,6 +75,9 @@
 
   <header class="dash-topbar">
     <div style="display:flex;align-items:center;gap:0.75rem;">
+      <button class="dash-topbar__menu-btn" id="btn-menu" aria-label="Menú">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
       <span class="dash-topbar__title">Gestor: Tercer Tiempo</span>
       <span class="status-badge status-badge--active" id="estado-badge">● Activo</span>
     </div>
@@ -236,7 +244,20 @@
       }
     }
 
+    const overlay = document.getElementById('dash-overlay');
+    if (overlay) overlay.addEventListener('click', toggleSidebar);
+
     document.addEventListener('DOMContentLoaded', loadContent);
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('dash-sidebar');
+      const overlay = document.getElementById('dash-overlay');
+      if (sidebar) sidebar.classList.toggle('open');
+      if (overlay) overlay.classList.toggle('active');
+    }
+
+    document.getElementById('btn-menu').addEventListener('click', toggleSidebar);
+    document.getElementById('dash-overlay').addEventListener('click', toggleSidebar);
   </script>
 </body>
 </html>
