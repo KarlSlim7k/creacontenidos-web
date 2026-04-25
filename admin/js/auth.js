@@ -1,10 +1,14 @@
+/**
+ * CREA CRM — Login Form Handler
+ * Solo para /admin/login.html — el auth centralizado está en session-guard.js
+ */
 (() => {
   const API_CONFIG = {
     loginApi: '/api/auth/login.php',
-    logoutApi: '/api/auth/logout.php',
     cookieName: 'crea_editor_session'
   };
 
+  // Credenciales hardcodeadas para desarrollo local (temporal)
   const HARDCODED_USERS = [
     {
       id: 'editor-001',
@@ -14,52 +18,6 @@
       rol: 'director_editorial'
     }
   ];
-
-  function getCookie(name) {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    return match ? match[2] : null;
-  }
-
-  function isAuthenticated() {
-    const token = getCookie(API_CONFIG.cookieName);
-    if (!token) return false;
-    try {
-      const payload = JSON.parse(atob(token));
-      return payload.exp > Math.floor(Date.now() / 1000);
-    } catch {
-      return false;
-    }
-  }
-
-  function getUserFromToken() {
-    const token = getCookie(API_CONFIG.cookieName);
-    if (!token) return null;
-    try {
-      return JSON.parse(atob(token));
-    } catch {
-      return null;
-    }
-  }
-
-  function requireAuth() {
-    if (!isAuthenticated()) {
-      window.location.href = '/admin/login.html';
-      return false;
-    }
-    return true;
-  }
-
-  function getAuthHeader() {
-    return { 'Authorization': 'Bearer ' + getCookie(API_CONFIG.cookieName) };
-  }
-
-  window.CreaAuth = {
-    isAuthenticated,
-    getUserFromToken,
-    requireAuth,
-    getAuthHeader,
-    getCookie
-  };
 
   const form = document.getElementById('login-form');
   if (form) {

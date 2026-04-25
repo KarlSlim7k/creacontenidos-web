@@ -6,13 +6,6 @@
     logout: '/api/auth/logout.php'
   };
 
-  function formatDate(dateStr) {
-    if (!dateStr) return 'Sin fecha';
-    return new Date(dateStr).toLocaleDateString('es-MX', {
-      day: 'numeric', month: 'short', year: 'numeric'
-    });
-  }
-
   async function loadDashboard() {
     try {
       const [artRes, subRes, cliRes] = await Promise.all([
@@ -67,25 +60,18 @@
     list.innerHTML = articles.map(art => `
       <div class="dash-article-item" data-id="${art.id}" onclick="window.location.href='/admin/articulos.html'">
         <div class="dash-article-item__info">
-          <div class="dash-article-item__title">${escapeHtml(art.titulo)}</div>
+          <div class="dash-article-item__title">${CreaCRM.ui.escapeHtml(art.titulo)}</div>
           <div class="dash-article-item__meta">
-            <span>${escapeHtml(art.autor || 'Sin autor')}</span>
+            <span>${CreaCRM.ui.escapeHtml(art.autor || 'Sin autor')}</span>
             <span>·</span>
-            <span>${formatDate(art.fecha_publicacion || art.created_at)}</span>
+            <span>${CreaCRM.ui.formatDate(art.fecha_publicacion || art.created_at)}</span>
             <span>·</span>
-            <span>${escapeHtml(art.categoria || '')}</span>
+            <span>${CreaCRM.ui.escapeHtml(art.categoria || '')}</span>
           </div>
         </div>
         <span class="dash-badge dash-badge--${art.estado === 'publicada' ? 'published' : 'draft'}">${art.estado}</span>
       </div>
     `).join('');
-  }
-
-  function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
   }
 
   // Init

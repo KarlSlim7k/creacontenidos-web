@@ -260,11 +260,26 @@
     });
   }
 
+  // ─── Common Utilities ───
+  function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return '—';
+    return new Date(dateStr).toLocaleDateString('es-MX', {
+      day: 'numeric', month: 'short', year: 'numeric'
+    });
+  }
+
   // ─── Export API ───
   window.CreaCRM = {
     auth: { getCookie, isAuthenticated, getUserFromToken, requireAuth, getAuthHeaders, handleLogout },
     api: { apiFetch },
-    ui: { showToast, showSpinner, hideSpinner, initSidebarToggle, renderUserInfo, initKeyboardShortcuts },
+    ui: { showToast, showSpinner, hideSpinner, initSidebarToggle, renderUserInfo, initKeyboardShortcuts, escapeHtml, formatDate },
     validation: { validateEmail, validatePhone, validateField, showFieldError, clearFieldError },
     export: { exportToCSV },
     pagination: { createPagination }

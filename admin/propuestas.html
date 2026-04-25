@@ -68,39 +68,6 @@
   <div class="dash-overlay" id="dash-overlay"></div>
 
   <aside class="dash-sidebar" id="dash-sidebar">
-    <div class="dash-sidebar__header">
-      <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="dash-sidebar__logo">
-      <span class="dash-sidebar__badge">Panel Editorial</span>
-    </div>
-    <nav class="dash-sidebar__nav">
-      <div class="dash-nav__section-title">Principal</div>
-      <a href="/admin/dashboard.html" class="dash-nav__link">
-        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-        Dashboard
-      </a>
-      <a href="/admin/articulos.html" class="dash-nav__link">
-        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-        Artículos
-      </a>
-      <a href="/admin/propuestas.html" class="dash-nav__link active">
-        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-        Propuestas IA
-      </a>
-      <div class="dash-nav__section-title">Programas y Secciones</div>
-      <a href="/admin/tercer-tiempo.html" class="dash-nav__link">
-        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-        Tercer Tiempo
-      </a>
-      <a href="/admin/newsletter.html" class="dash-nav__link">
-        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-        Newsletter
-      </a>
-      <div class="dash-nav__section-title">Comercial</div>
-      <a href="/admin/comercial.html" class="dash-nav__link">
-        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        Paquetes / Comercial
-      </a>
-    </nav>
   </aside>
 
   <header class="dash-topbar">
@@ -244,6 +211,8 @@
       </div>
     </div>
   </div>
+  <script src="/admin/js/sidebar.js"></script>
+
 
   <script src="/admin/js/session-guard.js"></script>
   <script>
@@ -251,7 +220,7 @@
     let proposals = [];
 
     async function loadProposals() {
-      const res = await fetch(API);
+      const res = await CreaCRM.api.apiFetch(API);
       const data = await res.json();
       proposals = data.proposals || [];
       applyFilters();
@@ -378,26 +347,26 @@
       };
 
       if (!payload.title) {
-        alert('El título es requerido.');
+        CreaCRM.ui.showToast('El título es requerido', 'err');
         return;
       }
 
-      await fetch(API, {
+      await CreaCRM.api.apiFetch(API, {
         method: isNew ? 'POST' : 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
 
       closeModal();
       loadProposals();
+      CreaCRM.ui.showToast(isNew ? 'Propuesta creada' : 'Propuesta actualizada', 'ok');
     }
 
     async function approveProposal(id) {
-      await fetch(API, {
+      await CreaCRM.api.apiFetch(API, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, status: 'approved' })
       });
+      CreaCRM.ui.showToast('Propuesta aprobada', 'ok');
       loadProposals();
     }
 
@@ -415,9 +384,8 @@
       const id = document.getElementById('reject-proposal-id').value;
       const reason = document.getElementById('reject-reason').value;
 
-      await fetch(API, {
+      await CreaCRM.api.apiFetch(API, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           id, 
           status: 'rejected',
@@ -426,23 +394,16 @@
       });
 
       closeRejectionModal();
+      CreaCRM.ui.showToast('Propuesta rechazada', 'ok');
       loadProposals();
     }
 
     async function deleteProposal(id) {
       if (!confirm('¿Eliminar esta propuesta?')) return;
-      await fetch(`${API}?id=${id}`, { method: 'DELETE' });
+      await CreaCRM.api.apiFetch(`${API}?id=${id}`, { method: 'DELETE' });
+      CreaCRM.ui.showToast('Propuesta eliminada', 'ok');
       loadProposals();
     }
-
-    document.getElementById('btn-menu').addEventListener('click', () => {
-      document.getElementById('dash-sidebar').classList.toggle('open');
-      document.getElementById('dash-overlay').classList.toggle('active');
-    });
-    document.getElementById('dash-overlay').addEventListener('click', () => {
-      document.getElementById('dash-sidebar').classList.remove('open');
-      document.getElementById('dash-overlay').classList.remove('active');
-    });
 
     document.addEventListener('DOMContentLoaded', loadProposals);
   </script>
