@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CREA — Panel Editorial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/css/dashboard.css">
+</head>
+<body>
+
+  <!-- ═══ OVERLAY (mobile) ═══ -->
+  <div class="dash-overlay" id="dash-overlay"></div>
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="dash-sidebar" id="dash-sidebar">
+    <div class="dash-sidebar__header">
+      <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="dash-sidebar__logo">
+      <span class="dash-sidebar__badge">Panel Editorial</span>
+    </div>
+
+    <nav class="dash-sidebar__nav">
+      <div class="dash-nav__section-title">Principal</div>
+      <a href="/admin/dashboard.html" class="dash-nav__link active">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Dashboard
+      </a>
+      <a href="/?editor=true" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+        Artículos
+      </a>
+
+      <div class="dash-nav__section-title">Contenido</div>
+      <a href="/pages/newsletter.html" class="dash-nav__link" target="_blank">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        Newsletter
+      </a>
+      <a href="/pages/tercer-tiempo.html" class="dash-nav__link" target="_blank">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+        Tercer Tiempo
+      </a>
+
+      <div class="dash-nav__section-title">Comercial</div>
+      <a href="/pages/comercial.html" class="dash-nav__link" target="_blank">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Paquetes
+      </a>
+    </nav>
+
+    <div class="dash-sidebar__footer">
+      <a href="/" class="dash-sidebar__site-link" target="_blank">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        Ver sitio público
+      </a>
+    </div>
+  </aside>
+
+  <!-- ═══ TOPBAR ═══ -->
+  <header class="dash-topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem;">
+      <button class="dash-topbar__menu-btn" id="btn-menu" aria-label="Menú">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <span class="dash-topbar__title">Dashboard</span>
+    </div>
+    <div class="dash-topbar__user">
+      <div class="dash-topbar__avatar" id="user-avatar">E</div>
+      <span id="user-name">Editor</span>
+      <button class="dash-topbar__logout" id="btn-logout">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main class="dash-main">
+
+    <!-- Quick Actions -->
+    <div class="dash-quick-actions">
+      <button class="dash-quick-btn" id="btn-new-article">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        Nuevo artículo
+      </button>
+      <button class="dash-quick-btn" id="btn-view-site">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+        Ver sitio público
+      </button>
+      <button class="dash-quick-btn" id="btn-refresh">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        Actualizar datos
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="dash-stats">
+      <div class="dash-stat-card">
+        <div class="dash-stat-card__label">Total artículos</div>
+        <div class="dash-stat-card__value" id="stat-total">—</div>
+      </div>
+      <div class="dash-stat-card">
+        <div class="dash-stat-card__label">Publicados</div>
+        <div class="dash-stat-card__value green" id="stat-published">—</div>
+      </div>
+      <div class="dash-stat-card">
+        <div class="dash-stat-card__label">Borradores</div>
+        <div class="dash-stat-card__value amber" id="stat-drafts">—</div>
+      </div>
+      <div class="dash-stat-card">
+        <div class="dash-stat-card__label">Suscriptores</div>
+        <div class="dash-stat-card__value red" id="stat-subscribers">—</div>
+      </div>
+    </div>
+
+    <!-- Recent Articles -->
+    <div class="dash-panel">
+      <div class="dash-panel__header">
+        <h2 class="dash-panel__title">Artículos recientes</h2>
+        <button class="dash-panel__action" id="btn-refresh">↻ Actualizar</button>
+      </div>
+      <div id="articles-list">
+        <div class="dash-empty">
+          <div class="dash-empty__icon">⏳</div>
+          <div class="dash-empty__text">Cargando artículos...</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/admin/js/dashboard.js"></script>
+</body>
+</html>

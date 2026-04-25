@@ -32,6 +32,10 @@
       "dest": "/pages/tercer-tiempo.html"
     },
     {
+      "src": "^/newsletter/?$",
+      "dest": "/pages/newsletter.html"
+    },
+    {
       "src": "/(.*)",
       "headers": {
         "Cache-Control": "public, max-age=3600"

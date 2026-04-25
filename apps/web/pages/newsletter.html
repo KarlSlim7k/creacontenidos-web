@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Buenos días, Perote — El newsletter diario de CREA Contenidos. Lo que necesitas saber cada mañana para vivir en Perote, Veracruz.">
+  <title>Buenos días, Perote — Newsletter de CREA Contenidos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/responsive.css">
+  <style>
+    .header__logo-img {
+      width: 110px; max-width: 100%; max-height: 52px;
+      height: auto; object-fit: contain; display: block;
+    }
+    .header-editorial.is-scrolled .header__logo-img { width: 130px; }
+    @media (min-width: 640px) { .header__logo-img { width: 130px; } }
+    @media (min-width: 1024px) { .header__logo-img { width: 150px; } }
+
+    .nl-hero {
+      background: linear-gradient(135deg, #0F1B2D 0%, #1a3050 100%);
+      color: white; padding: 4rem 0 3rem; text-align: center;
+    }
+    .nl-hero__emoji { font-size: 3rem; margin-bottom: 1rem; }
+    .nl-hero__title {
+      font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900; line-height: 1.1; margin-bottom: 0.75rem;
+    }
+    .nl-hero__subtitle {
+      font-family: var(--font-accent); font-size: var(--text-xl);
+      color: rgba(255,255,255,0.7); max-width: 600px; margin: 0 auto 2rem;
+    }
+    .nl-hero__form {
+      display: flex; gap: 0.5rem; max-width: 500px; margin: 0 auto;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .nl-hero__form input {
+      flex: 1; min-width: 200px; padding: 0.75rem 1rem;
+      border: 2px solid rgba(255,255,255,0.2); border-radius: 0.5rem;
+      background: rgba(255,255,255,0.1); color: white; font-size: 1rem;
+    }
+    .nl-hero__form input::placeholder { color: rgba(255,255,255,0.5); }
+    .nl-hero__form input:focus {
+      outline: none; border-color: var(--color-rojo);
+      background: rgba(255,255,255,0.15);
+    }
+    .nl-hero__form button {
+      padding: 0.75rem 1.5rem; background: var(--color-rojo); color: white;
+      border: none; border-radius: 0.5rem; font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .nl-hero__form button:hover { background: #a8222d; }
+    .nl-hero__msg {
+      margin-top: 0.75rem; font-size: 0.875rem; min-height: 1.25rem;
+    }
+
+    .nl-section { padding: 3rem 0; }
+    .nl-section--alt { background: var(--color-gris-fondo, #f5f6f7); }
+    .nl-section__title {
+      font-family: var(--font-display); font-size: var(--text-2xl);
+      font-weight: 800; color: var(--color-noche); margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .nl-features {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem; max-width: 900px; margin: 0 auto;
+    }
+    .nl-feature {
+      background: white; border-radius: 0.75rem; padding: 1.5rem;
+      border: 1px solid var(--color-gris-linea, #e5e7eb);
+      text-align: center;
+    }
+    .nl-feature__icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .nl-feature__title {
+      font-weight: 700; font-size: var(--text-lg); color: var(--color-noche);
+      margin-bottom: 0.375rem;
+    }
+    .nl-feature__desc {
+      font-size: var(--text-sm); color: var(--color-gris-medio, #6b7280);
+      line-height: 1.5;
+    }
+
+    .nl-example {
+      max-width: 700px; margin: 0 auto; background: white;
+      border-radius: 0.75rem; padding: 2rem;
+      border: 1px solid var(--color-gris-linea, #e5e7eb);
+      font-family: var(--font-body); font-size: var(--text-base);
+      line-height: 1.7;
+    }
+    .nl-example h3 {
+      font-family: var(--font-display); font-size: var(--text-xl);
+      color: var(--color-noche); margin-bottom: 1rem;
+    }
+    .nl-example .nl-label {
+      font-weight: 700; color: var(--color-rojo);
+      text-transform: uppercase; font-size: var(--text-sm);
+      letter-spacing: 0.05em; margin-top: 1rem;
+    }
+    .nl-example ul { padding-left: 1.25rem; margin: 0.5rem 0; }
+    .nl-example li { margin-bottom: 0.25rem; }
+
+    .nl-podcast {
+      max-width: 700px; margin: 0 auto; text-align: center;
+    }
+    .nl-podcast__badge {
+      display: inline-block; background: var(--color-rojo);
+      color: white; font-size: 0.75rem; font-weight: 700;
+      padding: 0.25rem 0.75rem; border-radius: 9999px;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+    .nl-podcast__desc {
+      color: var(--color-gris-medio, #6b7280); font-size: var(--text-lg);
+      line-height: 1.6; max-width: 550px; margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA DE UTILIDAD -->
+  <div class="barra-utilidad">
+    <div class="container">
+      <div class="barra-utilidad__izq">
+        <span id="fecha-actual"></span>
+        <span class="temp-perote">🌤 14°C Perote</span>
+        <a href="/pages/newsletter.html" class="newsletter-link" style="font-weight:700;">📩 Newsletter</a>
+      </div>
+      <div class="barra-utilidad__der">
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header-editorial" id="header">
+    <div class="container">
+      <div class="header__top">
+        <div>
+          <a href="/" class="header__logo" aria-label="Inicio CREA Contenidos">
+            <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="header__logo-img" width="110" height="65">
+          </a>
+          <p class="header__tagline">El medio de Perote y su región</p>
+        </div>
+        <div class="header__actions">
+          <a href="/pages/comercial.html" class="btn-cta">Apoya a CREA</a>
+          <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false"><span></span><span></span><span></span></button>
+        </div>
+      </div>
+      <nav class="nav-principal" aria-label="Navegación principal">
+        <ul class="nav-principal__lista" id="nav-lista">
+          <li><a href="/" class="nav-principal__enlace">Inicio</a></li>
+          <li><a href="/pages/seccion.html" class="nav-principal__enlace">Local</a></li>
+          <li><a href="/pages/cultura.html" class="nav-principal__enlace">Cultura</a></li>
+          <li><a href="/pages/economia.html" class="nav-principal__enlace">Economía</a></li>
+          <li><a href="/pages/entretenimiento.html" class="nav-principal__enlace">Entretenimiento</a></li>
+          <li><a href="/pages/deportes.html" class="nav-principal__enlace">Deportes</a></li>
+          <li><a href="/pages/opinion.html" class="nav-principal__enlace">Opinión</a></li>
+          <li><a href="/pages/tercer-tiempo.html" class="nav-principal__enlace" style="color:var(--tt-acento);">⚽ Tercer Tiempo</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="nl-hero">
+      <div class="container">
+        <div class="nl-hero__emoji">☀️</div>
+        <h1 class="nl-hero__title">Buenos días, Perote</h1>
+        <p class="nl-hero__subtitle">Lo que debes saber esta mañana para vivir en Perote. En tu correo y WhatsApp antes de las 7 AM. Gratis.</p>
+        <form class="nl-hero__form" id="nl-hero-form">
+          <input type="email" id="nl-hero-email" placeholder="tucorreo@ejemplo.com" required>
+          <input type="tel" id="nl-hero-wa" placeholder="WhatsApp (opcional)">
+          <button type="submit" id="nl-hero-btn">Suscribirme gratis</button>
+        </form>
+        <div class="nl-hero__msg" id="nl-hero-msg"></div>
+      </div>
+    </section>
+
+    <!-- ¿Qué incluye? -->
+    <section class="nl-section">
+      <div class="container">
+        <h2 class="nl-section__title">¿Qué recibes cada mañana?</h2>
+        <div class="nl-features">
+          <div class="nl-feature">
+            <div class="nl-feature__icon">🌡️</div>
+            <div class="nl-feature__title">El clima</div>
+            <div class="nl-feature__desc">Temperatura, pronóstico y alertas de niebla o helada. En 2 líneas.</div>
+          </div>
+          <div class="nl-feature">
+            <div class="nl-feature__icon">📰</div>
+            <div class="nl-feature__title">La nota del día</div>
+            <div class="nl-feature__desc">La noticia más relevante de Perote, resumida en 3-4 oraciones con datos concretos.</div>
+          </div>
+          <div class="nl-feature">
+            <div class="nl-feature__icon">⚡</div>
+            <div class="nl-feature__title">En breve</div>
+            <div class="nl-feature__desc">3-4 noticias secundarias en formato bullet. Lo esencial, sin relleno.</div>
+          </div>
+          <div class="nl-feature">
+            <div class="nl-feature__icon">💡</div>
+            <div class="nl-feature__title">Dato del día</div>
+            <div class="nl-feature__desc">Un dato curioso, histórico o estadístico sobre Perote. Educativo y compartible.</div>
+          </div>
+          <div class="nl-feature">
+            <div class="nl-feature__icon">📅</div>
+            <div class="nl-feature__title">Agenda</div>
+            <div class="nl-feature__desc">Eventos del día: cortes de agua, eventos culturales, partidos, trámites.</div>
+          </div>
+          <div class="nl-feature">
+            <div class="nl-feature__icon">🎧</div>
+            <div class="nl-feature__title">Podcast de 3 minutos</div>
+            <div class="nl-feature__desc">El mismo contenido narrado. Perfecto para el trayecto Perote–Xalapa.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ejemplo -->
+    <section class="nl-section nl-section--alt">
+      <div class="container">
+        <h2 class="nl-section__title">Así se ve una edición</h2>
+        <div class="nl-example">
+          <h3>Buenos días, Perote — Viernes 11 de abril de 2026</h3>
+          <p>Buenos días, Perote. Hoy es viernes 11 de abril. Esto es lo que necesitas saber.</p>
+
+          <p class="nl-label">🌡️ El clima</p>
+          <p>Amanece a 4 grados con cielo despejado. Máxima de 18 grados. Sin alerta de niebla. Buen día para salir.</p>
+
+          <p class="nl-label">📰 La nota del día</p>
+          <p>El municipio anunció que la pavimentación de la calle Juárez en colonia Centro comenzará el lunes 14. La obra tiene un presupuesto de 2.1 millones de pesos con recursos del Fondo de Infraestructura Estatal. Se estima un cierre parcial de la vialidad durante 3 semanas. Ruta alterna por calle Independencia.</p>
+
+          <p class="nl-label">⚡ En breve</p>
+          <ul>
+            <li>El precio del gas LP subió 2.8% esta semana en la zona Perote-Altotonga. El tanque de 20 kg pasó de $432 a $444.</li>
+            <li>Los Coyotes de Perote juegan la semifinal de básquetbol este sábado a las 6 PM en la cancha del deportivo municipal. Entrada libre.</li>
+            <li>Protección Civil recuerda que la temporada de incendios forestales está activa. Si ves humo en el Cofre, reporta al 911.</li>
+          </ul>
+
+          <p class="nl-label">💡 Dato del día</p>
+          <p>¿Sabías que Perote fue fundado en 1525 por orden de Hernán Cortés? Este año se cumplen 501 años de historia. Perote es más antiguo que muchas capitales estatales de México.</p>
+
+          <p class="nl-label">📅 Agenda</p>
+          <p>Hoy viernes Tercer Tiempo en vivo a las 8 PM por Facebook de CREA Contenidos. Sábado: semifinal de básquetbol 6 PM. Domingo: misa de los 501 años en Parroquia de San Miguel, 12 PM.</p>
+
+          <p style="color:var(--color-gris-medio); margin-top:1.5rem; font-style:italic;">Que tengas un buen viernes. Nos leemos el lunes.<br>CREA Contenidos — crea-contenidos.com</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Podcast -->
+    <section class="nl-section">
+      <div class="container">
+        <div class="nl-podcast">
+          <span class="nl-podcast__badge">Próximamente</span>
+          <h2 class="nl-section__title" style="margin-bottom:0.75rem;">🎙️ Podcast: Buenos días, Perote</h2>
+          <p class="nl-podcast__desc">
+            El mismo contenido del newsletter, narrado en 3-5 minutos.
+            Perfecto para escuchar camino al trabajo. Disponible en Spotify, Facebook y WhatsApp.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA final -->
+    <section class="newsletter-strip" id="newsletter-bottom">
+      <div class="container" style="text-align:center;">
+        <h2 style="font-family:var(--font-display); font-size:var(--text-2xl); margin-bottom:0.5rem;">¿Quieres estar informado cada mañana?</h2>
+        <p style="color:rgba(255,255,255,0.7); margin-bottom:1.5rem;">Únete a los peroteños que empiezan su día con CREA.</p>
+        <form class="nl-hero__form" id="nl-bottom-form" style="max-width:500px; margin:0 auto;">
+          <input type="email" id="nl-bottom-email" placeholder="tucorreo@ejemplo.com" required style="background:rgba(255,255,255,0.15); border-color:rgba(255,255,255,0.3); color:white;">
+          <button type="submit" id="nl-bottom-btn" style="background:white; color:var(--color-noche); font-weight:700;">Suscribirme</button>
+        </form>
+        <div class="nl-hero__msg" id="nl-bottom-msg"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <a href="/" class="footer__logo"><img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="footer__logo-img"></a>
+          <p class="footer__desc">CREA Contenidos es el medio digital de referencia para Perote y la región serrana de Veracruz.</p>
+        </div>
+        <div>
+          <h4 class="footer__titulo-col">Secciones</h4>
+          <ul class="footer__lista">
+            <li><a href="/pages/seccion.html">Local</a></li>
+            <li><a href="/pages/cultura.html">Cultura</a></li>
+            <li><a href="/pages/economia.html">Economía</a></li>
+            <li><a href="/pages/deportes.html">Deportes</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer__titulo-col">CREA</h4>
+          <ul class="footer__lista">
+            <li><a href="/pages/colaboradores.html">Equipo</a></li>
+            <li><a href="/pages/comunidad.html">Comunidad</a></li>
+            <li><a href="/pages/comercial.html">Publicidad</a></li>
+            <li><a href="/pages/newsletter.html">Newsletter</a></li>
+            <li><a href="/admin/login.html">Acceso editorial</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer__titulo-col">Legal</h4>
+          <ul class="footer__lista">
+            <li><a href="#">Aviso de privacidad</a></li>
+            <li><a href="#">Términos de uso</a></li>
+            <li><a href="#">Código de ética</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© <span id="anio-actual">2026</span> CREA Contenidos. Todos los derechos reservados.</span>
+        <span class="footer__hecho">Hecho en Perote, Veracruz 🇲🇽</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
+  <script>
+  /* Newsletter subscription handler for both forms */
+  async function handleNlSubmit(formId, emailId, btnId, msgId, waId) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById(btnId);
+      const msg = document.getElementById(msgId);
+      const email = document.getElementById(emailId).value;
+      const whatsapp = waId ? (document.getElementById(waId)?.value || '') : '';
+      btn.textContent = 'Enviando...'; btn.disabled = true;
+      msg.textContent = '';
+      try {
+        const res = await fetch('/api/newsletter/subscribe.php', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ email, whatsapp })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          msg.style.color = '#4ade80';
+          msg.textContent = data.message || '¡Suscripción exitosa!';
+          document.getElementById(emailId).value = '';
+          if (waId) document.getElementById(waId).value = '';
+        } else {
+          msg.style.color = '#fca5a5';
+          msg.textContent = data.error || 'Error al suscribirse';
+        }
+      } catch { msg.style.color = '#fca5a5'; msg.textContent = 'Error de conexión'; }
+      btn.textContent = 'Suscribirme gratis'; btn.disabled = false;
+    });
+  }
+  handleNlSubmit('nl-hero-form', 'nl-hero-email', 'nl-hero-btn', 'nl-hero-msg', 'nl-hero-wa');
+  handleNlSubmit('nl-bottom-form', 'nl-bottom-email', 'nl-bottom-btn', 'nl-bottom-msg', null);
+  </script>
+</body>
+</html>

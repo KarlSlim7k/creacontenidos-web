@@ -160,8 +160,8 @@
 
     window.creaSaveDraft = saveDraft;
     window.creaPublish = publish;
-    window.creaOpenArticles = () => showNotification('Panel de artículos en desarrollo', 'error');
-    window.creaOpenSeo = () => showNotification('Panel SEO en desarrollo', 'error');
+    window.creaOpenArticles = () => { if (typeof window.creaOpenArticlesPanel === 'function') window.creaOpenArticlesPanel(); };
+    window.creaOpenSeo = () => { if (typeof window.creaOpenSeoPanel === 'function') window.creaOpenSeoPanel(); };
 
     setInterval(() => {
       const dot = document.getElementById('crea-pending-dot');

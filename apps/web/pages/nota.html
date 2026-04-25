@@ -285,5 +285,87 @@
 
   <script src="/assets/js/main.js"></script>
   <script src="/assets/js/interactions.js"></script>
+  <script>
+  /* Dynamic article loader — reads ?slug= and populates from API */
+  (() => {
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('slug');
+    if (!slug) return;
+
+    fetch('/api/articles/crud.php?estado=publicada')
+      .then(r => r.json())
+      .then(data => {
+        const articles = data.articles || [];
+        const art = articles.find(a => a.slug === slug);
+        if (!art) return;
+
+        // Update page title
+        document.title = art.titulo + ' — CREA Contenidos';
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) metaDesc.content = art.meta_description || art.extracto || '';
+
+        // Category badge
+        const badge = document.querySelector('.badge-categoria');
+        if (badge) badge.textContent = (art.categoria || 'Local').charAt(0).toUpperCase() + (art.categoria || 'local').slice(1);
+
+        // Title
+        const h1 = document.querySelector('article h1');
+        if (h1) h1.textContent = art.titulo;
+
+        // Subtitle
+        const subtitle = document.querySelector('article p[style*="font-accent"]');
+        if (subtitle) subtitle.textContent = art.subtitulo || art.extracto || '';
+
+        // Author
+        const authorStrong = document.querySelector('article strong[style*="color:var(--color-noche)"]');
+        if (authorStrong) authorStrong.textContent = art.autor || '';
+
+        // Date
+        const timeEl = document.querySelector('article time');
+        if (timeEl && art.fecha_publicacion) {
+          timeEl.textContent = new Date(art.fecha_publicacion).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+          timeEl.setAttribute('datetime', art.fecha_publicacion);
+        }
+
+        // Main image
+        const mainImg = document.querySelector('figure img');
+        if (mainImg && art.imagen_destacada) {
+          mainImg.src = art.imagen_destacada;
+          mainImg.alt = art.imagen_alt || art.titulo;
+        }
+
+        // Body content
+        const body = document.querySelector('.articulo-body');
+        if (body && art.contenido_html) {
+          const divider = body.querySelector('hr');
+          const review = body.querySelector('p[style*="italic"]');
+          body.innerHTML = art.contenido_html;
+          if (divider) body.appendChild(divider);
+          if (review) body.appendChild(review);
+        }
+
+        // Breadcrumb
+        const breadcrumbLast = document.querySelector('.breadcrumb span:last-child');
+        if (breadcrumbLast) breadcrumbLast.textContent = art.titulo.substring(0, 60) + (art.titulo.length > 60 ? '...' : '');
+
+        // Sidebar latest articles
+        const sidebarCards = document.querySelectorAll('.articulo-sidebar .card-nota--compacta');
+        const others = articles.filter(a => a.slug !== slug).slice(0, sidebarCards.length);
+        others.forEach((other, i) => {
+          if (!sidebarCards[i]) return;
+          const link = sidebarCards[i].querySelector('a');
+          const title = sidebarCards[i].querySelector('.card-titular a, .card-titular');
+          const date = sidebarCards[i].querySelector('.fecha');
+          if (link) link.href = '/pages/nota.html?slug=' + other.slug;
+          if (title) {
+            if (title.tagName === 'A') { title.textContent = other.titulo; title.href = '/pages/nota.html?slug=' + other.slug; }
+            else { title.innerHTML = '<a href="/pages/nota.html?slug=' + other.slug + '">' + other.titulo + '</a>'; }
+          }
+          if (date) date.textContent = new Date(other.fecha_publicacion || other.created_at).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
+        });
+      })
+      .catch(() => { /* keep static content */ });
+  })();
+  </script>
 </body>
 </html>

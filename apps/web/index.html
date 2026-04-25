@@ -39,7 +39,7 @@
       <div class="barra-utilidad__izq">
         <span id="fecha-actual">Viernes 27 de marzo de 2026</span>
         <span class="temp-perote">🌤 14°C Perote</span>
-        <a href="#newsletter" class="newsletter-link">📩 Newsletter</a>
+        <a href="/pages/newsletter.html" class="newsletter-link">📩 Newsletter</a>
       </div>
       <div class="barra-utilidad__der">
         <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
@@ -394,15 +394,46 @@
     <section class="newsletter-strip reveal" id="newsletter">
       <div class="container">
         <div class="newsletter__texto">
-          <h2 data-editable-block="newsletter-titulo">Las noticias de Perote, en tu correo cada semana</h2>
-          <p data-editable-block="newsletter-subtitulo">Sin spam. Solo lo importante de tu región, cada viernes.</p>
+          <h2 data-editable-block="newsletter-titulo">Buenos días, Perote — cada mañana en tu correo</h2>
+          <p data-editable-block="newsletter-subtitulo">Lo que necesitas saber para vivir en Perote. Sin spam. Gratis.</p>
         </div>
-        <form class="newsletter__form" action="#" method="post">
-          <input type="email" placeholder="tucorreo@ejemplo.com" aria-label="Correo electrónico" required>
-          <button type="submit" class="btn-cta btn-cta--naranja">Suscribirme</button>
+        <form class="newsletter__form" id="newsletter-form">
+          <input type="email" id="nl-email" placeholder="tucorreo@ejemplo.com" aria-label="Correo electrónico" required>
+          <input type="tel" id="nl-whatsapp" placeholder="WhatsApp (opcional)" aria-label="WhatsApp" style="max-width:180px;">
+          <button type="submit" class="btn-cta btn-cta--naranja" id="nl-submit">Suscribirme</button>
         </form>
+        <div id="nl-message" style="display:none; margin-top:0.75rem; font-size:0.875rem; text-align:center;"></div>
       </div>
     </section>
+    <script>
+    document.getElementById('newsletter-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('nl-submit');
+      const msg = document.getElementById('nl-message');
+      const email = document.getElementById('nl-email').value;
+      const whatsapp = document.getElementById('nl-whatsapp').value;
+      btn.textContent = 'Enviando...'; btn.disabled = true;
+      msg.style.display = 'none';
+      try {
+        const res = await fetch('/api/newsletter/subscribe.php', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ email, whatsapp })
+        });
+        const data = await res.json();
+        msg.style.display = 'block';
+        if (res.ok) {
+          msg.style.color = '#0A8F6C';
+          msg.textContent = data.message || '¡Suscripción exitosa!';
+          document.getElementById('nl-email').value = '';
+          document.getElementById('nl-whatsapp').value = '';
+        } else {
+          msg.style.color = '#CC2936';
+          msg.textContent = data.error || 'Error al suscribirse';
+        }
+      } catch { msg.style.display = 'block'; msg.style.color = '#CC2936'; msg.textContent = 'Error de conexión'; }
+      btn.textContent = 'Suscribirme'; btn.disabled = false;
+    });
+    </script>
 
   </main>
 
@@ -461,6 +492,7 @@
   <script src="/assets/js/main.js"></script>
   <script src="/assets/js/carousel.js"></script>
   <script src="/assets/js/interactions.js"></script>
+  <script src="/assets/js/dynamic-content.js"></script>
   <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
   <script src="/admin/js/store.js"></script>
   <script src="/admin/js/auth.js"></script>

@@ -23,7 +23,7 @@ $users = json_decode(file_get_contents($usersPath), true);
 $user = null;
 
 foreach ($users as $u) {
-  if ($u['email'] === $email && $u['password'] === $password) {
+  if ($u['email'] === $email && password_verify($password, $u['password'])) {
     $user = $u;
     break;
   }

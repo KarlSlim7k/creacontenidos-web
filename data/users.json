@@ -3,7 +3,7 @@
     "id": "editor-001",
     "nombre": "Editor CREA",
     "email": "editor@creacontenidos.com",
-    "password": "password123",
+    "password": "$2y$12$LQW5KrKa/2YghRhFDPo3COlN0RX58cgZKl1tbbDn7TYD8OWPiFDna",
     "rol": "director_editorial"
   }
 ]

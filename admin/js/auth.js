@@ -90,7 +90,7 @@
           return;
         }
 
-        window.location.href = '/';
+        window.location.href = '/admin/dashboard.html';
       } catch (err) {
         errorEl.textContent = 'Error de conexión';
         errorEl.style.display = 'block';
