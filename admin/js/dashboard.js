@@ -82,7 +82,7 @@
   document.getElementById('btn-logout')?.addEventListener('click', CreaCRM.auth.handleLogout);
 
   document.getElementById('btn-new-article')?.addEventListener('click', () => {
-    window.location.href = '/?editor=true';
+    window.location.href = '/admin/articulos.html?new=true';
   });
 
   document.getElementById('btn-view-site')?.addEventListener('click', () => {
@@ -96,7 +96,7 @@
 
   // Keyboard shortcuts
   CreaCRM.ui.initKeyboardShortcuts({
-    'n': () => { window.location.href = '/?editor=true'; },
+    'n': () => { window.location.href = '/admin/articulos.html?new=true'; },
     'r': () => { loadDashboard(); },
     'v': () => { window.open('/', '_blank'); }
   });

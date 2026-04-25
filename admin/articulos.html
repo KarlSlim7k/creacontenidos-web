@@ -307,7 +307,15 @@
       'n': () => { if (document.getElementById('list-view').style.display !== 'none') showForm(); }
     });
 
-    document.addEventListener('DOMContentLoaded', loadArticles);
+    document.addEventListener('DOMContentLoaded', () => {
+      loadArticles().then(() => {
+        if (new URLSearchParams(window.location.search).get('new') === 'true') {
+          showForm();
+          // Limpiar el parámetro de la URL sin recargar
+          history.replaceState(null, '', '/admin/articulos.html');
+        }
+      });
+    });
   </script>
 </body>
 </html>
