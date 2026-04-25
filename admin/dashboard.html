@@ -18,7 +18,6 @@
       <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="dash-sidebar__logo">
       <span class="dash-sidebar__badge">Panel Editorial</span>
     </div>
-
     <nav class="dash-sidebar__nav">
       <div class="dash-nav__section-title">Principal</div>
       <a href="/admin/dashboard.html" class="dash-nav__link active">
@@ -32,6 +31,20 @@
       <a href="/admin/paginas.html" class="dash-nav__link">
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         Páginas
+      </a>
+
+      <div class="dash-nav__section-title">Editorial</div>
+      <a href="/admin/editorial.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+        Propuestas IA
+      </a>
+      <a href="/admin/calendario.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Calendario
+      </a>
+      <a href="/admin/radar.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        Radar de Temas
       </a>
 
       <div class="dash-nav__section-title">Programas y Secciones</div>
@@ -48,6 +61,10 @@
       <a href="/admin/comercial.html" class="dash-nav__link">
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         Paquetes / Comercial
+      </a>
+      <a href="/admin/clientes.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        Clientes
       </a>
     </nav>
 
@@ -67,9 +84,12 @@
       <span class="dash-topbar__title">Dashboard</span>
     </div>
     <div class="dash-topbar__user">
+      <span class="dash-topbar__shortcuts" style="font-size:0.75rem;color:var(--crea-gris-text);margin-right:0.5rem;">
+        <span class="kbd">N</span> Nuevo artículo
+      </span>
       <div class="dash-topbar__avatar" id="user-avatar">E</div>
       <span id="user-name">Editor</span>
-      <button class="dash-topbar__logout" id="btn-logout">Cerrar sesión</button>
+      <button class="dash-topbar__logout" id="btn-logout">Salir</button>
     </div>
   </header>
 
@@ -82,11 +102,11 @@
       </button>
       <button class="dash-quick-btn" id="btn-view-site">
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-        Ver sitio público
+        Ver sitio
       </button>
       <button class="dash-quick-btn" id="btn-refresh">
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-        Actualizar datos
+        Actualizar
       </button>
     </div>
 
@@ -105,7 +125,11 @@
       </div>
       <div class="dash-stat-card">
         <div class="dash-stat-card__label">Suscriptores</div>
-        <div class="dash-stat-card__value red" id="stat-subscribers">—</div>
+        <div class="dash-stat-card__value blue" id="stat-subscribers">—</div>
+      </div>
+      <div class="dash-stat-card">
+        <div class="dash-stat-card__label">Clientes activos</div>
+        <div class="dash-stat-card__value green" id="stat-clients">—</div>
       </div>
     </div>
 
@@ -115,15 +139,28 @@
         <a href="/admin/articulos.html" class="dash-panel__action">Ver todos →</a>
       </div>
       <div id="articles-list">
-        <div class="dash-empty">
-          <div class="dash-empty__icon">⏳</div>
-          <div class="dash-empty__text">Cargando artículos...</div>
+        <div class="empty-state">
+          <div class="spinner"></div>
+          <div class="empty-state__text" style="margin-top:1rem;">Cargando artículos...</div>
         </div>
+      </div>
+    </div>
+
+    <div class="dash-panel">
+      <div class="dash-panel__header">
+        <h2 class="dash-panel__title">Atajos de teclado</h2>
+      </div>
+      <div style="padding:1rem 1.25rem;display:flex;gap:2rem;flex-wrap:wrap;font-size:0.8125rem;color:var(--crea-gris-text);">
+        <span><span class="kbd">N</span> Nuevo artículo</span>
+        <span><span class="kbd">R</span> Refrescar datos</span>
+        <span><span class="kbd">V</span> Ver sitio público</span>
+        <span><span class="kbd">?</span> Mostrar atajos</span>
       </div>
     </div>
 
   </main>
 
+  <script src="/admin/js/session-guard.js"></script>
   <script src="/admin/js/dashboard.js"></script>
 </body>
 </html>

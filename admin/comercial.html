@@ -9,52 +9,33 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/admin/css/dashboard.css">
   <style>
-    .cms-section { background: var(--crea-white); border-radius: 0.75rem; border: 1px solid var(--crea-gris-border); padding: 1.5rem; margin-bottom: 1.5rem; }
+    .cms-section { background: var(--crea-white); border-radius: var(--radius); border: 1px solid var(--crea-gris-border); padding: 1.5rem; margin-bottom: 1.5rem; }
     .cms-section__title { font-size: 1rem; font-weight: 700; color: var(--crea-noche); margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--crea-gris-border); display: flex; align-items: center; gap: 0.5rem; }
     .cms-section__title span.icon { font-size: 1.1rem; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .form-grid--3 { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; }
     .form-grid--full { grid-column: 1 / -1; }
-    .form-group { margin-bottom: 1rem; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 0.375rem; font-size: 0.8125rem; color: #374151; }
-    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid var(--crea-gris-border); border-radius: 0.5rem; font-family: 'Inter', sans-serif; font-size: 0.875rem; color: #111827; background: #fafafa; transition: border-color .15s; box-sizing: border-box; }
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--crea-rojo); background: white; }
-    .form-group textarea { resize: vertical; min-height: 90px; }
-    .form-group .hint { font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem; }
-    .btn-save { background: #0A8F6C; color: white; border: none; padding: 0.625rem 1.5rem; border-radius: 0.5rem; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: background .15s; }
-    .btn-save:hover { background: #078059; }
-    .btn-secondary-link { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-weight: 500; font-size: 0.8125rem; text-decoration: none; transition: background .15s; }
-    .btn-secondary-link:hover { background: #e5e7eb; }
-    /* Paquetes CRUD */
     .pkg-list { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
-    .pkg-item { border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 1rem; background: #f9fafb; position: relative; }
+    .pkg-item { border: 1px solid var(--crea-gris-border); border-radius: 0.5rem; padding: 1rem; background: #f9fafb; }
     .pkg-item.destacado { border-color: var(--crea-rojo); background: #fff5f5; }
     .pkg-item__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
     .pkg-item__nombre { font-weight: 700; font-size: 0.9rem; }
-    .pkg-item__actions { display: flex; gap: 0.5rem; }
-    .btn-edit-pkg { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 0.25rem 0.75rem; border-radius: 0.375rem; cursor: pointer; font-size: 0.75rem; font-weight: 500; }
-    .btn-del-pkg { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; padding: 0.25rem 0.75rem; border-radius: 0.375rem; cursor: pointer; font-size: 0.75rem; font-weight: 500; }
-    .pkg-item__meta { font-size: 0.8125rem; color: #6b7280; }
+    .pkg-item__meta { font-size: 0.8125rem; color: var(--crea-gris-text); }
     .pkg-item__precio { font-weight: 700; color: var(--crea-rojo); font-size: 0.875rem; }
     .pkg-destacado-badge { background: var(--crea-rojo); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 9999px; margin-left: 0.5rem; }
-    .btn-add-pkg { background: white; color: #374151; border: 2px dashed #d1d5db; padding: 0.75rem; border-radius: 0.5rem; cursor: pointer; font-size: 0.875rem; font-weight: 500; width: 100%; transition: all .15s; }
-    .btn-add-pkg:hover { border-color: #0A8F6C; color: #0A8F6C; }
-    /* Modal paquete */
+    .btn-add-pkg { background: white; color: var(--crea-text); border: 2px dashed var(--crea-gris-border); padding: 0.75rem; border-radius: 0.5rem; cursor: pointer; font-size: 0.875rem; font-weight: 500; width: 100%; transition: all .15s; }
+    .btn-add-pkg:hover { border-color: var(--crea-verde); color: var(--crea-verde); }
     .pkg-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 999; align-items: center; justify-content: center; }
     .pkg-modal-overlay.open { display: flex; }
-    .pkg-modal { background: white; border-radius: 0.75rem; padding: 1.5rem; width: 540px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
+    .pkg-modal { background: white; border-radius: var(--radius); padding: 1.5rem; width: 540px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
     .pkg-modal__title { font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem; }
     .pkg-modal__actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.25rem; }
-    .btn-cancel { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 0.5rem 1.25rem; border-radius: 0.5rem; cursor: pointer; font-weight: 500; }
     .checkbox-label { display: flex; align-items: center; gap: 0.5rem; font-weight: 500; font-size: 0.875rem; cursor: pointer; }
-    #toast { position: fixed; bottom: 1.5rem; right: 1.5rem; padding: 0.75rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; z-index: 9999; display: none; }
-    #toast.ok { background: #0A8F6C; color: white; }
-    #toast.err { background: #dc2626; color: white; }
     .pkg-clients { display: flex; flex-direction: column; gap: 0.75rem; }
-    .pkg-clients__item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.5rem; }
+    .pkg-clients__item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: #f9fafb; border: 1px solid var(--crea-gris-border); border-radius: 0.5rem; }
     .pkg-clients__name { font-weight: 600; font-size: 0.875rem; }
-    .pkg-clients__count { font-size: 0.75rem; color: #6b7280; background: #e5e7eb; padding: 0.2rem 0.6rem; border-radius: 9999px; }
+    .pkg-clients__count { font-size: 0.75rem; color: var(--crea-gris-text); background: var(--crea-gris-border); padding: 0.2rem 0.6rem; border-radius: 9999px; }
     .pkg-clients__empty { font-size: 0.8125rem; color: #9ca3af; text-align: center; padding: 1rem; }
+    .topbar-actions { display: flex; gap: 0.75rem; align-items: center; }
   </style>
 </head>
 <body>
@@ -66,204 +47,110 @@
     </div>
     <nav class="dash-sidebar__nav">
       <div class="dash-nav__section-title">Principal</div>
-      <a href="/admin/dashboard.html" class="dash-nav__link">
-        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-        Dashboard
-      </a>
-      <a href="/admin/articulos.html" class="dash-nav__link">
-        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-        Artículos
-      </a>
-      <a href="/admin/paginas.html" class="dash-nav__link">
-        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        Páginas
-      </a>
+      <a href="/admin/dashboard.html" class="dash-nav__link"><svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg> Dashboard</a>
+      <a href="/admin/articulos.html" class="dash-nav__link"><svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg> Artículos</a>
+      <a href="/admin/paginas.html" class="dash-nav__link"><svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Páginas</a>
+      <div class="dash-nav__section-title">Editorial</div>
+      <a href="/admin/editorial.html" class="dash-nav__link"><svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg> Propuestas IA</a>
+      <a href="/admin/calendario.html" class="dash-nav__link"><svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg> Calendario</a>
       <div class="dash-nav__section-title">Programas y Secciones</div>
-      <a href="/admin/tercer-tiempo.html" class="dash-nav__link">
-        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-        Tercer Tiempo
-      </a>
-      <a href="/admin/newsletter.html" class="dash-nav__link">
-        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-        Newsletter
-      </a>
+      <a href="/admin/tercer-tiempo.html" class="dash-nav__link"><svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Tercer Tiempo</a>
+      <a href="/admin/newsletter.html" class="dash-nav__link"><svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Newsletter</a>
       <div class="dash-nav__section-title">Comercial</div>
-      <a href="/admin/comercial.html" class="dash-nav__link active">
-        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        Paquetes / Comercial
-      </a>
-      <a href="/admin/clientes.html" class="dash-nav__link">
-        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-        Clientes / Anunciantes
-      </a>
+      <a href="/admin/comercial.html" class="dash-nav__link active"><svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Paquetes / Comercial</a>
+      <a href="/admin/clientes.html" class="dash-nav__link"><svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg> Clientes</a>
     </nav>
+    <div class="dash-sidebar__footer"><a href="/" class="dash-sidebar__site-link" target="_blank"><svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> Ver sitio público</a></div>
   </aside>
 
   <header class="dash-topbar">
     <div style="display:flex;align-items:center;gap:0.75rem;">
-      <button class="dash-topbar__menu-btn" id="btn-menu" aria-label="Menú">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
-      </button>
+      <button class="dash-topbar__menu-btn" id="btn-menu" aria-label="Menú"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
       <span class="dash-topbar__title">Gestor: Paquetes y Comercial</span>
     </div>
-    <div style="display:flex;gap:0.75rem;align-items:center;">
-      <a href="/pages/comercial.html" target="_blank" class="btn-secondary-link">Ver página pública ↗</a>
-      <button class="btn-save" onclick="saveContent()">Guardar cambios</button>
+    <div class="topbar-actions">
+      <a href="/pages/comercial.html" target="_blank" class="btn btn--secondary btn--sm">Ver página pública ↗</a>
+      <button class="btn btn--success btn--sm" onclick="saveContent()">Guardar cambios</button>
     </div>
   </header>
 
   <main class="dash-main">
-
-    <!-- SECCIÓN: Hero -->
     <div class="cms-section">
       <div class="cms-section__title"><span class="icon">🎯</span> Hero — Cabecera de la página</div>
       <div class="form-grid">
-        <div class="form-group">
-          <label>Título principal</label>
-          <input type="text" id="com-hero-titulo" placeholder="Conecta tu negocio con Perote">
-        </div>
-        <div class="form-group">
-          <label>Subtítulo / descripción</label>
-          <input type="text" id="com-hero-desc" placeholder="Llega a la audiencia que importa...">
-        </div>
+        <div class="form-group"><label>Título principal</label><input type="text" id="com-hero-titulo" placeholder="Conecta tu negocio con Perote"></div>
+        <div class="form-group"><label>Subtítulo / descripción</label><input type="text" id="com-hero-desc" placeholder="Llega a la audiencia que importa..."></div>
       </div>
     </div>
 
-    <!-- SECCIÓN: Métricas -->
     <div class="cms-section">
       <div class="cms-section__title"><span class="icon">📊</span> Métricas de audiencia</div>
       <div class="form-grid--3">
-        <div class="form-group">
-          <label>Visitantes mensuales</label>
-          <input type="number" id="com-m-visitantes" placeholder="45000">
-        </div>
-        <div class="form-group">
-          <label>Seguidores en redes</label>
-          <input type="number" id="com-m-seguidores" placeholder="12500">
-        </div>
-        <div class="form-group">
-          <label>Alcance estimado</label>
-          <input type="number" id="com-m-alcance" placeholder="85000">
-        </div>
-        <div class="form-group">
-          <label>Suscriptores newsletter</label>
-          <input type="number" id="com-m-suscriptores" placeholder="3400">
-        </div>
+        <div class="form-group"><label>Visitantes mensuales</label><input type="number" id="com-m-visitantes" placeholder="45000"></div>
+        <div class="form-group"><label>Seguidores en redes</label><input type="number" id="com-m-seguidores" placeholder="12500"></div>
+        <div class="form-group"><label>Alcance estimado</label><input type="number" id="com-m-alcance" placeholder="85000"></div>
+        <div class="form-group"><label>Suscriptores newsletter</label><input type="number" id="com-m-suscriptores" placeholder="3400"></div>
       </div>
     </div>
 
-    <!-- SECCIÓN: Paquetes -->
     <div class="cms-section">
       <div class="cms-section__title"><span class="icon">📦</span> Paquetes publicitarios</div>
-      <p style="font-size:0.875rem;color:#6b7280;margin-bottom:1rem;">Agrega, edita o elimina paquetes. El orden en que aparecen aquí es el orden en la página.</p>
-      <div class="pkg-list" id="pkg-list">
-        <div style="color:#9ca3af;font-size:0.875rem;text-align:center;padding:1rem;">Cargando paquetes...</div>
-      </div>
+      <p style="font-size:0.875rem;color:var(--crea-gris-text);margin-bottom:1rem;">Agrega, edita o elimina paquetes.</p>
+      <div class="pkg-list" id="pkg-list"><div style="color:#9ca3af;font-size:0.875rem;text-align:center;padding:1rem;">Cargando paquetes...</div></div>
       <button class="btn-add-pkg" onclick="openPkgModal()">+ Agregar nuevo paquete</button>
     </div>
 
-    <!-- SECCIÓN: Clientes por paquete -->
     <div class="cms-section">
       <div class="cms-section__title"><span class="icon">👥</span> Clientes por paquete</div>
-      <p style="font-size:0.875rem;color:#6b7280;margin-bottom:1rem;">
-        <a href="/admin/clientes.html" class="btn-secondary-link" style="text-decoration:none;">+ Ir a gestión de clientes</a>
-      </p>
-      <div id="clients-per-package">
-        <div style="color:#9ca3af;font-size:0.875rem;text-align:center;padding:1rem;">Cargando...</div>
-      </div>
+      <p style="font-size:0.875rem;color:var(--crea-gris-text);margin-bottom:1rem;"><a href="/admin/clientes.html" class="btn btn--secondary btn--sm" style="text-decoration:none;">Ir a gestión de clientes</a></p>
+      <div id="clients-per-package"><div class="pkg-clients__empty">Cargando...</div></div>
     </div>
 
-    <!-- SECCIÓN: Contacto -->
     <div class="cms-section">
       <div class="cms-section__title"><span class="icon">📞</span> Información de contacto</div>
       <div class="form-grid">
-        <div class="form-group">
-          <label>Número de WhatsApp (sin +)</label>
-          <input type="text" id="com-whatsapp" placeholder="522285550000">
-          <p class="hint">Formato internacional sin +. Ej: 522285551234</p>
-        </div>
-        <div class="form-group">
-          <label>Texto de contacto</label>
-          <input type="text" id="com-contacto-texto" placeholder="Completa el formulario o escríbenos directo por WhatsApp">
-        </div>
+        <div class="form-group"><label>Número de WhatsApp (sin +)</label><input type="text" id="com-whatsapp" placeholder="522285550000"><p class="hint">Formato internacional sin +. Ej: 522285551234</p></div>
+        <div class="form-group"><label>Texto de contacto</label><input type="text" id="com-contacto-texto" placeholder="Completa el formulario o escríbenos directo por WhatsApp"></div>
       </div>
     </div>
-
   </main>
 
-  <!-- Modal paquete -->
   <div class="pkg-modal-overlay" id="pkg-modal-overlay">
     <div class="pkg-modal">
       <div class="pkg-modal__title" id="pkg-modal-title">Nuevo paquete</div>
       <input type="hidden" id="pkg-edit-index" value="-1">
-      <div class="form-group">
-        <label>Nombre del paquete</label>
-        <input type="text" id="pkg-nombre" placeholder="Branded Content Premium">
-      </div>
+      <div class="form-group"><label>Nombre del paquete</label><input type="text" id="pkg-nombre" placeholder="Branded Content Premium" maxlength="100"></div>
       <div class="form-grid">
-        <div class="form-group">
-          <label>Precio mínimo (MXN)</label>
-          <input type="number" id="pkg-precio-min" placeholder="4000">
-        </div>
-        <div class="form-group">
-          <label>Precio máximo (MXN)</label>
-          <input type="number" id="pkg-precio-max" placeholder="8000">
-        </div>
+        <div class="form-group"><label>Precio mínimo (MXN)</label><input type="number" id="pkg-precio-min" placeholder="4000"></div>
+        <div class="form-group"><label>Precio máximo (MXN)</label><input type="number" id="pkg-precio-max" placeholder="8000"></div>
       </div>
-      <div class="form-group">
-        <label>Unidad / periodo</label>
-        <input type="text" id="pkg-unidad" placeholder="MXN (pago único) o MXN/mes">
-      </div>
-      <div class="form-group">
-        <label>Descripción</label>
-        <textarea id="pkg-descripcion" placeholder="Nota editorial de alto impacto sobre tu negocio..."></textarea>
-      </div>
-      <div class="form-group">
-        <label class="checkbox-label">
-          <input type="checkbox" id="pkg-destacado"> Paquete destacado (resaltado visualmente)
-        </label>
-      </div>
+      <div class="form-group"><label>Unidad / periodo</label><input type="text" id="pkg-unidad" placeholder="MXN (pago único) o MXN/mes"></div>
+      <div class="form-group"><label>Descripción</label><textarea id="pkg-descripcion" placeholder="Nota editorial de alto impacto sobre tu negocio..."></textarea></div>
+      <div class="form-group"><label class="checkbox-label"><input type="checkbox" id="pkg-destacado"> Paquete destacado (resaltado visualmente)</label></div>
       <div class="pkg-modal__actions">
-        <button class="btn-cancel" onclick="closePkgModal()">Cancelar</button>
-        <button class="btn-save" onclick="savePkg()">Guardar paquete</button>
+        <button class="btn btn--secondary" onclick="closePkgModal()">Cancelar</button>
+        <button class="btn btn--success" onclick="savePkg()">Guardar paquete</button>
       </div>
     </div>
   </div>
-
-  <div id="toast"></div>
 
   <script src="/admin/js/session-guard.js"></script>
   <script>
     const API = '/api/content/index.php?id=comercial';
     let paquetes = [];
-
     const TEXT_FIELDS = ['com-hero-titulo','com-hero-desc','com-whatsapp','com-contacto-texto'];
     const NUM_FIELDS = ['com-m-visitantes','com-m-seguidores','com-m-alcance','com-m-suscriptores'];
 
-    function showToast(msg, type) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = type;
-      t.style.display = 'block';
-      setTimeout(() => { t.style.display = 'none'; }, 3000);
-    }
-
     function renderPaquetes() {
       const list = document.getElementById('pkg-list');
-      if (!paquetes.length) {
-        list.innerHTML = '<div style="color:#9ca3af;font-size:0.875rem;text-align:center;padding:1rem;">No hay paquetes. Agrega el primero.</div>';
-        return;
-      }
+      if (!paquetes.length) { list.innerHTML = '<div style="color:#9ca3af;font-size:0.875rem;text-align:center;padding:1rem;">No hay paquetes. Agrega el primero.</div>'; return; }
       list.innerHTML = paquetes.map((p, i) => `
         <div class="pkg-item${p.destacado ? ' destacado' : ''}">
           <div class="pkg-item__header">
-            <div class="pkg-item__nombre">
-              ${p.nombre || '(sin nombre)'}
-              ${p.destacado ? '<span class="pkg-destacado-badge">DESTACADO</span>' : ''}
-            </div>
-            <div class="pkg-item__actions">
-              <button class="btn-edit-pkg" onclick="openPkgModal(${i})">Editar</button>
-              <button class="btn-del-pkg" onclick="deletePkg(${i})">Eliminar</button>
+            <div class="pkg-item__nombre">${p.nombre || '(sin nombre)'}${p.destacado ? '<span class="pkg-destacado-badge">DESTACADO</span>' : ''}</div>
+            <div style="display:flex;gap:0.5rem;">
+              <button class="btn btn--secondary btn--sm" onclick="openPkgModal(${i})">Editar</button>
+              <button class="btn btn--danger btn--sm" onclick="deletePkg(${i})">Eliminar</button>
             </div>
           </div>
           <div class="pkg-item__meta">
@@ -275,7 +162,6 @@
     }
 
     function openPkgModal(idx) {
-      const modal = document.getElementById('pkg-modal-overlay');
       document.getElementById('pkg-edit-index').value = idx !== undefined ? idx : -1;
       document.getElementById('pkg-modal-title').textContent = idx !== undefined ? 'Editar paquete' : 'Nuevo paquete';
       if (idx !== undefined) {
@@ -290,117 +176,66 @@
         ['pkg-nombre','pkg-precio-min','pkg-precio-max','pkg-unidad','pkg-descripcion'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('pkg-destacado').checked = false;
       }
-      modal.classList.add('open');
+      document.getElementById('pkg-modal-overlay').classList.add('open');
     }
 
-    function closePkgModal() {
-      document.getElementById('pkg-modal-overlay').classList.remove('open');
-    }
+    function closePkgModal() { document.getElementById('pkg-modal-overlay').classList.remove('open'); }
 
     function savePkg() {
       const idx = parseInt(document.getElementById('pkg-edit-index').value);
-      const pkg = {
-        nombre: document.getElementById('pkg-nombre').value.trim(),
-        precio_min: parseInt(document.getElementById('pkg-precio-min').value) || 0,
-        precio_max: parseInt(document.getElementById('pkg-precio-max').value) || 0,
-        unidad: document.getElementById('pkg-unidad').value.trim(),
-        descripcion: document.getElementById('pkg-descripcion').value.trim(),
-        destacado: document.getElementById('pkg-destacado').checked
-      };
-      if (!pkg.nombre) { showToast('El nombre del paquete es obligatorio.', 'err'); return; }
+      const nombreEl = document.getElementById('pkg-nombre');
+      CreaCRM.validation.clearFieldError(nombreEl);
+      const vr = CreaCRM.validation.validateField(nombreEl, { required: true, max: 100 });
+      if (!vr.valid) { CreaCRM.validation.showFieldError(nombreEl, vr.errors[0]); return; }
+      const pkg = { nombre: nombreEl.value.trim(), precio_min: parseInt(document.getElementById('pkg-precio-min').value) || 0, precio_max: parseInt(document.getElementById('pkg-precio-max').value) || 0, unidad: document.getElementById('pkg-unidad').value.trim(), descripcion: document.getElementById('pkg-descripcion').value.trim(), destacado: document.getElementById('pkg-destacado').checked };
       if (idx >= 0) { paquetes[idx] = pkg; } else { paquetes.push(pkg); }
-      renderPaquetes();
-      closePkgModal();
+      renderPaquetes(); closePkgModal();
     }
 
-    function deletePkg(idx) {
-      if (!confirm('¿Eliminar este paquete?')) return;
-      paquetes.splice(idx, 1);
-      renderPaquetes();
-    }
+    function deletePkg(idx) { if (!confirm('¿Eliminar este paquete?')) return; paquetes.splice(idx, 1); renderPaquetes(); }
 
     async function loadContent() {
       try {
-        const res = await fetch(API);
+        const res = await CreaCRM.api.apiFetch(API);
         if (!res.ok) { renderPaquetes(); return; }
         const data = await res.json();
         const blocks = data.bloques || {};
-        TEXT_FIELDS.concat(NUM_FIELDS).forEach(id => {
-          const el = document.getElementById(id);
-          if (el && blocks[id] !== undefined) el.value = blocks[id];
-        });
+        TEXT_FIELDS.concat(NUM_FIELDS).forEach(id => { const el = document.getElementById(id); if (el && blocks[id] !== undefined) el.value = blocks[id]; });
         try { paquetes = JSON.parse(blocks['com-paquetes'] || '[]'); } catch { paquetes = []; }
         renderPaquetes();
-      } catch (e) {
-        console.warn('Sin datos previos.');
-        renderPaquetes();
-      }
+      } catch (e) { console.warn('Sin datos previos.'); renderPaquetes(); }
     }
 
     async function saveContent() {
       const blocks = {};
-      TEXT_FIELDS.concat(NUM_FIELDS).forEach(id => {
-        const el = document.getElementById(id);
-        if (el) blocks[id] = el.value.trim();
-      });
+      TEXT_FIELDS.concat(NUM_FIELDS).forEach(id => { const el = document.getElementById(id); if (el) blocks[id] = el.value.trim(); });
       blocks['com-paquetes'] = JSON.stringify(paquetes);
-
       try {
-        const res = await fetch(API, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ blocks, estado: 'publicada' })
-        });
-        if (res.ok) { showToast('Cambios guardados correctamente', 'ok'); }
-        else { showToast('Error al guardar. Verifica tu sesión.', 'err'); }
-      } catch (e) {
-        showToast('Error de red al guardar.', 'err');
-      }
+        const res = await CreaCRM.api.apiFetch(API, { method: 'POST', body: JSON.stringify({ blocks, estado: 'publicada' }) });
+        if (res.ok) { CreaCRM.ui.showToast('Cambios guardados', 'ok'); } else { CreaCRM.ui.showToast('Error al guardar', 'err'); }
+      } catch (e) { CreaCRM.ui.showToast('Error de red', 'err'); }
     }
 
-    document.getElementById('pkg-modal-overlay').addEventListener('click', e => {
-      if (e.target === document.getElementById('pkg-modal-overlay')) closePkgModal();
-    });
-
-    function toggleSidebar() {
-      const sidebar = document.getElementById('dash-sidebar');
-      const overlay = document.getElementById('dash-overlay');
-      if (sidebar) sidebar.classList.toggle('open');
-      if (overlay) overlay.classList.toggle('active');
-    }
-
-    document.getElementById('btn-menu').addEventListener('click', toggleSidebar);
-    document.getElementById('dash-overlay').addEventListener('click', toggleSidebar);
-    document.addEventListener('DOMContentLoaded', () => { loadContent(); loadClientsPerPackage(); });
+    document.getElementById('pkg-modal-overlay').addEventListener('click', e => { if (e.target === document.getElementById('pkg-modal-overlay')) closePkgModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closePkgModal(); });
 
     async function loadClientsPerPackage() {
       const container = document.getElementById('clients-per-package');
       try {
-        const res = await fetch('/api/clients/crud.php');
+        const res = await CreaCRM.api.apiFetch('/api/clients/crud.php');
         if (!res.ok) { container.innerHTML = '<div class="pkg-clients__empty">Error cargando clientes</div>'; return; }
         const data = await res.json();
         const clients = data.clients || [];
         const pkgCounts = { basico: [], premium: [], gold: [] };
-        clients.forEach(c => {
-          if (c.package && pkgCounts[c.package] !== undefined) {
-            pkgCounts[c.package].push(c);
-          }
-        });
+        clients.forEach(c => { if (c.package && pkgCounts[c.package] !== undefined) pkgCounts[c.package].push(c); });
         const pkgLabels = { basico: 'Básico', premium: 'Premium', gold: 'Gold' };
         let html = '<div class="pkg-clients">';
-        Object.keys(pkgCounts).forEach(pkg => {
-          const count = pkgCounts[pkg].length;
-          html += `<div class="pkg-clients__item">
-            <span class="pkg-clients__name">${pkgLabels[pkg]}</span>
-            <span class="pkg-clients__count">${count} cliente${count !== 1 ? 's' : ''}</span>
-          </div>`;
-        });
-        html += '</div>';
-        container.innerHTML = html;
-      } catch (e) {
-        container.innerHTML = '<div class="pkg-clients__empty">No se pudieron cargar los clientes</div>';
-      }
+        Object.keys(pkgCounts).forEach(pkg => { const count = pkgCounts[pkg].length; html += `<div class="pkg-clients__item"><span class="pkg-clients__name">${pkgLabels[pkg]}</span><span class="pkg-clients__count">${count} cliente${count !== 1 ? 's' : ''}</span></div>`; });
+        html += '</div>'; container.innerHTML = html;
+      } catch (e) { container.innerHTML = '<div class="pkg-clients__empty">No se pudieron cargar los clientes</div>'; }
     }
+
+    document.addEventListener('DOMContentLoaded', () => { loadContent(); loadClientsPerPackage(); });
   </script>
 </body>
 </html>

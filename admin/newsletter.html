@@ -8,27 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/admin/css/dashboard.css">
-  <style>
-    .cms-container { padding: 1.5rem; background: var(--crea-white); border-radius: 0.75rem; border: 1px solid var(--crea-gris-border); }
-    .cms-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-    .cms-header h2 { font-size: 1rem; font-weight: 700; color: var(--crea-noche); }
-    .cms-table { width: 100%; border-collapse: collapse; }
-    .cms-table th, .cms-table td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--crea-gris-border); font-size: 0.875rem; }
-    .cms-table th { color: var(--crea-gris-text); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.75rem; }
-    .cms-table tr:hover { background: #f9fafb; }
-    .btn-export { background: #0A8F6C; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-weight: 500; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem; }
-    .btn-export:hover { background: #078059; }
-    .btn-export svg { width: 18px; height: 18px; }
-    .stat-card { background: var(--crea-white); border-radius: 0.75rem; padding: 1.25rem; border: 1px solid var(--crea-gris-border); text-align: center; }
-    .stat-card__value { font-size: 2rem; font-weight: 700; color: var(--crea-verde); }
-    .stat-card__label { font-size: 0.75rem; color: var(--crea-gris-text); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-top: 0.25rem; }
-    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-    .badge-activo { background: #d1fae5; color: #065f46; font-size: 0.625rem; padding: 0.125rem 0.5rem; border-radius: 9999px; font-weight: 600; text-transform: uppercase; }
-    .badge-inactivo { background: #fef3c7; color: #92400e; font-size: 0.625rem; padding: 0.125rem 0.5rem; border-radius: 9999px; font-weight: 600; text-transform: uppercase; }
-    .topbar-actions { display: flex; gap: 0.75rem; align-items: center; }
-    .btn-secondary-link { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-weight: 500; font-size: 0.8125rem; text-decoration: none; transition: background .15s; }
-    .btn-secondary-link:hover { background: #e5e7eb; }
-  </style>
 </head>
 <body>
 
@@ -53,6 +32,17 @@
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         Páginas
       </a>
+
+      <div class="dash-nav__section-title">Editorial</div>
+      <a href="/admin/editorial.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+        Propuestas IA
+      </a>
+      <a href="/admin/calendario.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Calendario
+      </a>
+
       <div class="dash-nav__section-title">Programas y Secciones</div>
       <a href="/admin/tercer-tiempo.html" class="dash-nav__link">
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
@@ -62,12 +52,18 @@
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
         Newsletter
       </a>
+
       <div class="dash-nav__section-title">Comercial</div>
       <a href="/admin/comercial.html" class="dash-nav__link">
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         Paquetes / Comercial
       </a>
+      <a href="/admin/clientes.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        Clientes
+      </a>
     </nav>
+
     <div class="dash-sidebar__footer">
       <a href="/" class="dash-sidebar__site-link" target="_blank">
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
@@ -83,37 +79,52 @@
       </button>
       <span class="dash-topbar__title">Gestor de Newsletter</span>
     </div>
-    <div class="topbar-actions">
-      <a href="/" target="_blank" class="btn-secondary-link">Ver sitio público</a>
+    <div style="display:flex;gap:0.75rem;align-items:center;">
+      <button class="btn btn--success btn--sm" onclick="exportCSV()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        Exportar CSV
+      </button>
     </div>
   </header>
 
   <main class="dash-main">
 
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-card__value" id="stat-total">0</div>
-        <div class="stat-card__label">Total suscriptores</div>
+    <div class="dash-stats">
+      <div class="dash-stat-card">
+        <div class="dash-stat-card__label">Total suscriptores</div>
+        <div class="dash-stat-card__value" id="stat-total">0</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-card__value" id="stat-activos">0</div>
-        <div class="stat-card__label">Activos</div>
+      <div class="dash-stat-card">
+        <div class="dash-stat-card__label">Activos</div>
+        <div class="dash-stat-card__value green" id="stat-activos">0</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-card__value" id="stat-inactivos">0</div>
-        <div class="stat-card__label">Inactivos</div>
+      <div class="dash-stat-card">
+        <div class="dash-stat-card__label">Inactivos</div>
+        <div class="dash-stat-card__value red" id="stat-inactivos">0</div>
       </div>
     </div>
 
-    <div class="cms-container">
-      <div class="cms-header">
-        <h2>Suscriptores registrados</h2>
-        <button class="btn-export" onclick="exportCSV()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-          Exportar CSV
-        </button>
+    <div class="crm-card">
+      <div class="crm-card__header">
+        <span class="crm-card__title">Suscriptores registrados</span>
       </div>
-      <table class="cms-table" id="subscribers-table">
+      <div style="padding:1rem 1.25rem;">
+        <div class="search-bar">
+          <div class="search-input-wrapper">
+            <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" class="search-input" id="search-input" placeholder="Buscar por email o WhatsApp...">
+          </div>
+          <div class="filter-group">
+            <label>Estado</label>
+            <select class="filter-select" id="filter-active">
+              <option value="">Todos</option>
+              <option value="true">Activos</option>
+              <option value="false">Inactivos</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <table class="data-table" id="subscribers-table">
         <thead>
           <tr>
             <th>Email</th>
@@ -122,10 +133,9 @@
             <th>Estado</th>
           </tr>
         </thead>
-        <tbody>
-          <tr><td colspan="4" style="text-align:center;">Cargando...</td></tr>
-        </tbody>
+        <tbody><tr><td colspan="4" class="empty-state"><div class="spinner"></div><div style="margin-top:1rem;">Cargando...</div></td></tr></tbody>
       </table>
+      <div id="pagination-container"></div>
     </div>
 
   </main>
@@ -134,84 +144,86 @@
   <script>
     const API = '/api/newsletter/list.php';
     let subscribers = [];
+    let currentPage = 1;
+    const pageSize = 15;
 
-    function toggleSidebar() {
-      const sidebar = document.getElementById('dash-sidebar');
-      const overlay = document.getElementById('dash-overlay');
-      if (sidebar) sidebar.classList.toggle('open');
-      if (overlay) overlay.classList.toggle('active');
-    }
-
-    function formatDate(dateStr) {
-      if (!dateStr) return '—';
-      return new Date(dateStr).toLocaleDateString('es-MX', {
-        day: 'numeric', month: 'short', year: 'numeric'
+    function getFiltered() {
+      const search = document.getElementById('search-input').value.toLowerCase();
+      const activeFilter = document.getElementById('filter-active').value;
+      return subscribers.filter(s => {
+        if (search && !(s.email || '').toLowerCase().includes(search) && !(s.whatsapp || '').toLowerCase().includes(search)) return false;
+        if (activeFilter && String(s.active) !== activeFilter) return false;
+        return true;
       });
-    }
-
-    function updateStats() {
-      const total = subscribers.length;
-      const activos = subscribers.filter(s => s.active === true).length;
-      const inactivos = subscribers.filter(s => s.active === false).length;
-      document.getElementById('stat-total').textContent = total;
-      document.getElementById('stat-activos').textContent = activos;
-      document.getElementById('stat-inactivos').textContent = inactivos;
     }
 
     function renderTable() {
       const tbody = document.querySelector('#subscribers-table tbody');
-      if (subscribers.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay suscriptores registrados.</td></tr>';
+      const filtered = getFiltered();
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state"><div class="empty-state__icon">📧</div><div class="empty-state__text">No hay suscriptores</div></td></tr>';
+        CreaCRM.pagination.createPagination(document.getElementById('pagination-container'), 0, 1, pageSize, () => {});
         return;
       }
-      tbody.innerHTML = subscribers.map(sub => `
+      const totalPages = Math.ceil(filtered.length / pageSize);
+      if (currentPage > totalPages) currentPage = totalPages;
+      const start = (currentPage - 1) * pageSize;
+      const pageItems = filtered.slice(start, start + pageSize);
+
+      tbody.innerHTML = pageItems.map(sub => `
         <tr>
           <td style="font-weight:500;">${sub.email || '—'}</td>
           <td>${sub.whatsapp || '—'}</td>
           <td>${formatDate(sub.fecha_suscripcion || sub.created_at)}</td>
-          <td><span class="${sub.active !== false ? 'badge-activo' : 'badge-inactivo'}">${sub.active !== false ? 'Activo' : 'Inactivo'}</span></td>
+          <td><span class="dash-badge" style="background:${sub.active !== false ? '#d1fae5;color:#065f46' : '#fee2e2;color:#991b1b'}">${sub.active !== false ? 'Activo' : 'Inactivo'}</span></td>
         </tr>
       `).join('');
+
+      CreaCRM.pagination.createPagination(document.getElementById('pagination-container'), filtered.length, currentPage, pageSize, (page) => {
+        currentPage = page; renderTable();
+      });
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      return new Date(dateStr).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function updateStats() {
+      document.getElementById('stat-total').textContent = subscribers.length;
+      document.getElementById('stat-activos').textContent = subscribers.filter(s => s.active === true).length;
+      document.getElementById('stat-inactivos').textContent = subscribers.filter(s => s.active === false).length;
     }
 
     async function loadSubscribers() {
       try {
-        const res = await fetch(API);
-        if (!res.ok) throw new Error('Error loading');
+        const res = await CreaCRM.api.apiFetch(API);
         const data = await res.json();
         subscribers = data.subscribers || [];
         updateStats();
+        currentPage = 1;
         renderTable();
       } catch (err) {
         console.error('Error:', err);
-        document.querySelector('#subscribers-table tbody').innerHTML = '<tr><td colspan="4" style="text-align:center;">Error cargando suscriptores. Verifica tu sesión.</td></tr>';
+        document.querySelector('#subscribers-table tbody').innerHTML = '<tr><td colspan="4" class="empty-state"><div class="empty-state__icon">⚠️</div><div class="empty-state__text">Error cargando suscriptores</div></td></tr>';
       }
     }
 
     function exportCSV() {
-      if (subscribers.length === 0) {
-        alert('No hay datos para exportar.');
-        return;
-      }
-      const headers = ['Email', 'WhatsApp', 'Fecha suscripción', 'Activo'];
-      const rows = subscribers.map(s => [
-        s.email || '',
-        s.whatsapp || '',
-        s.fecha_suscripcion || s.created_at || '',
-        s.active !== false ? 'Sí' : 'No'
-      ]);
-      const csvContent = [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
-      const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `subscribers_crea_${new Date().toISOString().split('T')[0]}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
+      const filtered = getFiltered();
+      if (!filtered.length) { CreaCRM.ui.showToast('No hay datos para exportar', 'err'); return; }
+      const data = filtered.map(s => ({
+        Email: s.email || '',
+        WhatsApp: s.whatsapp || '',
+        'Fecha suscripción': s.fecha_suscripcion || s.created_at || '',
+        Activo: s.active !== false ? 'Sí' : 'No'
+      }));
+      CreaCRM.export.exportToCSV(data, 'subscribers_crea');
     }
 
-    document.getElementById('btn-menu').addEventListener('click', toggleSidebar);
-    document.getElementById('dash-overlay').addEventListener('click', toggleSidebar);
+    document.getElementById('search-input').addEventListener('input', () => { currentPage = 1; renderTable(); });
+    document.getElementById('filter-active').addEventListener('change', () => { currentPage = 1; renderTable(); });
+
     document.addEventListener('DOMContentLoaded', loadSubscribers);
   </script>
 </body>

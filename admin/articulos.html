@@ -8,32 +8,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/admin/css/dashboard.css">
-  <!-- Include CKEditor for robust content editing -->
   <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
   <style>
-    .cms-container { padding: 1.5rem; background: var(--crea-white); border-radius: 0.75rem; border: 1px solid var(--crea-gris-border); }
-    .cms-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-    .cms-table { width: 100%; border-collapse: collapse; }
-    .cms-table th, .cms-table td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--crea-gris-border); font-size: 0.875rem; }
-    .cms-table th { color: var(--crea-gris-text); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.75rem; }
-    .cms-table tr:hover { background: #f9fafb; }
-    .btn-primary { background: var(--crea-rojo); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-weight: 500; }
-    .btn-secondary { background: var(--crea-gris-bg); color: var(--crea-text); border: 1px solid var(--crea-gris-border); padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-weight: 500; }
-    .btn-danger { background: transparent; color: var(--crea-rojo); border: none; cursor: pointer; text-decoration: underline; font-size: 0.875rem; }
-    
-    /* Form */
-    #article-form-view { display: none; }
-    .form-group { margin-bottom: 1.25rem; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.875rem; }
-    .form-group input, .form-group select { width: 100%; padding: 0.625rem; border: 1px solid var(--crea-gris-border); border-radius: 0.5rem; font-family: 'Inter', sans-serif; font-size: 0.875rem; }
-    .ck-editor__editable_inline { min-height: 400px; }
+    .editor-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
+    @media (max-width: 900px) { .editor-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
   <div class="dash-overlay" id="dash-overlay"></div>
 
-  <!-- Sidebar (Same as dashboard) -->
   <aside class="dash-sidebar" id="dash-sidebar">
     <div class="dash-sidebar__header">
       <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="dash-sidebar__logo">
@@ -49,6 +33,21 @@
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
         Artículos
       </a>
+      <a href="/admin/paginas.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        Páginas
+      </a>
+
+      <div class="dash-nav__section-title">Editorial</div>
+      <a href="/admin/editorial.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+        Propuestas IA
+      </a>
+      <a href="/admin/calendario.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Calendario
+      </a>
+
       <div class="dash-nav__section-title">Programas y Secciones</div>
       <a href="/admin/tercer-tiempo.html" class="dash-nav__link">
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
@@ -58,15 +57,26 @@
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
         Newsletter
       </a>
+
       <div class="dash-nav__section-title">Comercial</div>
       <a href="/admin/comercial.html" class="dash-nav__link">
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         Paquetes / Comercial
       </a>
+      <a href="/admin/clientes.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        Clientes
+      </a>
     </nav>
+
+    <div class="dash-sidebar__footer">
+      <a href="/" class="dash-sidebar__site-link" target="_blank">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        Ver sitio público
+      </a>
+    </div>
   </aside>
 
-  <!-- Topbar -->
   <header class="dash-topbar">
     <div style="display:flex;align-items:center;gap:0.75rem;">
       <button class="dash-topbar__menu-btn" id="btn-menu" aria-label="Menú">
@@ -74,21 +84,46 @@
       </button>
       <span class="dash-topbar__title">Gestor de Artículos</span>
     </div>
-    <div class="dash-topbar__user">
-      <a href="/" target="_blank" class="btn-secondary" style="font-size:0.75rem; text-decoration:none;">Ver sitio público</a>
+    <div style="display:flex;gap:0.75rem;align-items:center;">
+      <button class="btn btn--primary btn--sm" onclick="showForm()">+ Nuevo Artículo</button>
     </div>
   </header>
 
-  <!-- Main Content -->
   <main class="dash-main">
-    
-    <!-- List View -->
-    <div class="cms-container" id="list-view">
-      <div class="cms-header">
-        <h2>Todos los Artículos</h2>
-        <button class="btn-primary" onclick="showForm()">+ Nuevo Artículo</button>
+    <div class="crm-card" id="list-view">
+      <div class="crm-card__header">
+        <span class="crm-card__title">Todos los Artículos</span>
+        <button class="btn btn--secondary btn--sm" onclick="exportArticlesCSV()">Exportar CSV</button>
       </div>
-      <table class="cms-table" id="articles-table">
+      <div style="padding:1rem 1.25rem;">
+        <div class="search-bar">
+          <div class="search-input-wrapper">
+            <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" class="search-input" id="search-input" placeholder="Buscar por título, autor, categoría...">
+          </div>
+          <div class="filter-group">
+            <label>Estado</label>
+            <select class="filter-select" id="filter-estado">
+              <option value="">Todos</option>
+              <option value="publicada">Publicada</option>
+              <option value="borrador">Borrador</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Categoría</label>
+            <select class="filter-select" id="filter-categoria">
+              <option value="">Todas</option>
+              <option value="local">Local</option>
+              <option value="cultura">Cultura</option>
+              <option value="economia">Economía</option>
+              <option value="deportes">Deportes</option>
+              <option value="opinion">Opinión</option>
+              <option value="entretenimiento">Entretenimiento</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <table class="data-table" id="articles-table">
         <thead>
           <tr>
             <th>Título</th>
@@ -99,40 +134,36 @@
             <th>Acciones</th>
           </tr>
         </thead>
-        <tbody>
-          <tr><td colspan="6" style="text-align:center;">Cargando...</td></tr>
-        </tbody>
+        <tbody><tr><td colspan="6" class="empty-state"><div class="spinner"></div><div style="margin-top:1rem;">Cargando...</div></td></tr></tbody>
       </table>
+      <div id="pagination-container"></div>
     </div>
 
-    <!-- Form View -->
-    <div class="cms-container" id="article-form-view">
-      <div class="cms-header">
-        <h2 id="form-title">Editar Artículo</h2>
-        <div>
-          <button class="btn-secondary" onclick="hideForm()">Cancelar</button>
-          <button class="btn-primary" onclick="saveArticle()" style="background:#0A8F6C;">Guardar Artículo</button>
+    <div class="crm-card" id="article-form-view" style="display:none;">
+      <div class="crm-card__header">
+        <span class="crm-card__title" id="form-title">Editar Artículo</span>
+        <div style="display:flex;gap:0.5rem;">
+          <button class="btn btn--secondary btn--sm" onclick="hideForm()">Cancelar</button>
+          <button class="btn btn--success btn--sm" onclick="saveArticle()" id="btn-save-art">Guardar</button>
         </div>
       </div>
-      
-      <form id="article-form">
+      <form id="article-form" style="padding:1.25rem;">
         <input type="hidden" id="art-id">
-        <div style="display:grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+        <div class="editor-grid">
           <div>
             <div class="form-group">
               <label>Título *</label>
-              <input type="text" id="art-titulo" required>
+              <input type="text" id="art-titulo" required maxlength="200">
             </div>
             <div class="form-group">
               <label>Subtítulo / Bajada</label>
-              <input type="text" id="art-subtitulo">
+              <input type="text" id="art-subtitulo" maxlength="300">
             </div>
             <div class="form-group">
-              <label>Contenido HTML *</label>
+              <label>Contenido *</label>
               <textarea id="art-contenido"></textarea>
             </div>
           </div>
-          
           <div>
             <div class="form-group">
               <label>Estado</label>
@@ -154,21 +185,20 @@
             </div>
             <div class="form-group">
               <label>Autor</label>
-              <input type="text" id="art-autor">
+              <input type="text" id="art-autor" maxlength="100">
             </div>
             <div class="form-group">
               <label>URL Imagen Destacada</label>
-              <input type="text" id="art-imagen" placeholder="https://...">
+              <input type="url" id="art-imagen" placeholder="https://...">
             </div>
             <div class="form-group">
               <label>Meta Descripción (SEO)</label>
-              <input type="text" id="art-meta-desc">
+              <input type="text" id="art-meta-desc" maxlength="160">
             </div>
           </div>
         </div>
       </form>
     </div>
-
   </main>
 
   <script src="/admin/js/session-guard.js"></script>
@@ -176,46 +206,73 @@
     const API = '/api/articles/crud.php';
     let editorInstance;
     let articles = [];
+    let currentPage = 1;
+    const pageSize = 15;
 
-    // Init CKEditor
-    ClassicEditor
-      .create(document.querySelector('#art-contenido'))
-      .then(editor => { editorInstance = editor; })
-      .catch(error => { console.error(error); });
+    ClassicEditor.create(document.querySelector('#art-contenido')).then(editor => { editorInstance = editor; }).catch(error => console.error(error));
 
-    async function loadArticles() {
-      const res = await fetch(API);
-      const data = await res.json();
-      articles = data.articles || [];
-      renderTable();
+    function getFilteredArticles() {
+      const search = document.getElementById('search-input').value.toLowerCase();
+      const estado = document.getElementById('filter-estado').value;
+      const categoria = document.getElementById('filter-categoria').value;
+      return articles.filter(a => {
+        if (search && !(a.titulo || '').toLowerCase().includes(search) && !(a.autor || '').toLowerCase().includes(search)) return false;
+        if (estado && a.estado !== estado) return false;
+        if (categoria && a.categoria !== categoria) return false;
+        return true;
+      });
     }
 
     function renderTable() {
       const tbody = document.querySelector('#articles-table tbody');
-      if (articles.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay artículos.</td></tr>';
+      const filtered = getFilteredArticles();
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><div class="empty-state__icon">📝</div><div class="empty-state__text">No hay artículos</div></td></tr>';
+        CreaCRM.pagination.createPagination(document.getElementById('pagination-container'), 0, 1, pageSize, () => {});
         return;
       }
-      
-      tbody.innerHTML = articles.map(art => `
+      const totalPages = Math.ceil(filtered.length / pageSize);
+      if (currentPage > totalPages) currentPage = totalPages;
+      const start = (currentPage - 1) * pageSize;
+      const pageItems = filtered.slice(start, start + pageSize);
+
+      tbody.innerHTML = pageItems.map(art => `
         <tr>
-          <td style="font-weight:500;">${art.titulo}</td>
-          <td><span class="dash-badge">${art.categoria}</span></td>
-          <td>${art.autor}</td>
+          <td style="font-weight:500;">${escapeHtml(art.titulo)}</td>
+          <td><span class="dash-badge" style="background:#eff6ff;color:#1e40af;">${art.categoria || '—'}</span></td>
+          <td>${escapeHtml(art.autor || '—')}</td>
           <td><span class="dash-badge dash-badge--${art.estado === 'publicada' ? 'published' : 'draft'}">${art.estado}</span></td>
-          <td>${new Date(art.fecha_publicacion || art.created_at).toLocaleDateString('es-MX')}</td>
+          <td>${formatDate(art.fecha_publicacion || art.created_at)}</td>
           <td>
-            <button class="btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" onclick="editArticle('${art.id}')">Editar</button>
-            <button class="btn-danger" style="margin-left:0.5rem;" onclick="deleteArticle('${art.id}')">Eliminar</button>
+            <div style="display:flex;gap:0.5rem;">
+              <button class="btn btn--secondary btn--sm" onclick="editArticle('${art.id}')">Editar</button>
+              <button class="btn btn--danger btn--sm" onclick="deleteArticle('${art.id}')">Eliminar</button>
+            </div>
           </td>
         </tr>
       `).join('');
+
+      CreaCRM.pagination.createPagination(document.getElementById('pagination-container'), filtered.length, currentPage, pageSize, (page) => {
+        currentPage = page;
+        renderTable();
+      });
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      return new Date(dateStr).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
     }
 
     function showForm(art = null) {
       document.getElementById('list-view').style.display = 'none';
       document.getElementById('article-form-view').style.display = 'block';
-      
       if (art) {
         document.getElementById('form-title').textContent = 'Editar Artículo';
         document.getElementById('art-id').value = art.id;
@@ -246,52 +303,77 @@
     }
 
     async function deleteArticle(id) {
-      if (!confirm('¿Estás seguro de eliminar este artículo? Esta acción no se puede deshacer.')) return;
-      await fetch(`${API}?id=${id}`, { method: 'DELETE' });
-      loadArticles();
+      if (!confirm('¿Eliminar este artículo?')) return;
+      try {
+        await CreaCRM.api.apiFetch(`${API}?id=${id}`, { method: 'DELETE' });
+        CreaCRM.ui.showToast('Artículo eliminado', 'ok');
+        await loadArticles();
+      } catch (e) { CreaCRM.ui.showToast('Error al eliminar', 'err'); }
     }
 
     async function saveArticle() {
+      const titulo = document.getElementById('art-titulo').value.trim();
+      if (!titulo) { CreaCRM.ui.showToast('El título es requerido', 'err'); return; }
+
+      const btn = document.getElementById('btn-save-art');
+      btn.disabled = true; btn.textContent = 'Guardando...';
+
       const id = document.getElementById('art-id').value;
-      const isNew = !id;
-      
       const payload = {
         id: id || undefined,
-        titulo: document.getElementById('art-titulo').value,
-        subtitulo: document.getElementById('art-subtitulo').value,
-        extracto: document.getElementById('art-subtitulo').value,
+        titulo,
+        subtitulo: document.getElementById('art-subtitulo').value.trim(),
+        extracto: document.getElementById('art-subtitulo').value.trim(),
         contenido_html: editorInstance ? editorInstance.getData() : '',
-        autor: document.getElementById('art-autor').value,
+        autor: document.getElementById('art-autor').value.trim(),
         categoria: document.getElementById('art-categoria').value,
-        imagen_destacada: document.getElementById('art-imagen').value,
-        meta_description: document.getElementById('art-meta-desc').value,
+        imagen_destacada: document.getElementById('art-imagen').value.trim(),
+        meta_description: document.getElementById('art-meta-desc').value.trim(),
         estado: document.getElementById('art-estado').value,
       };
 
-      if (!payload.titulo) {
-        alert('El título es requerido.');
-        return;
+      try {
+        await CreaCRM.api.apiFetch(API, {
+          method: id ? 'PATCH' : 'POST',
+          body: JSON.stringify(payload)
+        });
+        CreaCRM.ui.showToast(id ? 'Artículo actualizado' : 'Artículo creado', 'ok');
+        hideForm();
+        await loadArticles();
+      } catch (e) {
+        CreaCRM.ui.showToast('Error al guardar', 'err');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Guardar';
       }
-
-      await fetch(API, {
-        method: isNew ? 'POST' : 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      
-      hideForm();
-      loadArticles();
     }
 
-    // Init
-    document.getElementById('btn-menu').addEventListener('click', () => {
-      document.getElementById('dash-sidebar').classList.toggle('open');
-      document.getElementById('dash-overlay').classList.toggle('active');
+    async function loadArticles() {
+      try {
+        const res = await CreaCRM.api.apiFetch(API);
+        const data = await res.json();
+        articles = data.articles || [];
+        currentPage = 1;
+        renderTable();
+      } catch (e) {
+        document.querySelector('#articles-table tbody').innerHTML = '<tr><td colspan="6" class="empty-state"><div class="empty-state__icon">⚠️</div><div class="empty-state__text">Error cargando</div></td></tr>';
+      }
+    }
+
+    function exportArticlesCSV() {
+      const filtered = getFilteredArticles();
+      if (!filtered.length) { CreaCRM.ui.showToast('No hay datos', 'err'); return; }
+      const data = filtered.map(a => ({ Titulo: a.titulo || '', Categoria: a.categoria || '', Autor: a.autor || '', Estado: a.estado || '', Fecha: a.fecha_publicacion || a.created_at || '' }));
+      CreaCRM.export.exportToCSV(data, 'articulos_crea');
+    }
+
+    document.getElementById('search-input').addEventListener('input', () => { currentPage = 1; renderTable(); });
+    document.getElementById('filter-estado').addEventListener('change', () => { currentPage = 1; renderTable(); });
+    document.getElementById('filter-categoria').addEventListener('change', () => { currentPage = 1; renderTable(); });
+
+    CreaCRM.ui.initKeyboardShortcuts({
+      'n': () => { if (document.getElementById('list-view').style.display !== 'none') showForm(); }
     });
-    document.getElementById('dash-overlay').addEventListener('click', () => {
-      document.getElementById('dash-sidebar').classList.remove('open');
-      document.getElementById('dash-overlay').classList.remove('active');
-    });
+
     document.addEventListener('DOMContentLoaded', loadArticles);
   </script>
 </body>

@@ -12,31 +12,16 @@
     .cms-section { background: var(--crea-white); border-radius: 0.75rem; border: 1px solid var(--crea-gris-border); padding: 1.5rem; margin-bottom: 1.5rem; }
     .cms-section__title { font-size: 1rem; font-weight: 700; color: var(--crea-noche); margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--crea-gris-border); display: flex; align-items: center; gap: 0.5rem; }
     .cms-section__title span.icon { font-size: 1.1rem; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .form-grid--full { grid-column: 1 / -1; }
-    .form-group { margin-bottom: 1rem; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 0.375rem; font-size: 0.8125rem; color: #374151; }
-    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid var(--crea-gris-border); border-radius: 0.5rem; font-family: 'Inter', sans-serif; font-size: 0.875rem; color: #111827; background: #fafafa; transition: border-color .15s; box-sizing: border-box; }
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #0A8F6C; background: white; }
-    .form-group textarea { resize: vertical; min-height: 90px; }
     .form-group textarea.mono { font-family: 'Courier New', monospace; font-size: 0.8125rem; min-height: 110px; }
-    .form-group .hint { font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem; }
-    .btn-save { background: #0A8F6C; color: white; border: none; padding: 0.625rem 1.5rem; border-radius: 0.5rem; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: background .15s; }
-    .btn-save:hover { background: #078059; }
-    .topbar-actions { display: flex; gap: 0.75rem; align-items: center; }
-    .btn-secondary-link { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-weight: 500; font-size: 0.8125rem; text-decoration: none; transition: background .15s; }
-    .btn-secondary-link:hover { background: #e5e7eb; }
-    .status-badge { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
     .status-badge--live { background: #fef2f2; color: #dc2626; }
     .status-badge--active { background: #f0fdf4; color: #16a34a; }
     .status-badge--replay { background: #eff6ff; color: #2563eb; }
-    #toast { position: fixed; bottom: 1.5rem; right: 1.5rem; padding: 0.75rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; z-index: 9999; display: none; }
-    #toast.ok { background: #0A8F6C; color: white; }
-    #toast.err { background: #dc2626; color: white; }
   </style>
 </head>
 <body>
   <div class="dash-overlay" id="dash-overlay"></div>
+
   <aside class="dash-sidebar" id="dash-sidebar">
     <div class="dash-sidebar__header">
       <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="dash-sidebar__logo">
@@ -56,6 +41,17 @@
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         Páginas
       </a>
+
+      <div class="dash-nav__section-title">Editorial</div>
+      <a href="/admin/editorial.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+        Propuestas IA
+      </a>
+      <a href="/admin/calendario.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Calendario
+      </a>
+
       <div class="dash-nav__section-title">Programas y Secciones</div>
       <a href="/admin/tercer-tiempo.html" class="dash-nav__link active">
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
@@ -65,12 +61,24 @@
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
         Newsletter
       </a>
+
       <div class="dash-nav__section-title">Comercial</div>
       <a href="/admin/comercial.html" class="dash-nav__link">
         <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         Paquetes / Comercial
       </a>
+      <a href="/admin/clientes.html" class="dash-nav__link">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        Clientes / Anunciantes
+      </a>
     </nav>
+
+    <div class="dash-sidebar__footer">
+      <a href="/" class="dash-sidebar__site-link" target="_blank">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        Ver sitio público
+      </a>
+    </div>
   </aside>
 
   <header class="dash-topbar">
@@ -79,11 +87,11 @@
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
       <span class="dash-topbar__title">Gestor: Tercer Tiempo</span>
-      <span class="status-badge status-badge--active" id="estado-badge">● Activo</span>
+      <span class="status-badge status-badge--active" id="estado-badge" style="display:inline-flex;align-items:center;gap:0.375rem;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;">● Activo</span>
     </div>
-    <div class="topbar-actions">
-      <a href="/pages/tercer-tiempo.html" target="_blank" class="btn-secondary-link">Ver página pública ↗</a>
-      <button class="btn-save" onclick="saveContent()">Guardar cambios</button>
+    <div style="display:flex;gap:0.75rem;align-items:center;">
+      <a href="/pages/tercer-tiempo.html" target="_blank" class="btn btn--secondary btn--sm">Ver página pública ↗</a>
+      <button class="btn btn--success btn--sm" onclick="saveContent()">Guardar cambios</button>
     </div>
   </header>
 
@@ -174,8 +182,6 @@
 
   </main>
 
-  <div id="toast"></div>
-
   <script src="/admin/js/session-guard.js"></script>
   <script>
     const API = '/api/content/index.php?id=tercer-tiempo';
@@ -187,14 +193,6 @@
       'tt-ep-embed','tt-ep-tags'
     ];
 
-    function showToast(msg, type) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = type;
-      t.style.display = 'block';
-      setTimeout(() => { t.style.display = 'none'; }, 3000);
-    }
-
     function updateEstadoBadge(val) {
       const b = document.getElementById('estado-badge');
       if (val === 'en-vivo') { b.className = 'status-badge status-badge--live'; b.textContent = '● En vivo'; }
@@ -204,7 +202,7 @@
 
     async function loadContent() {
       try {
-        const res = await fetch(API);
+        const res = await CreaCRM.api.apiFetch(API);
         if (!res.ok) return;
         const data = await res.json();
         const blocks = data.bloques || {};
@@ -228,36 +226,22 @@
       });
 
       try {
-        const res = await fetch(API, {
+        const res = await CreaCRM.api.apiFetch(API, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ blocks, estado: 'publicada' })
         });
         if (res.ok) {
-          showToast('Cambios guardados correctamente', 'ok');
+          CreaCRM.ui.showToast('Cambios guardados correctamente', 'ok');
           updateEstadoBadge(blocks['tt-estado']);
         } else {
-          showToast('Error al guardar. Verifica tu sesión.', 'err');
+          CreaCRM.ui.showToast('Error al guardar. Verifica tu sesión.', 'err');
         }
       } catch (e) {
-        showToast('Error de red al guardar.', 'err');
+        CreaCRM.ui.showToast('Error de red al guardar.', 'err');
       }
     }
 
-    const overlay = document.getElementById('dash-overlay');
-    if (overlay) overlay.addEventListener('click', toggleSidebar);
-
     document.addEventListener('DOMContentLoaded', loadContent);
-
-    function toggleSidebar() {
-      const sidebar = document.getElementById('dash-sidebar');
-      const overlay = document.getElementById('dash-overlay');
-      if (sidebar) sidebar.classList.toggle('open');
-      if (overlay) overlay.classList.toggle('active');
-    }
-
-    document.getElementById('btn-menu').addEventListener('click', toggleSidebar);
-    document.getElementById('dash-overlay').addEventListener('click', toggleSidebar);
   </script>
 </body>
 </html>
