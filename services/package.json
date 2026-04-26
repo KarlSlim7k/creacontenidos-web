@@ -1,0 +1,12 @@
+{
+  "name": "crea-services",
+  "private": true,
+  "type": "commonjs",
+  "dependencies": {
+    "pg": "^8.13.0"
+  },
+  "scripts": {
+    "social-listener": "node social-listener.js"
+  }
+}
+
