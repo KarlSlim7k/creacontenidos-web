@@ -34,10 +34,14 @@
     <div class="crm-card">
       <div class="crm-card__header">
         <span class="crm-card__title">Clientes registrados</span>
-        <button class="btn btn--secondary btn--sm" onclick="exportClientsCSV()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-          Exportar CSV
-        </button>
+        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+          <select class="filter-select" id="report-month" style="width:auto;min-width:7rem;"></select>
+          <input class="filter-select" id="report-year" type="number" min="2000" max="2100" style="width:5.75rem;">
+          <button class="btn btn--secondary btn--sm" onclick="exportClientsCSV()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Exportar CSV
+          </button>
+        </div>
       </div>
 
       <div style="padding:1rem 1.25rem;">
@@ -140,6 +144,7 @@
   <script src="/admin/js/session-guard.js"></script>
   <script>
     const API = '/api/clients/crud.php';
+    const REPORT_API = '/api/reports/generate.php';
     let clients = [];
     let currentPage = 1;
     const pageSize = 15;
@@ -188,9 +193,11 @@
           <td>${c.start_date || '—'}</td>
           <td><span class="dash-badge" style="background:${c.active ? '#d1fae5;color:#065f46' : '#fee2e2;color:#991b1b'}">${c.active ? 'Activo' : 'Inactivo'}</span></td>
           <td>
-            <div style="display:flex;gap:0.5rem;">
+            <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
               <button class="btn btn--secondary btn--sm" onclick="openClientModal('${c.id}')">Editar</button>
+              <button class="btn btn--secondary btn--sm" id="btn-report-${c.id}" onclick="generateMonthlyReport('${c.id}')">Reporte mensual</button>
               <button class="btn btn--danger btn--sm" onclick="deleteClient('${c.id}')">Eliminar</button>
+              <span id="report-link-${c.id}" style="font-size:0.8125rem;"></span>
             </div>
           </td>
         </tr>
@@ -200,6 +207,56 @@
         currentPage = page;
         renderClients();
       });
+    }
+
+    function setupReportControls() {
+      const monthSelect = document.getElementById('report-month');
+      const yearInput = document.getElementById('report-year');
+      const today = new Date();
+      const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      monthSelect.innerHTML = monthNames.map((name, index) => `<option value="${index + 1}">${name}</option>`).join('');
+      monthSelect.value = String(today.getMonth() + 1);
+      yearInput.value = String(today.getFullYear());
+    }
+
+    function getReportPeriod() {
+      const month = Number(document.getElementById('report-month').value);
+      const year = Number(document.getElementById('report-year').value);
+      if (!Number.isInteger(month) || month < 1 || month > 12 || !Number.isInteger(year) || year < 2000 || year > 2100) {
+        CreaCRM.ui.showToast('Selecciona mes y año válidos', 'err');
+        return null;
+      }
+      return { month, year };
+    }
+
+    async function generateMonthlyReport(clientId) {
+      const period = getReportPeriod();
+      if (!period) return;
+
+      const btn = document.getElementById('btn-report-' + clientId);
+      const link = document.getElementById('report-link-' + clientId);
+      btn.disabled = true;
+      btn.textContent = 'Generando...';
+      link.textContent = '';
+
+      try {
+        const res = await CreaCRM.api.apiFetch(REPORT_API, {
+          method: 'POST',
+          body: JSON.stringify({ client_id: clientId, month: period.month, year: period.year })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          CreaCRM.ui.showToast(data.error || 'Error al generar reporte', 'err');
+          return;
+        }
+        link.innerHTML = `<a href="${CreaCRM.ui.escapeHtml(data.url)}" target="_blank" rel="noopener">Descargar</a>`;
+        CreaCRM.ui.showToast('Reporte generado', 'ok');
+      } catch (e) {
+        CreaCRM.ui.showToast('Error de red', 'err');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Reporte mensual';
+      }
     }
 
     function openClientModal(id) {
@@ -361,7 +418,10 @@
       'n': () => { if (!document.getElementById('client-modal-overlay').classList.contains('open')) openClientModal(); }
     });
 
-    document.addEventListener('DOMContentLoaded', loadClients);
+    document.addEventListener('DOMContentLoaded', () => {
+      setupReportControls();
+      loadClients();
+    });
   </script>
 </body>
 </html>

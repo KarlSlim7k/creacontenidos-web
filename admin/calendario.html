@@ -15,6 +15,22 @@
     .cal-nav { display: flex; gap: 0.5rem; }
     .cal-nav-btn { background: var(--crea-white); border: 1px solid var(--crea-gris-border); padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; cursor: pointer; transition: all 0.2s; }
     .cal-nav-btn:hover { background: var(--crea-gris-bg); }
+    .cal-drop-grid { background: var(--crea-white); border: 1px solid var(--crea-gris-border); border-radius: 0.75rem; overflow: hidden; margin-bottom: 1.5rem; }
+    .cal-drop-grid__header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--crea-gris-border); gap: 1rem; }
+    .cal-drop-grid__title { font-size: 0.9375rem; font-weight: 600; }
+    .cal-drop-grid__hint { font-size: 0.75rem; color: var(--crea-gris-text); }
+    .cal-weekdays, .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); }
+    .cal-weekday { padding: 0.625rem; background: #F9FAFB; border-bottom: 1px solid var(--crea-gris-border); text-align: center; font-size: 0.6875rem; font-weight: 700; color: var(--crea-gris-text); text-transform: uppercase; letter-spacing: 0.05em; }
+    .cal-day-cell { min-height: 112px; padding: 0.625rem; border-right: 1px solid var(--crea-gris-border); border-bottom: 1px solid var(--crea-gris-border); background: #fff; transition: background 0.15s, box-shadow 0.15s; }
+    .cal-day-cell:nth-child(7n) { border-right: none; }
+    .cal-day-cell.is-muted { background: #F9FAFB; color: #9CA3AF; }
+    .cal-day-cell.is-today { box-shadow: inset 0 0 0 2px rgba(204, 41, 54, 0.25); }
+    .cal-day-cell.is-over { background: #ECFDF5; box-shadow: inset 0 0 0 2px var(--crea-verde); }
+    .cal-day-number { font-size: 0.8125rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .cal-day-items { display: flex; flex-direction: column; gap: 0.375rem; }
+    .cal-pill { border: none; text-align: left; width: 100%; padding: 0.375rem 0.5rem; border-radius: 0.375rem; background: #EEF2FF; color: #3730A3; font-size: 0.6875rem; font-weight: 600; line-height: 1.25; cursor: grab; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .cal-pill:active, .scheduled-item:active { cursor: grabbing; }
+    .scheduled-item.is-dragging, .cal-pill.is-dragging { opacity: 0.45; }
     .cal-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
     .scheduled-list { background: var(--crea-white); border-radius: 0.75rem; border: 1px solid var(--crea-gris-border); overflow: hidden; }
     .scheduled-list__header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--crea-gris-border); }
@@ -42,9 +58,13 @@
     .empty-state__text { font-size: 1rem; margin-bottom: 0.5rem; }
     .empty-state__sub { font-size: 0.875rem; color: #9CA3AF; }
     .group-date { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--crea-gris-text); padding: 1rem 1.25rem 0.5rem; background: var(--crea-gris-bg); border-bottom: 1px solid var(--crea-gris-border); }
+    .group-date.is-over { background: #ECFDF5; color: #065F46; }
     .no-date-section { background: #FEF3C7; }
     .no-date-section .scheduled-item__date { background: #FDE68A; }
     @media (max-width: 768px) {
+      .cal-weekday { font-size: 0.6rem; padding: 0.5rem 0.25rem; }
+      .cal-day-cell { min-height: 84px; padding: 0.375rem; }
+      .cal-pill { font-size: 0.625rem; }
       .scheduled-item { flex-direction: column; align-items: flex-start; }
       .scheduled-item__date { display: flex; align-items: baseline; gap: 0.5rem; min-width: auto; }
       .scheduled-item__actions { width: 100%; justify-content: flex-end; margin-top: 0.5rem; }
@@ -94,6 +114,30 @@
         </div>
       </div>
 
+      <div class="cal-drop-grid" id="calendar-drop-grid">
+        <div class="cal-drop-grid__header">
+          <div>
+            <h2 class="cal-drop-grid__title" id="calendar-month-title">Calendario</h2>
+            <div class="cal-drop-grid__hint">Arrastra una publicación a otro día para reprogramarla.</div>
+          </div>
+          <div class="cal-nav">
+            <button class="cal-nav-btn" id="btn-prev-month" type="button">← Mes</button>
+            <button class="cal-nav-btn" id="btn-today" type="button">Hoy</button>
+            <button class="cal-nav-btn" id="btn-next-month" type="button">Mes →</button>
+          </div>
+        </div>
+        <div class="cal-weekdays">
+          <div class="cal-weekday">Lun</div>
+          <div class="cal-weekday">Mar</div>
+          <div class="cal-weekday">Mié</div>
+          <div class="cal-weekday">Jue</div>
+          <div class="cal-weekday">Vie</div>
+          <div class="cal-weekday">Sáb</div>
+          <div class="cal-weekday">Dom</div>
+        </div>
+        <div class="cal-days" id="calendar-days"></div>
+      </div>
+
       <div class="scheduled-list" id="scheduled-list">
         <div class="empty-state">
           <div class="empty-state__icon">📅</div>
@@ -108,6 +152,10 @@
   <script src="/admin/js/session-guard.js"></script>
   <script>
     const API = '/api/content-proposals/crud.php';
+    const SCHEDULE_API = '/api/content-proposals/schedule.php';
+    let scheduledItems = [];
+    let calendarMonth = new Date();
+    let dragClickLock = false;
 
 
     function getFormatBadgeClass(format) {
@@ -123,19 +171,27 @@
 
     async function loadScheduled() {
       try {
-        const res = await CreaCRM.api.apiFetch(`${API}?status=scheduled`);
-        const data = await res.json();
-        let scheduled = data.proposals || [];
+        const [scheduledRes, approvedRes] = await Promise.all([
+          CreaCRM.api.apiFetch(`${API}?status=scheduled`),
+          CreaCRM.api.apiFetch(`${API}?status=approved`)
+        ]);
+        const scheduledData = await scheduledRes.json();
+        const approvedData = await approvedRes.json();
+        const proposalsById = new Map();
 
-        const resApproved = await CreaCRM.api.apiFetch(`${API}?status=approved`);
-        const dataApproved = await resApproved.json();
-        const approved = (dataApproved.proposals || []).filter(p => p.scheduled_at);
+        [...(scheduledData.proposals || []), ...(approvedData.proposals || [])].forEach(proposal => {
+          proposalsById.set(proposal.id, proposal);
+        });
 
-        scheduled = [...scheduled, ...approved];
-        scheduled.sort((a, b) => new Date(a.scheduled_at || 0) - new Date(b.scheduled_at || 0));
+        scheduledItems = Array.from(proposalsById.values()).sort((firstProposal, secondProposal) => {
+          const firstDate = firstProposal.scheduled_at ? new Date(firstProposal.scheduled_at).getTime() : Number.MAX_SAFE_INTEGER;
+          const secondDate = secondProposal.scheduled_at ? new Date(secondProposal.scheduled_at).getTime() : Number.MAX_SAFE_INTEGER;
+          return firstDate - secondDate;
+        });
 
-        updateStats(scheduled);
-        renderScheduled(scheduled);
+        updateStats(scheduledItems);
+        renderCalendarGrid(scheduledItems);
+        renderScheduled(scheduledItems);
       } catch (err) {
         console.error('Error loading scheduled:', err);
         document.getElementById('scheduled-list').innerHTML = `
@@ -154,19 +210,82 @@
       const monthEnd = new Date(now);
       monthEnd.setMonth(monthEnd.getMonth() + 1);
 
-      const thisWeek = scheduled.filter(p => {
-        const d = new Date(p.scheduled_at);
-        return d >= now && d <= weekEnd;
+      const scheduledWithDate = scheduled.filter(proposal => proposal.scheduled_at);
+
+      const thisWeek = scheduledWithDate.filter(proposal => {
+        const scheduledDate = new Date(proposal.scheduled_at);
+        return scheduledDate >= now && scheduledDate <= weekEnd;
       });
 
-      const thisMonth = scheduled.filter(p => {
-        const d = new Date(p.scheduled_at);
-        return d >= now && d <= monthEnd;
+      const thisMonth = scheduledWithDate.filter(proposal => {
+        const scheduledDate = new Date(proposal.scheduled_at);
+        return scheduledDate >= now && scheduledDate <= monthEnd;
       });
 
-      document.getElementById('stat-total').textContent = scheduled.length;
+      document.getElementById('stat-total').textContent = scheduledWithDate.length;
       document.getElementById('stat-week').textContent = thisWeek.length;
       document.getElementById('stat-month').textContent = thisMonth.length;
+    }
+
+    function dateKeyFromDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function dateKeyFromScheduledAt(scheduledAt) {
+      if (!scheduledAt) return null;
+      return String(scheduledAt).split('T')[0];
+    }
+
+    function renderCalendarGrid(scheduled) {
+      const daysContainer = document.getElementById('calendar-days');
+      const title = document.getElementById('calendar-month-title');
+      if (!daysContainer || !title) return;
+
+      title.textContent = calendarMonth.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+
+      const firstDay = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), 1);
+      const startDate = new Date(firstDay);
+      const mondayOffset = (firstDay.getDay() + 6) % 7;
+      startDate.setDate(firstDay.getDate() - mondayOffset);
+
+      const byDate = scheduled.reduce((accumulator, proposal) => {
+        const dateKey = dateKeyFromScheduledAt(proposal.scheduled_at);
+        if (!dateKey) return accumulator;
+        if (!accumulator[dateKey]) accumulator[dateKey] = [];
+        accumulator[dateKey].push(proposal);
+        return accumulator;
+      }, {});
+
+      const todayKey = dateKeyFromDate(new Date());
+      let html = '';
+
+      for (let dayIndex = 0; dayIndex < 42; dayIndex++) {
+        const date = new Date(startDate);
+        date.setDate(startDate.getDate() + dayIndex);
+        const dateKey = dateKeyFromDate(date);
+        const isCurrentMonth = date.getMonth() === calendarMonth.getMonth();
+        const items = byDate[dateKey] || [];
+
+        html += `
+          <div class="cal-day-cell${isCurrentMonth ? '' : ' is-muted'}${dateKey === todayKey ? ' is-today' : ''}" data-date="${dateKey}">
+            <div class="cal-day-number">${date.getDate()}</div>
+            <div class="cal-day-items">
+              ${items.slice(0, 3).map(proposal => `
+                <button class="cal-pill" type="button" draggable="true" data-proposal-id="${proposal.id}" data-scheduled-at="${proposal.scheduled_at || ''}" title="${CreaCRM.ui.escapeHtml(proposal.title || 'Sin título')}" onclick="handleProposalClick(event, '${proposal.id}')">
+                  ${CreaCRM.ui.escapeHtml(proposal.title || 'Sin título')}
+                </button>
+              `).join('')}
+              ${items.length > 3 ? `<button class="cal-pill" type="button" data-date-more="${dateKey}">+${items.length - 3} más</button>` : ''}
+            </div>
+          </div>
+        `;
+      }
+
+      daysContainer.innerHTML = html;
+      initDragAndDrop();
     }
 
     function renderScheduled(scheduled) {
@@ -186,14 +305,14 @@
       const grouped = {};
       let noDateCount = 0;
 
-      scheduled.forEach(p => {
-        const dateKey = p.scheduled_at ? p.scheduled_at.split('T')[0] : '__no_date__';
+      scheduled.forEach(proposal => {
+        const dateKey = dateKeyFromScheduledAt(proposal.scheduled_at) || '__no_date__';
         if (!dateKey || dateKey === '__no_date__') {
           noDateCount++;
           return;
         }
         if (!grouped[dateKey]) grouped[dateKey] = [];
-        grouped[dateKey].push(p);
+        grouped[dateKey].push(proposal);
       });
 
       let html = '';
@@ -203,22 +322,22 @@
         const day = date.getDate();
         const month = date.toLocaleDateString('es-MX', { month: 'short' }).toUpperCase();
 
-        html += `<div class="group-date">${CreaCRM.ui.formatDate(dateKey)}</div>`;
-        html += grouped[dateKey].map(p => `
-          <div class="scheduled-item" onclick="editProposal('${p.id}')">
+        html += `<div class="group-date" data-date="${dateKey}">${CreaCRM.ui.formatDate(dateKey)}</div>`;
+        html += grouped[dateKey].map(proposal => `
+          <div class="scheduled-item" draggable="true" data-proposal-id="${proposal.id}" data-scheduled-at="${proposal.scheduled_at || ''}" onclick="handleProposalClick(event, '${proposal.id}')">
             <div class="scheduled-item__date">
               <div class="scheduled-item__day">${day}</div>
               <div class="scheduled-item__month">${month}</div>
             </div>
             <div class="scheduled-item__info">
-              <div class="scheduled-item__title">${CreaCRM.ui.escapeHtml(p.title || 'Sin título')}</div>
+              <div class="scheduled-item__title">${CreaCRM.ui.escapeHtml(proposal.title || 'Sin título')}</div>
               <div class="scheduled-item__meta">
-                <span class="badge-format ${getFormatBadgeClass(p.format)}">${p.format || 'articulo'}</span>
-                <span>${p.topic_title ? CreaCRM.ui.escapeHtml(p.topic_title) : 'Sin topic'}</span>
+                <span class="badge-format ${getFormatBadgeClass(proposal.format)}">${proposal.format || 'articulo'}</span>
+                <span>${proposal.topic_title ? CreaCRM.ui.escapeHtml(proposal.topic_title) : 'Sin topic'}</span>
               </div>
             </div>
             <div class="scheduled-item__actions">
-              <button class="btn-sm" onclick="event.stopPropagation(); editProposal('${p.id}')">Editar</button>
+              <button class="btn-sm" onclick="event.stopPropagation(); editProposal('${proposal.id}')">Editar</button>
             </div>
           </div>
         `).join('');
@@ -227,20 +346,20 @@
       if (noDateCount > 0) {
         html += `
           <div class="group-date no-date-section">Sin fecha específica</div>
-          ${scheduled.filter(p => !p.scheduled_at).map(p => `
-            <div class="scheduled-item" onclick="editProposal('${p.id}')">
+          ${scheduled.filter(proposal => !proposal.scheduled_at).map(proposal => `
+            <div class="scheduled-item" draggable="true" data-proposal-id="${proposal.id}" data-scheduled-at="" onclick="handleProposalClick(event, '${proposal.id}')">
               <div class="scheduled-item__date">
                 <div class="scheduled-item__day">—</div>
                 <div class="scheduled-item__month">SIN FECHA</div>
               </div>
               <div class="scheduled-item__info">
-                <div class="scheduled-item__title">${CreaCRM.ui.escapeHtml(p.title || 'Sin título')}</div>
+                <div class="scheduled-item__title">${CreaCRM.ui.escapeHtml(proposal.title || 'Sin título')}</div>
                 <div class="scheduled-item__meta">
-                  <span class="badge-format ${getFormatBadgeClass(p.format)}">${p.format || 'articulo'}</span>
+                  <span class="badge-format ${getFormatBadgeClass(proposal.format)}">${proposal.format || 'articulo'}</span>
                 </div>
               </div>
               <div class="scheduled-item__actions">
-                <button class="btn-sm" onclick="event.stopPropagation(); editProposal('${p.id}')">Editar</button>
+                <button class="btn-sm" onclick="event.stopPropagation(); editProposal('${proposal.id}')">Editar</button>
               </div>
             </div>
           `).join('')}
@@ -248,6 +367,91 @@
       }
 
       list.innerHTML = html;
+      initDragAndDrop();
+    }
+
+    function initDragAndDrop() {
+      document.querySelectorAll('[draggable="true"][data-proposal-id]').forEach(draggable => {
+        draggable.ondragstart = handleDragStart;
+        draggable.ondragend = handleDragEnd;
+      });
+
+      document.querySelectorAll('.cal-day-cell[data-date], .group-date[data-date]').forEach(dropZone => {
+        dropZone.ondragover = handleDragOver;
+        dropZone.ondragleave = handleDragLeave;
+        dropZone.ondrop = handleDrop;
+      });
+    }
+
+    function handleDragStart(event) {
+      const proposalId = event.currentTarget.dataset.proposalId;
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', proposalId);
+      event.currentTarget.classList.add('is-dragging');
+    }
+
+    function handleDragEnd(event) {
+      event.currentTarget.classList.remove('is-dragging');
+      dragClickLock = true;
+      setTimeout(() => {
+        dragClickLock = false;
+      }, 180);
+    }
+
+    function handleDragOver(event) {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'move';
+      event.currentTarget.classList.add('is-over');
+    }
+
+    function handleDragLeave(event) {
+      event.currentTarget.classList.remove('is-over');
+    }
+
+    async function handleDrop(event) {
+      event.preventDefault();
+      event.currentTarget.classList.remove('is-over');
+
+      const proposalId = event.dataTransfer.getData('text/plain');
+      const dateKey = event.currentTarget.dataset.date;
+      if (!proposalId || !dateKey) return;
+
+      await scheduleProposal(proposalId, dateKey);
+    }
+
+    function scheduledAtForDrop(proposalId, dateKey) {
+      const proposal = scheduledItems.find(item => item.id === proposalId);
+      const existingScheduledAt = proposal?.scheduled_at || '';
+      const timeMatch = existingScheduledAt.match(/T(\d{2}:\d{2})/);
+      const time = timeMatch ? timeMatch[1] : '09:00';
+      return `${dateKey}T${time}:00`;
+    }
+
+    async function scheduleProposal(proposalId, dateKey) {
+      const scheduledAt = scheduledAtForDrop(proposalId, dateKey);
+      try {
+        const response = await CreaCRM.api.apiFetch(SCHEDULE_API, {
+          method: 'PATCH',
+          body: JSON.stringify({ id: proposalId, scheduled_at: scheduledAt })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || 'No se pudo reprogramar');
+        }
+        CreaCRM.ui.showToast('Publicación reprogramada', 'ok');
+        await loadScheduled();
+      } catch (err) {
+        console.error('Error scheduling proposal:', err);
+        CreaCRM.ui.showToast(err.message || 'Error reprogramando publicación', 'err');
+      }
+    }
+
+    function handleProposalClick(event, id) {
+      if (dragClickLock) {
+        event.preventDefault();
+        return;
+      }
+      editProposal(id);
     }
 
     function editProposal(id) {
@@ -255,7 +459,23 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      if (!CreaCRM.auth.requireAuth()) return;
       loadScheduled();
+
+      document.getElementById('btn-prev-month')?.addEventListener('click', () => {
+        calendarMonth.setMonth(calendarMonth.getMonth() - 1);
+        renderCalendarGrid(scheduledItems);
+      });
+
+      document.getElementById('btn-next-month')?.addEventListener('click', () => {
+        calendarMonth.setMonth(calendarMonth.getMonth() + 1);
+        renderCalendarGrid(scheduledItems);
+      });
+
+      document.getElementById('btn-today')?.addEventListener('click', () => {
+        calendarMonth = new Date();
+        renderCalendarGrid(scheduledItems);
+      });
     });
   </script>
 </body>

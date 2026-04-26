@@ -8,6 +8,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/admin/css/dashboard.css">
+  <style>
+    .dash-metric-card { min-height: 160px; }
+    .dash-metric-card__top { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; }
+    .dash-metric-card__source { font-size: 0.6875rem; color: var(--crea-gris-text); background: var(--crea-gris-bg); border-radius: 999px; padding: 0.125rem 0.5rem; white-space: nowrap; }
+    .dash-metric-card canvas { width: 100%; height: 58px; margin-top: 1rem; display: block; }
+  </style>
 </head>
 <body>
 
@@ -70,6 +76,26 @@
       <div class="dash-stat-card">
         <div class="dash-stat-card__label">Clientes activos</div>
         <div class="dash-stat-card__value green" id="stat-clients">—</div>
+      </div>
+      <div class="dash-stat-card dash-metric-card">
+        <div class="dash-metric-card__top">
+          <div>
+            <div class="dash-stat-card__label">Views totales</div>
+            <div class="dash-stat-card__value blue" id="stat-views">0</div>
+          </div>
+          <span class="dash-metric-card__source" id="metrics-source">PostgreSQL</span>
+        </div>
+        <canvas id="chart-views" width="280" height="58" aria-label="Views por semana"></canvas>
+      </div>
+      <div class="dash-stat-card dash-metric-card">
+        <div class="dash-stat-card__label">Interacciones</div>
+        <div class="dash-stat-card__value amber" id="stat-interactions">0</div>
+        <canvas id="chart-interactions" width="280" height="58" aria-label="Interacciones por semana"></canvas>
+      </div>
+      <div class="dash-stat-card dash-metric-card">
+        <div class="dash-stat-card__label">Seguidores</div>
+        <div class="dash-stat-card__value green" id="stat-followers">0</div>
+        <canvas id="chart-followers" width="280" height="58" aria-label="Seguidores por semana"></canvas>
       </div>
     </div>
 
