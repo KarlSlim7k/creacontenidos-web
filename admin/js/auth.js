@@ -4,20 +4,8 @@
  */
 (() => {
   const API_CONFIG = {
-    loginApi: '/api/auth/login.php',
-    cookieName: 'crea_editor_session'
+    loginApi: '/api/auth/login.php'
   };
-
-  // Credenciales hardcodeadas para desarrollo local (temporal)
-  const HARDCODED_USERS = [
-    {
-      id: 'editor-001',
-      nombre: 'Editor CREA',
-      email: 'editor@creacontenidos.com',
-      password: 'password123',
-      rol: 'director_editorial'
-    }
-  ];
 
   const form = document.getElementById('login-form');
   if (form) {
