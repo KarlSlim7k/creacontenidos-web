@@ -31,7 +31,11 @@
   }
 
   function getArticleUrl(article) {
-    return '/pages/nota.html?slug=' + encodeURIComponent(article.slug);
+    if (article && article.id) {
+      const slugPart = article.slug ? '&slug=' + encodeURIComponent(article.slug) : '';
+      return '/pages/nota.html?id=' + encodeURIComponent(article.id) + slugPart;
+    }
+    return '/pages/nota.html?slug=' + encodeURIComponent(article.slug || '');
   }
 
   function showError(container, msg) {
@@ -40,28 +44,44 @@
   }
 
   // ─── Fetch helpers ───
-  async function fetchArticles(params) {
-    const url = API_URL + '?' + new URLSearchParams(params).toString();
+  async function fetchJson(params) {
+    const url = API_URL + '?' + new URLSearchParams({ public: 'true', ...params }).toString();
     const res = await fetch(url);
     if (!res.ok) return null;
-    const data = await res.json();
+    return res.json();
+  }
+
+  async function fetchArticlesList(params) {
+    const data = await fetchJson(params);
+    if (!data) return null;
     return data.articles || [];
   }
 
+  async function fetchArticle(params) {
+    const data = await fetchJson(params);
+    if (!data) return null;
+    return data.article || null;
+  }
+
   // ─── Load articles by category ───
-  async function loadArticlesByCategory(categoria) {
-    return fetchArticles({ categoria: categoria, estado: 'publicada' });
+  async function loadArticlesByCategory(categoria, limit = 24, offset = 0) {
+    return fetchArticlesList({ categoria: categoria, limit: String(limit), offset: String(offset) });
   }
 
-  // ─── Load single article by slug ───
+  // ─── Load recent published articles ───
+  async function loadRecentArticles(limit = 24, offset = 0) {
+    return fetchArticlesList({ limit: String(limit), offset: String(offset) });
+  }
+
+  // ─── Load single article by id/slug ───
+  async function loadArticleById(id) {
+    if (!id) return null;
+    return fetchArticle({ id: id });
+  }
+
   async function loadArticleBySlug(slug) {
-    const articles = await fetchArticles({ estado: 'publicada' });
-    return articles.find(a => a.slug === slug) || null;
-  }
-
-  // ─── Load all published articles ───
-  async function loadAllPublished() {
-    return fetchArticles({ estado: 'publicada' });
+    if (!slug) return null;
+    return fetchArticle({ slug: slug });
   }
 
   // ─── Render article card ───
@@ -84,6 +104,22 @@
         </a>
       </article>
     `;
+  }
+
+  function normalizeAiLabel(label) {
+    if (!label) return 'humano';
+    const l = String(label).trim().toLowerCase();
+    if (['human', 'humano', '100% humano', '100_humano'].includes(l)) return 'humano';
+    if (['asistido', 'ia_assisted', 'assisted'].includes(l)) return 'asistido';
+    if (['generado', 'ia_generated', 'generated'].includes(l)) return 'generado';
+    return 'humano';
+  }
+
+  function aiLabelText(label) {
+    const l = normalizeAiLabel(label);
+    if (l === 'generado') return 'Generado con IA';
+    if (l === 'asistido') return 'Asistido por IA';
+    return '100% Humano';
   }
 
   // ─── Render article cards to grid container ───
@@ -176,7 +212,7 @@
     const categoria = categoriaMap[pageId];
     if (!categoria) return;
 
-    const articles = await loadArticlesByCategory(categoria);
+    const articles = await loadArticlesByCategory(categoria, 30, 0);
     if (!articles || articles.length === 0) return;
 
     // Hero
@@ -199,12 +235,14 @@
   // ─── Init nota page ───
   async function initNotaPage() {
     const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
     const slug = params.get('slug');
-    if (!slug) return;
+    if (!id && !slug) return;
 
-    const articles = await loadAllPublished();
-    const art = articles.find(a => a.slug === slug);
+    const art = id ? await loadArticleById(id) : await loadArticleBySlug(slug);
     if (!art) return;
+
+    const articles = await loadRecentArticles(30, 0) || [];
 
     // Title & meta
     document.title = art.titulo + ' — CREA Contenidos';
@@ -216,6 +254,21 @@
     if (badge) {
       badge.textContent = getCategoryLabel(art.categoria);
       badge.className = 'badge-categoria ' + getCategoryClass(art.categoria);
+    }
+
+    // IA label badge (required by brief)
+    const aiBadge = document.getElementById('ai-label-badge');
+    if (aiBadge) {
+      const aiLabel = normalizeAiLabel(art.ai_label);
+      aiBadge.textContent = aiLabelText(aiLabel);
+      aiBadge.className = 'badge-ia badge-ia--' + aiLabel;
+    }
+
+    // Breadcrumb category
+    const breadcrumbCat = document.querySelector('.breadcrumb a[href^="/pages/"]');
+    if (breadcrumbCat) {
+      breadcrumbCat.textContent = getCategoryLabel(art.categoria);
+      breadcrumbCat.href = art.categoria_url || breadcrumbCat.href;
     }
 
     // Title
@@ -232,9 +285,10 @@
 
     // Date
     const timeEl = document.querySelector('article time');
-    if (timeEl && art.fecha_publicacion) {
-      timeEl.textContent = formatDate(art.fecha_publicacion, false);
-      timeEl.setAttribute('datetime', art.fecha_publicacion);
+    const dateOut = art.fecha_publicacion || art.created_at;
+    if (timeEl && dateOut) {
+      timeEl.textContent = formatDate(dateOut, false);
+      timeEl.setAttribute('datetime', dateOut);
     }
 
     // Main image
@@ -263,7 +317,7 @@
 
     // Sidebar latest articles
     const sidebarCards = document.querySelectorAll('.articulo-sidebar .card-nota--compacta');
-    const others = articles.filter(a => a.slug !== slug).slice(0, sidebarCards.length);
+    const others = articles.filter(a => a.id !== art.id).slice(0, sidebarCards.length);
     others.forEach((other, i) => {
       if (!sidebarCards[i]) return;
       const link = sidebarCards[i].querySelector('a');
@@ -284,13 +338,18 @@
     // Related notes at bottom
     const relatedGrid = document.querySelector('.seccion--gris .grid-notas');
     if (relatedGrid) {
-      relatedGrid.innerHTML = articles.filter(a => a.slug !== slug).slice(0, 3).map(renderCard).join('');
+      const related = articles
+        .filter(a => a.id !== art.id)
+        .filter(a => (a.categoria || '') === (art.categoria || ''))
+        .slice(0, 3);
+      const fallback = articles.filter(a => a.id !== art.id).slice(0, 3);
+      relatedGrid.innerHTML = (related.length ? related : fallback).map(renderCard).join('');
     }
   }
 
   // ─── Init index page carousel & sections ───
   async function initIndexPage() {
-    const articles = await loadAllPublished();
+    const articles = await loadRecentArticles(40, 0);
     if (!articles || articles.length === 0) return;
 
     articles.sort((a, b) => new Date(b.fecha_publicacion || b.created_at) - new Date(a.fecha_publicacion || a.created_at));
@@ -427,8 +486,9 @@
   // Public API
   window.CreaArticles = {
     loadArticlesByCategory,
+    loadRecentArticles,
+    loadArticleById,
     loadArticleBySlug,
-    loadAllPublished,
     renderGrid,
     getArticleUrl,
     formatDate

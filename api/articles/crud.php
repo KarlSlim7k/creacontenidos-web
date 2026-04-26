@@ -41,47 +41,103 @@ function normalizeEstadoPieza(?string $estado): string
   return in_array($e, ['borrador', 'en_revision', 'aprobada', 'publicada', 'rechazada', 'archivada'], true) ? $e : 'borrador';
 }
 
+function boolParam(?string $v): bool
+{
+  if ($v === null) return false;
+  $v = strtolower(trim($v));
+  return $v === '1' || $v === 'true' || $v === 'yes' || $v === 'on';
+}
+
+function categoryPageUrl(?string $slug): string
+{
+  return match ($slug) {
+    'cultura' => '/pages/cultura.html',
+    'economia' => '/pages/economia.html',
+    'entretenimiento' => '/pages/entretenimiento.html',
+    'deportes' => '/pages/deportes.html',
+    'opinion' => '/pages/opinion.html',
+    default => '/pages/seccion.html',
+  };
+}
+
 if ($method === 'GET') {
+  $token = getAuthToken();
+  $isPublic = boolParam($_GET['public'] ?? null) || !$token;
+  if ($token && !$isPublic) {
+    requireAuth();
+  }
+
+  $id = $_GET['id'] ?? null;
+  $slug = $_GET['slug'] ?? null;
   $estado = $_GET['estado'] ?? null;
   $categoria = $_GET['categoria'] ?? null;
 
+  $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : null;
+  $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+  if ($limit !== null && $limit <= 0) $limit = null;
+  if ($limit !== null && $limit > 100) $limit = 100;
+  if ($offset < 0) $offset = 0;
+
   $where = ["pc.deleted_at IS NULL", "pc.formato = 'nota_web'"];
   $params = [];
+  if ($id) {
+    $where[] = 'pc.id = :id';
+    $params['id'] = $id;
+  }
+  if ($slug) {
+    $where[] = 'pc.slug = :slug';
+    $params['slug'] = $slug;
+  }
+
+  if ($isPublic) {
+    $where[] = "pc.estado = 'publicada'";
+  }
+
   if ($estado) {
-    $where[] = 'pc.estado = :estado';
-    $params['estado'] = normalizeEstadoPieza((string)$estado);
+    if (!$isPublic) {
+      $where[] = 'pc.estado = :estado';
+      $params['estado'] = normalizeEstadoPieza((string)$estado);
+    }
   }
   if ($categoria) {
     $where[] = 'ce.slug = :categoria';
     $params['categoria'] = $categoria;
   }
 
-  $rows = dbFetchAll(
-    "SELECT
-      pc.id,
-      pc.slug,
-      pc.titulo,
-      pc.subtitulo,
-      pc.extracto,
-      pc.contenido_html,
-      pc.imagen_destacada_url,
-      pc.imagen_alt,
-      ce.slug AS categoria_slug,
-      pc.estado::text AS estado,
-      to_json(pc.keywords_seo) AS keywords_seo,
-      pc.meta_description,
-      pc.fecha_publicacion,
-      pc.created_at,
-      pc.updated_at,
-      u.nombre_completo AS autor_nombre,
-      pc.metadata
-     FROM piezas_contenido pc
-     LEFT JOIN categorias_editorial ce ON ce.id = pc.categoria_id
-     LEFT JOIN usuarios u ON u.id = pc.autor_id
-     WHERE " . implode(' AND ', $where) . "
-     ORDER BY pc.created_at DESC",
-    $params
-  );
+  $sql = "SELECT
+    pc.id,
+    pc.slug,
+    pc.titulo,
+    pc.subtitulo,
+    pc.extracto,
+    pc.contenido_html,
+    pc.imagen_destacada_url,
+    pc.imagen_alt,
+    ce.slug AS categoria_slug,
+    pc.estado::text AS estado,
+    to_json(pc.keywords_seo) AS keywords_seo,
+    pc.meta_description,
+    pc.fecha_publicacion,
+    pc.created_at,
+    pc.updated_at,
+    u.nombre_completo AS autor_nombre,
+    pc.metadata
+   FROM piezas_contenido pc
+   LEFT JOIN categorias_editorial ce ON ce.id = pc.categoria_id
+   LEFT JOIN usuarios u ON u.id = pc.autor_id
+   WHERE " . implode(' AND ', $where) . "
+   ORDER BY COALESCE(pc.fecha_publicacion, pc.created_at) DESC, pc.created_at DESC";
+
+  if ($limit !== null) {
+    $sql .= ' LIMIT :limit';
+    $params['limit'] = $limit;
+  }
+  if ($offset > 0) {
+    $sql .= ' OFFSET :offset';
+    $params['offset'] = $offset;
+  }
+
+  $rows = dbFetchAll($sql, $params);
 
   $articles = array_map(function ($r) {
     $meta = json_decode($r['metadata'] ?? '{}', true) ?: [];
@@ -89,6 +145,7 @@ if ($method === 'GET') {
     if (isset($r['keywords_seo']) && $r['keywords_seo'] !== null) {
       $kw = json_decode($r['keywords_seo'], true) ?: [];
     }
+    $aiLabel = $meta['ai_label'] ?? 'humano';
     return [
       'id' => $r['id'],
       'slug' => $r['slug'],
@@ -99,17 +156,29 @@ if ($method === 'GET') {
       'imagen_destacada' => $r['imagen_destacada_url'] ?? '',
       'imagen_alt' => $r['imagen_alt'] ?? '',
       'categoria' => $r['categoria_slug'] ?? 'local',
+      'categoria_url' => categoryPageUrl($r['categoria_slug'] ?? 'local'),
       'autor' => $meta['autor_display'] ?? ($r['autor_nombre'] ?? ''),
       'estado' => $r['estado'],
       'keywords_seo' => $kw,
       'meta_description' => $r['meta_description'] ?? '',
+      'ai_label' => $aiLabel,
       'fecha_publicacion' => isoDateTime($r['fecha_publicacion'] ?? null),
       'created_at' => isoDateTime($r['created_at'] ?? null),
       'updated_at' => isoDateTime($r['updated_at'] ?? null),
     ];
   }, $rows);
 
-  echo json_encode(['articles' => $articles]);
+  if ($id || $slug) {
+    if (!$articles) {
+      http_response_code(404);
+      echo json_encode(['error' => 'Artículo no encontrado']);
+      exit;
+    }
+    echo json_encode(['article' => $articles[0]]);
+    exit;
+  }
+
+  echo json_encode(['articles' => $articles, 'total' => count($articles)]);
   exit;
 }
 
@@ -131,6 +200,9 @@ if ($method === 'POST') {
   $meta = [];
   if (isset($data['autor']) && trim((string)$data['autor']) !== '') {
     $meta['autor_display'] = trim((string)$data['autor']);
+  }
+  if (isset($data['ai_label']) && trim((string)$data['ai_label']) !== '') {
+    $meta['ai_label'] = trim((string)$data['ai_label']);
   }
 
   $keywords = $data['keywords_seo'] ?? [];
@@ -231,6 +303,11 @@ if ($method === 'PATCH') {
     } else {
       $meta['autor_display'] = $a;
     }
+  }
+  if (isset($data['ai_label'])) {
+    $l = trim((string)$data['ai_label']);
+    if ($l === '') unset($meta['ai_label']);
+    else $meta['ai_label'] = $l;
   }
   $updates['metadata'] = json_encode($meta ?: new stdClass());
 
