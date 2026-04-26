@@ -613,7 +613,7 @@
     }
 
     async function generateAsset(type) {
-      if (!confirm(`¿Generar ${type} con IA? (PLACEHOLDER)`)) return;
+      if (!confirm(`¿Encolar generación de ${type} con IA?`)) return;
 
       let params = {};
       if (type === 'audio') {
@@ -631,7 +631,7 @@
 
         const data = await res.json();
         if (data.ok) {
-          alert(`Asset ${type} generado (PLACEHOLDER): ${data.message}`);
+          alert(`Asset ${type} encolado: ${data.message}`);
           loadAssets();
         } else {
           alert(data.error || 'Error al generar asset');

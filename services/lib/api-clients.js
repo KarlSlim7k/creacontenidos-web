@@ -222,7 +222,141 @@ async function callClaude({ system, user, model, maxTokens = 900, temperature = 
   return mockClaudeResponse(promptInfo);
 }
 
+function mockOpenAIImage(prompt) {
+  return {
+    ok: true,
+    dry_run: true,
+    b64: null,
+    mime: 'image/png',
+    revised_prompt: null,
+    model: 'openai-image-mock',
+    raw: { prompt },
+  };
+}
+
+async function callOpenAIImage({ prompt, model, size = '1024x1024' }) {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) {
+    log('[DRY-RUN] OpenAI image skipped (OPENAI_API_KEY missing)', 'WARN');
+    return mockOpenAIImage(prompt);
+  }
+
+  const payload = {
+    model: model || 'dall-e-3',
+    prompt,
+    size,
+    n: 1,
+    response_format: 'b64_json',
+  };
+
+  const res = await fetchJson('https://api.openai.com/v1/images/generations', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    throw new APIError(`OpenAI image failed (status ${res.status})`, res.status, res.text);
+  }
+
+  const item = res.json?.data?.[0] || {};
+  return {
+    ok: true,
+    dry_run: false,
+    b64: item.b64_json || null,
+    url: item.url || null,
+    mime: 'image/png',
+    revised_prompt: item.revised_prompt || null,
+    model: payload.model,
+    raw: res.json,
+  };
+}
+
+function mockElevenLabsAudio(text) {
+  return {
+    ok: true,
+    dry_run: true,
+    audioBuffer: Buffer.from(''),
+    contentType: 'audio/mpeg',
+    raw: { text_len: (text || '').length },
+  };
+}
+
+async function fetchBuffer(url, options) {
+  if (typeof fetch === 'function') {
+    const res = await fetch(url, options);
+    const buf = Buffer.from(await res.arrayBuffer());
+    return { ok: res.ok, status: res.status, headers: res.headers, buf };
+  }
+
+  const https = require('https');
+  return new Promise((resolve, reject) => {
+    const req = https.request(url, options, (res) => {
+      const chunks = [];
+      res.on('data', (chunk) => chunks.push(chunk));
+      res.on('end', () => {
+        const buf = Buffer.concat(chunks);
+        resolve({
+          ok: res.statusCode >= 200 && res.statusCode < 300,
+          status: res.statusCode,
+          headers: { get: (name) => res.headers[String(name).toLowerCase()] },
+          buf,
+        });
+      });
+    });
+    req.on('error', reject);
+    if (options?.body) req.write(options.body);
+    req.end();
+  });
+}
+
+async function callElevenLabsTTS({ text, voiceId, modelId }) {
+  const key = process.env.ELEVENLABS_API_KEY;
+  if (!key) {
+    log('[DRY-RUN] ElevenLabs skipped (ELEVENLABS_API_KEY missing)', 'WARN');
+    return mockElevenLabsAudio(text);
+  }
+
+  const vId = voiceId || process.env.ELEVENLABS_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL';
+  const mId = modelId || process.env.ELEVENLABS_MODEL_ID || 'eleven_multilingual_v2';
+
+  const url = `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(vId)}`;
+  const payload = {
+    text,
+    model_id: mId,
+    voice_settings: { stability: 0.4, similarity_boost: 0.75 },
+  };
+
+  const res = await fetchBuffer(url, {
+    method: 'POST',
+    headers: {
+      'xi-api-key': key,
+      'Content-Type': 'application/json',
+      Accept: 'audio/mpeg',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const textErr = (res.buf || Buffer.from('')).toString('utf8');
+    throw new APIError(`ElevenLabs TTS failed (status ${res.status})`, res.status, textErr);
+  }
+
+  return {
+    ok: true,
+    dry_run: false,
+    audioBuffer: res.buf,
+    contentType: res.headers.get('content-type') || 'audio/mpeg',
+    raw: { voice_id: vId, model_id: mId, bytes: res.buf.length },
+  };
+}
+
 module.exports = {
   callPerplexity,
   callClaude,
+  callOpenAIImage,
+  callElevenLabsTTS,
 };

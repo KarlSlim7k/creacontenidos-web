@@ -4,6 +4,7 @@ header('Content-Type: application/json');
 $method = $_SERVER['REQUEST_METHOD'];
 
 require_once __DIR__ . '/../lib/auth.php';
+require_once __DIR__ . '/../lib/database.php';
 
 if ($method !== 'POST') {
   http_response_code(405);
@@ -24,70 +25,64 @@ if (!$type || !in_array($type, ['audio', 'image', 'meme', 'infographic'])) {
   exit;
 }
 
+$piezaId = $proposalId ?: null;
+$tipoDb = $type === 'infographic' ? 'infographic' : $type;
+
+if (!$piezaId) {
+  http_response_code(400);
+  echo json_encode(['error' => 'proposal_id es requerido']);
+  exit;
+}
+
+$originalPrompt = '';
 if ($type === 'audio') {
-  echo json_encode([
-    'ok' => true,
-    'placeholder' => true,
-    'message' => 'Audio generation PLACEHOLDER - no real API call',
-    'type' => 'audio',
-    'proposal_id' => $proposalId,
-    'would_call' => 'audio-generator.js::generateAudio()',
-    'params' => [
-      'text' => $params['text'] ?? '',
-      'voice_id' => $params['voice_id'] ?? 'elevenlabs_voice_id_placeholder'
-    ]
-  ]);
+  $originalPrompt = (string)($params['text'] ?? '');
+} elseif ($type === 'image') {
+  $originalPrompt = (string)($params['prompt'] ?? '');
+} elseif ($type === 'meme') {
+  $originalPrompt = (string)($params['image_prompt'] ?? '');
+} elseif ($type === 'infographic') {
+  $originalPrompt = (string)($params['topic'] ?? '');
+}
+
+if (trim($originalPrompt) === '') {
+  http_response_code(400);
+  echo json_encode(['error' => 'params requeridos para generar el asset']);
   exit;
 }
 
-if ($type === 'image') {
+try {
+  $row = dbInsert('assets_multimedia', [
+    'pieza_id' => $piezaId,
+    'tipo' => $tipoDb,
+    'original_prompt' => $originalPrompt,
+    'file_path' => null,
+    'estado' => 'queued',
+    'cost_tokens' => null,
+    'metadata' => json_encode([
+      'requested_at' => gmdate('c'),
+      'requested_by' => 'editor',
+      'params' => $params,
+    ]),
+  ], 'id, pieza_id, tipo, estado, created_at');
+
   echo json_encode([
     'ok' => true,
-    'placeholder' => true,
-    'message' => 'Image generation PLACEHOLDER - no real API call',
-    'type' => 'image',
-    'proposal_id' => $proposalId,
-    'would_call' => 'image-generator.js::generateImage()',
-    'params' => [
-      'prompt' => $params['prompt'] ?? ''
-    ]
+    'queued' => true,
+    'message' => 'Asset encolado para generación',
+    'asset' => [
+      'id' => $row['id'],
+      'proposal_id' => $row['pieza_id'],
+      'type' => $row['tipo'],
+      'status' => $row['estado'],
+      'created_at' => isoDateTime($row['created_at'] ?? null),
+    ],
   ]);
   exit;
-}
-
-if ($type === 'meme') {
-  echo json_encode([
-    'ok' => true,
-    'placeholder' => true,
-    'message' => 'Meme generation PLACEHOLDER - no real API call',
-    'type' => 'meme',
-    'proposal_id' => $proposalId,
-    'would_call' => 'image-generator.js::createMeme()',
-    'params' => [
-      'image_prompt' => $params['image_prompt'] ?? '',
-      'top_text' => $params['top_text'] ?? '',
-      'bottom_text' => $params['bottom_text'] ?? ''
-    ]
-  ]);
+} catch (Throwable $e) {
+  error_log('[assets/generate] ' . $e->getMessage());
+  http_response_code(500);
+  echo json_encode(['error' => 'No se pudo encolar el asset']);
   exit;
 }
-
-if ($type === 'infographic') {
-  echo json_encode([
-    'ok' => true,
-    'placeholder' => true,
-    'message' => 'Infographic generation PLACEHOLDER - no real API call',
-    'type' => 'infographic',
-    'proposal_id' => $proposalId,
-    'would_call' => 'image-generator.js::createInfographic()',
-    'params' => [
-      'topic' => $params['topic'] ?? '',
-      'data' => $params['data'] ?? []
-    ]
-  ]);
-  exit;
-}
-
-http_response_code(400);
-echo json_encode(['error' => 'Tipo no soportado']);
 ?>
