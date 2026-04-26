@@ -10,38 +10,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 $method = $_SERVER['REQUEST_METHOD'];
 $id = $_GET['id'] ?? 'home';
-$dataPath = __DIR__ . '/../../data/pages.json';
 
-function requireAuth() {
-  $token = $_COOKIE['crea_editor_session'] ?? null;
-  if (!$token) {
-    http_response_code(401);
-    echo json_encode(['error' => 'No autorizado']);
-    exit;
-  }
-  $payload = json_decode(base64_decode($token), true);
-  if (!$payload || $payload['exp'] < time()) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Sesión expirada']);
-    exit;
-  }
-  return $payload;
-}
+require_once __DIR__ . '/../lib/auth.php';
+require_once __DIR__ . '/../lib/database.php';
 
 if ($method === 'GET') {
-  if (!file_exists($dataPath)) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Archivo de páginas no encontrado']);
-    exit;
-  }
-  $pages = json_decode(file_get_contents($dataPath), true);
-  $page = $pages[$id] ?? null;
-  if (!$page) {
+  $row = dbFetchOne('SELECT id, meta, bloques, estado, created_at, updated_at FROM paginas WHERE id = :id LIMIT 1', ['id' => $id]);
+  if (!$row) {
     http_response_code(404);
     echo json_encode(['error' => 'Página no encontrada']);
     exit;
   }
-  echo json_encode($page);
+  $meta = json_decode($row['meta'] ?? '{}', true) ?: [];
+  $bloques = json_decode($row['bloques'] ?? '{}', true) ?: [];
+  echo json_encode([
+    'meta' => $meta,
+    'bloques' => $bloques,
+    'estado' => $row['estado'] ?? null,
+    'created_at' => isoDateTime($row['created_at'] ?? null),
+    'updated_at' => isoDateTime($row['updated_at'] ?? null),
+  ]);
   exit;
 }
 
@@ -52,38 +40,42 @@ if ($method === 'POST' || $method === 'PATCH') {
   $meta = $data['meta'] ?? [];
   $estado = $data['estado'] ?? null;
 
-  if (!file_exists($dataPath)) {
-    $pages = [];
+  $current = dbFetchOne('SELECT id, meta, bloques, estado FROM paginas WHERE id = :id LIMIT 1', ['id' => $id]);
+  $currentMeta = $current ? (json_decode($current['meta'] ?? '{}', true) ?: []) : [];
+  $currentBlocks = $current ? (json_decode($current['bloques'] ?? '{}', true) ?: []) : [];
+
+  if (is_array($blocks)) {
+    foreach ($blocks as $blockId => $content) {
+      $currentBlocks[(string)$blockId] = $content;
+    }
+  }
+  if (is_array($meta)) {
+    foreach ($meta as $key => $value) {
+      $currentMeta[(string)$key] = $value;
+    }
+  }
+
+  $finalEstado = $estado ?: ($current['estado'] ?? 'draft');
+
+  if (!$current) {
+    dbInsert('paginas', [
+      'id' => $id,
+      'meta' => json_encode($currentMeta),
+      'bloques' => json_encode($currentBlocks),
+      'estado' => $finalEstado,
+    ], 'id');
   } else {
-    $pages = json_decode(file_get_contents($dataPath), true);
+    dbExec(
+      'UPDATE paginas SET meta = :meta, bloques = :bloques, estado = :estado, updated_at = NOW() WHERE id = :id',
+      [
+        'id' => $id,
+        'meta' => json_encode($currentMeta),
+        'bloques' => json_encode($currentBlocks),
+        'estado' => $finalEstado,
+      ]
+    );
   }
 
-  if (!isset($pages[$id])) {
-    $pages[$id] = ['meta' => [], 'bloques' => []];
-  }
-
-  if (!isset($pages[$id]['bloques'])) {
-    $pages[$id]['bloques'] = [];
-  }
-
-  if (!isset($pages[$id]['meta'])) {
-    $pages[$id]['meta'] = [];
-  }
-
-  foreach ($blocks as $blockId => $content) {
-    $pages[$id]['bloques'][$blockId] = $content;
-  }
-
-  foreach ($meta as $key => $value) {
-    $pages[$id]['meta'][$key] = $value;
-  }
-
-  if ($estado) {
-    $pages[$id]['estado'] = $estado;
-    $pages[$id]['updated_at'] = date('c');
-  }
-
-  file_put_contents($dataPath, json_encode($pages, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
   echo json_encode(['ok' => true, 'updated' => count($blocks), 'meta_updated' => count($meta)]);
   exit;
 }

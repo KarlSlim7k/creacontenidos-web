@@ -8,28 +8,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
   exit(0);
 }
 
+require_once __DIR__ . '/../lib/database.php';
+
 $data = json_decode(file_get_contents('php://input'), true);
 $email = $data['email'] ?? '';
 $password = $data['password'] ?? '';
 
-$usersPath = __DIR__ . '/../../data/users.json';
-if (!file_exists($usersPath)) {
-  http_response_code(500);
-  echo json_encode(['error' => 'Archivo de usuarios no encontrado']);
+if (!is_string($email) || !is_string($password) || trim($email) === '' || trim($password) === '') {
+  http_response_code(400);
+  echo json_encode(['error' => 'Email y password son requeridos']);
   exit;
 }
 
-$users = json_decode(file_get_contents($usersPath), true);
-$user = null;
+$user = dbFetchOne(
+  "SELECT id, email, nombre_completo, rol, password_hash
+   FROM usuarios
+   WHERE LOWER(email) = LOWER(:email) AND activo = TRUE AND deleted_at IS NULL
+   LIMIT 1",
+  ['email' => $email]
+);
 
-foreach ($users as $u) {
-  if ($u['email'] === $email && password_verify($password, $u['password'])) {
-    $user = $u;
-    break;
-  }
-}
-
-if (!$user) {
+if (!$user || empty($user['password_hash']) || !password_verify($password, $user['password_hash'])) {
   http_response_code(401);
   echo json_encode(['error' => 'Credenciales incorrectas']);
   exit;
@@ -38,7 +37,7 @@ if (!$user) {
 $token = base64_encode(json_encode([
   'sub' => $user['id'],
   'email' => $user['email'],
-  'nombre' => $user['nombre'],
+  'nombre' => $user['nombre_completo'],
   'rol' => $user['rol'],
   'exp' => time() + (8 * 3600)
 ]));
@@ -52,6 +51,6 @@ setcookie('crea_editor_session', $token, [
 
 echo json_encode([
   'ok' => true,
-  'usuario' => ['nombre' => $user['nombre'], 'email' => $user['email'], 'rol' => $user['rol']]
+  'usuario' => ['nombre' => $user['nombre_completo'], 'email' => $user['email'], 'rol' => $user['rol']]
 ]);
 ?>

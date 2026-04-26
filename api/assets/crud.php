@@ -2,83 +2,66 @@
 header('Content-Type: application/json');
 
 $method = $_SERVER['REQUEST_METHOD'];
-$dataPath = __DIR__ . '/../../data/generated_assets.json';
-
-function requireAuth() {
-  $token = $_COOKIE['crea_editor_session'] ?? null;
-  if (!$token) {
-    http_response_code(401);
-    echo json_encode(['error' => 'No autorizado']);
-    exit;
-  }
-  $payload = json_decode(base64_decode($token), true);
-  if (!$payload || $payload['exp'] < time()) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Sesión expirada']);
-    exit;
-  }
-  return $payload;
-}
-
-function generateUuid() {
-  return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-    mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-    mt_rand(0, 0xffff),
-    mt_rand(0, 0x0fff) | 0x4000,
-    mt_rand(0, 0x3fff) | 0x8000,
-    mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-  );
-}
-
-function loadAssets() {
-  global $dataPath;
-  if (!file_exists($dataPath)) {
-    return ['assets' => []];
-  }
-  $data = json_decode(file_get_contents($dataPath), true);
-  return $data ?: ['assets' => []];
-}
-
-function saveAssets($data) {
-  global $dataPath;
-  file_put_contents($dataPath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-}
+require_once __DIR__ . '/../lib/auth.php';
+require_once __DIR__ . '/../lib/database.php';
 
 if ($method === 'GET') {
-  $assets = loadAssets()['assets'];
   $id = $_GET['id'] ?? null;
   $type = $_GET['type'] ?? null;
   $proposalId = $_GET['proposal_id'] ?? null;
   $status = $_GET['status'] ?? null;
 
+  $where = ['1=1'];
+  $params = [];
+
   if ($id) {
-    $found = null;
-    foreach ($assets as $a) {
-      if ($a['id'] === $id) {
-        $found = $a;
-        break;
-      }
-    }
-    if (!$found) {
+    $where[] = 'id = :id';
+    $params['id'] = $id;
+  }
+  if ($type) {
+    $where[] = 'tipo = :tipo';
+    $params['tipo'] = $type;
+  }
+  if ($proposalId) {
+    $where[] = 'pieza_id = :pieza_id';
+    $params['pieza_id'] = $proposalId;
+  }
+  if ($status) {
+    $where[] = 'estado = :estado';
+    $params['estado'] = $status;
+  }
+
+  $rows = dbFetchAll(
+    'SELECT id, pieza_id, tipo, original_prompt, file_path, estado, created_at, cost_tokens
+     FROM assets_multimedia
+     WHERE ' . implode(' AND ', $where) . '
+     ORDER BY created_at DESC',
+    $params
+  );
+
+  $assets = array_map(function ($r) {
+    return [
+      'id' => $r['id'],
+      'proposal_id' => $r['pieza_id'],
+      'type' => $r['tipo'],
+      'original_prompt' => $r['original_prompt'] ?? '',
+      'file_path' => $r['file_path'] ?? '',
+      'status' => $r['estado'],
+      'created_at' => isoDateTime($r['created_at'] ?? null),
+      'cost_tokens' => $r['cost_tokens'] !== null ? (int)$r['cost_tokens'] : null,
+    ];
+  }, $rows);
+
+  if ($id) {
+    if (!$assets) {
       http_response_code(404);
       echo json_encode(['error' => 'Asset no encontrado']);
       exit;
     }
-    echo json_encode(['asset' => $found]);
+    echo json_encode(['asset' => $assets[0]]);
     exit;
   }
 
-  if ($type) {
-    $assets = array_values(array_filter($assets, fn($a) => ($a['type'] ?? '') === $type));
-  }
-  if ($proposalId) {
-    $assets = array_values(array_filter($assets, fn($a) => ($a['proposal_id'] ?? '') === $proposalId));
-  }
-  if ($status) {
-    $assets = array_values(array_filter($assets, fn($a) => ($a['status'] ?? '') === $status));
-  }
-
-  usort($assets, fn($a, $b) => strcmp($b['created_at'] ?? '', $a['created_at'] ?? ''));
   echo json_encode(['assets' => $assets]);
   exit;
 }
@@ -87,20 +70,26 @@ if ($method === 'POST') {
   requireAuth();
   $data = json_decode(file_get_contents('php://input'), true);
 
-  $newAsset = [
-    'id' => generateUuid(),
-    'proposal_id' => $data['proposal_id'] ?? null,
-    'type' => $data['type'] ?? 'image',
+  $row = dbInsert('assets_multimedia', [
+    'pieza_id' => $data['proposal_id'] ?? null,
+    'tipo' => $data['type'] ?? 'image',
     'original_prompt' => $data['original_prompt'] ?? '',
     'file_path' => $data['file_path'] ?? '',
-    'status' => $data['status'] ?? 'generated',
-    'created_at' => date('c'),
-    'cost_tokens' => $data['cost_tokens'] ?? null
-  ];
+    'estado' => $data['status'] ?? 'generated',
+    'cost_tokens' => isset($data['cost_tokens']) ? (int)$data['cost_tokens'] : null,
+    'metadata' => json_encode(new stdClass()),
+  ], 'id, pieza_id, tipo, original_prompt, file_path, estado, created_at, cost_tokens');
 
-  $assetsData = loadAssets();
-  $assetsData['assets'][] = $newAsset;
-  saveAssets($assetsData);
+  $newAsset = [
+    'id' => $row['id'],
+    'proposal_id' => $row['pieza_id'],
+    'type' => $row['tipo'],
+    'original_prompt' => $row['original_prompt'] ?? '',
+    'file_path' => $row['file_path'] ?? '',
+    'status' => $row['estado'],
+    'created_at' => isoDateTime($row['created_at'] ?? null),
+    'cost_tokens' => $row['cost_tokens'] !== null ? (int)$row['cost_tokens'] : null,
+  ];
 
   echo json_encode(['ok' => true, 'asset' => $newAsset]);
   exit;
@@ -115,18 +104,13 @@ if ($method === 'DELETE') {
     exit;
   }
 
-  $assetsData = loadAssets();
-  $initialCount = count($assetsData['assets']);
-  $assetsData['assets'] = array_values(array_filter($assetsData['assets'], fn($a) => $a['id'] !== $id));
-
-  if (count($assetsData['assets']) === $initialCount) {
+  $deleted = dbDelete('assets_multimedia', 'id = :id', ['id' => $id]);
+  if ($deleted <= 0) {
     http_response_code(404);
     echo json_encode(['error' => 'Asset no encontrado']);
     exit;
   }
-
-  saveAssets($assetsData);
-  echo json_encode(['ok' => true, 'deleted' => $initialCount - count($assetsData['assets'])]);
+  echo json_encode(['ok' => true, 'deleted' => $deleted]);
   exit;
 }
 

@@ -8,37 +8,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
   exit(0);
 }
 
-// Require auth for listing subscribers
-$token = $_COOKIE['crea_editor_session'] ?? null;
-if (!$token) {
-  http_response_code(401);
-  echo json_encode(['error' => 'No autorizado']);
-  exit;
-}
-$payload = json_decode(base64_decode($token), true);
-if (!$payload || $payload['exp'] < time()) {
-  http_response_code(401);
-  echo json_encode(['error' => 'Sesión expirada']);
-  exit;
-}
+require_once __DIR__ . '/../lib/auth.php';
+require_once __DIR__ . '/../lib/database.php';
 
-$filePath = __DIR__ . '/../../data/subscribers.json';
+requireAuth();
 
-if (!file_exists($filePath)) {
-  echo json_encode(['total' => 0, 'subscribers' => []]);
-  exit;
-}
-
-$store = json_decode(file_get_contents($filePath), true);
-$subscribers = $store['subscribers'] ?? [];
-
-// Filter by active status if requested
 $activeFilter = $_GET['active'] ?? null;
+
+$where = [];
+$params = [];
 if ($activeFilter === 'true') {
-  $subscribers = array_values(array_filter($subscribers, fn($s) => $s['active'] === true));
+  $where[] = 'activo = TRUE';
 } elseif ($activeFilter === 'false') {
-  $subscribers = array_values(array_filter($subscribers, fn($s) => $s['active'] === false));
+  $where[] = 'activo = FALSE';
 }
+
+$sql = 'SELECT email, whatsapp, subscribed_at, activo FROM suscriptores';
+if ($where) $sql .= ' WHERE ' . implode(' AND ', $where);
+$sql .= ' ORDER BY subscribed_at DESC';
+
+$rows = dbFetchAll($sql, $params);
+$subscribers = array_map(function ($r) {
+  return [
+    'email' => $r['email'],
+    'whatsapp' => $r['whatsapp'] ?? '',
+    'subscribed_at' => isoDateTime($r['subscribed_at'] ?? null),
+    'active' => (bool)$r['activo'],
+  ];
+}, $rows);
 
 echo json_encode([
   'total' => count($subscribers),

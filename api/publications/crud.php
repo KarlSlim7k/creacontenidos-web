@@ -1,119 +1,191 @@
 <?php
 header('Content-Type: application/json');
 
+require_once __DIR__ . '/../lib/auth.php';
+require_once __DIR__ . '/../lib/database.php';
+
 $method = $_SERVER['REQUEST_METHOD'];
+
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-preg_match('/\/api\/publications\/crud\.php(?:\/(\w+))?/', $path, $matches);
-$id = $matches[1] ?? null;
+preg_match('/\/api\/publications\/crud\.php(?:\/([\w-]+))?/', $path, $matches);
+$idFromPath = $matches[1] ?? null;
 
-$token = $_COOKIE['crea_editor_session'] ?? null;
-if (!$token) {
-  http_response_code(401);
-  echo json_encode(['error' => 'No autorizado']);
-  exit;
+requireAuth();
+
+function platformToCanal(?string $platform): ?string
+{
+  $p = strtolower(trim((string)$platform));
+  return match ($p) {
+    'facebook' => 'facebook',
+    'instagram' => 'instagram',
+    'twitter', 'x', 'twitter_x' => 'twitter_x',
+    'tiktok' => 'tiktok',
+    'youtube' => 'youtube',
+    'telegram' => 'telegram',
+    'whatsapp' => 'whatsapp',
+    'newsletter' => 'newsletter',
+    'website', 'sitio_web' => 'sitio_web',
+    default => null,
+  };
 }
 
-$payload = json_decode(base64_decode($token), true);
-if (!$payload || $payload['exp'] < time()) {
-  http_response_code(401);
-  echo json_encode(['error' => 'Sesión expirada']);
-  exit;
+function canalToPlatform(string $canal): string
+{
+  return match ($canal) {
+    'sitio_web' => 'website',
+    default => $canal,
+  };
 }
 
-$dataPath = __DIR__ . '/../../data/publications.json';
-$data = file_exists($dataPath) ? json_decode(file_get_contents($dataPath), true) : ['publications' => []];
+function uiStatusToEstado(?string $status): string
+{
+  $s = strtolower(trim((string)$status));
+  return match ($s) {
+    'published' => 'publicada',
+    'failed' => 'fallida',
+    'cancelled', 'canceled' => 'cancelada',
+    default => 'programada',
+  };
+}
 
-function uuid_v4() {
-  return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-    mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-    mt_rand(0, 0xffff),
-    mt_rand(0, 0x0fff) | 0x4000,
-    mt_rand(0, 0x3fff) | 0x8000,
-    mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-  );
+function estadoToUiStatus(string $estado): string
+{
+  return match ($estado) {
+    'publicada' => 'published',
+    'fallida' => 'failed',
+    'cancelada' => 'canceled',
+    default => 'pending',
+  };
 }
 
 if ($method === 'GET') {
   $platform = $_GET['platform'] ?? null;
   $status = $_GET['status'] ?? null;
   $proposalId = $_GET['proposal_id'] ?? null;
-  
-  $publications = $data['publications'] ?? [];
-  
+
+  $where = ['1=1'];
+  $params = [];
+
   if ($platform) {
-    $publications = array_filter($publications, fn($p) => $p['platform'] === $platform);
+    $canal = platformToCanal($platform);
+    if ($canal) {
+      $where[] = 'canal = :canal';
+      $params['canal'] = $canal;
+    }
   }
   if ($status) {
-    $publications = array_filter($publications, fn($p) => $p['status'] === $status);
+    $where[] = 'estado = :estado';
+    $params['estado'] = uiStatusToEstado($status);
   }
   if ($proposalId) {
-    $publications = array_filter($publications, fn($p) => $p['proposal_id'] === $proposalId);
+    $where[] = 'pieza_id = :pieza_id';
+    $params['pieza_id'] = $proposalId;
   }
-  
-  $publications = array_values($publications);
+
+  $rows = dbFetchAll(
+    "SELECT id, pieza_id, canal::text AS canal, estado::text AS estado, url_publicacion, publicada_en, error_detalle, metadata, created_at, updated_at
+     FROM publicaciones
+     WHERE " . implode(' AND ', $where) . "
+     ORDER BY created_at DESC",
+    $params
+  );
+
+  $publications = array_map(function ($r) {
+    $meta = json_decode($r['metadata'] ?? '{}', true) ?: [];
+    return [
+      'id' => $r['id'],
+      'proposal_id' => $r['pieza_id'],
+      'platform' => canalToPlatform($r['canal']),
+      'status' => estadoToUiStatus($r['estado']),
+      'url' => $r['url_publicacion'] ?? null,
+      'published_at' => isoDateTime($r['publicada_en'] ?? null),
+      'error_message' => $r['error_detalle'] ?? null,
+      'metadata' => $meta,
+      'created_at' => isoDateTime($r['created_at'] ?? null),
+      'updated_at' => isoDateTime($r['updated_at'] ?? null),
+    ];
+  }, $rows);
+
   echo json_encode(['publications' => $publications, 'total' => count($publications)]);
   exit;
 }
 
 if ($method === 'POST') {
   $input = json_decode(file_get_contents('php://input'), true);
-  
-  if (empty($input['proposal_id']) || empty($input['platform'])) {
+
+  $proposalId = $input['proposal_id'] ?? null;
+  $platform = $input['platform'] ?? null;
+  $canal = platformToCanal($platform);
+
+  if (empty($proposalId) || !$canal) {
     http_response_code(400);
     echo json_encode(['error' => 'proposal_id y platform son requeridos']);
     exit;
   }
-  
+
+  $row = dbInsert('publicaciones', [
+    'pieza_id' => $proposalId,
+    'canal' => $canal,
+    'estado' => 'programada',
+    'metadata' => json_encode($input['metadata'] ?? new stdClass()),
+  ], 'id, pieza_id, canal::text AS canal, estado::text AS estado, created_at, updated_at, metadata');
+
   $publication = [
-    'id' => uuid_v4(),
-    'proposal_id' => $input['proposal_id'],
-    'platform' => $input['platform'],
-    'status' => 'pending',
+    'id' => $row['id'],
+    'proposal_id' => $row['pieza_id'],
+    'platform' => canalToPlatform($row['canal']),
+    'status' => estadoToUiStatus($row['estado']),
     'url' => null,
     'published_at' => null,
     'error_message' => null,
-    'metadata' => $input['metadata'] ?? [],
-    'created_at' => date('c')
+    'metadata' => json_decode($row['metadata'] ?? '{}', true) ?: [],
+    'created_at' => isoDateTime($row['created_at'] ?? null),
   ];
-  
-  $data['publications'][] = $publication;
-  file_put_contents($dataPath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-  
+
   echo json_encode(['ok' => true, 'publication' => $publication]);
   exit;
 }
 
-if ($method === 'PATCH' && $id) {
-  $publications = $data['publications'] ?? [];
-  $found = false;
-  
-  foreach ($publications as $i => $p) {
-    if ($p['id'] === $id) {
-      $input = json_decode(file_get_contents('php://input'), true);
-      $allowed = ['status', 'url', 'published_at', 'error_message', 'metadata'];
-      foreach ($allowed as $key) {
-        if (isset($input[$key])) {
-          $publications[$i][$key] = $input[$key];
-        }
-      }
-      $publications[$i]['updated_at'] = date('c');
-      $found = true;
-      break;
-    }
+if ($method === 'PATCH' && $idFromPath) {
+  $input = json_decode(file_get_contents('php://input'), true);
+
+  $updates = [];
+  if (isset($input['status'])) $updates['estado'] = uiStatusToEstado($input['status']);
+  if (isset($input['url'])) $updates['url_publicacion'] = $input['url'];
+  if (isset($input['published_at'])) $updates['publicada_en'] = $input['published_at'];
+  if (isset($input['error_message'])) $updates['error_detalle'] = $input['error_message'];
+  if (isset($input['metadata'])) $updates['metadata'] = json_encode($input['metadata']);
+
+  if (!$updates) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Nada que actualizar']);
+    exit;
   }
-  
-  if (!$found) {
+
+  $row = dbUpdate('publicaciones', $updates, 'id = :id', ['id' => $idFromPath], 'id, pieza_id, canal::text AS canal, estado::text AS estado, url_publicacion, publicada_en, error_detalle, metadata, created_at, updated_at');
+  if (!$row) {
     http_response_code(404);
     echo json_encode(['error' => 'Publicación no encontrada']);
     exit;
   }
-  
-  $data['publications'] = $publications;
-  file_put_contents($dataPath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-  
-  echo json_encode(['ok' => true, 'publication' => $publications[$i]]);
+
+  $publication = [
+    'id' => $row['id'],
+    'proposal_id' => $row['pieza_id'],
+    'platform' => canalToPlatform($row['canal']),
+    'status' => estadoToUiStatus($row['estado']),
+    'url' => $row['url_publicacion'] ?? null,
+    'published_at' => isoDateTime($row['publicada_en'] ?? null),
+    'error_message' => $row['error_detalle'] ?? null,
+    'metadata' => json_decode($row['metadata'] ?? '{}', true) ?: [],
+    'created_at' => isoDateTime($row['created_at'] ?? null),
+    'updated_at' => isoDateTime($row['updated_at'] ?? null),
+  ];
+
+  echo json_encode(['ok' => true, 'publication' => $publication]);
   exit;
 }
 
 http_response_code(405);
 echo json_encode(['error' => 'Método no permitido']);
+

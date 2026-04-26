@@ -2,98 +2,179 @@
 header('Content-Type: application/json');
 
 $method = $_SERVER['REQUEST_METHOD'];
-$dataPath = __DIR__ . '/../../data/articles.json';
 
-function requireAuth() {
-  $token = $_COOKIE['crea_editor_session'] ?? null;
-  if (!$token) {
-    http_response_code(401);
-    echo json_encode(['error' => 'No autorizado']);
-    exit;
-  }
-  $payload = json_decode(base64_decode($token), true);
-  if (!$payload || $payload['exp'] < time()) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Sesión expirada']);
-    exit;
-  }
-  return $payload;
-}
+require_once __DIR__ . '/../lib/auth.php';
+require_once __DIR__ . '/../lib/database.php';
 
-function generateId($articles) {
-  $maxId = 0;
-  foreach ($articles as $a) {
-    if (preg_match('/art-(\d+)/', $a['id'], $m)) {
-      $maxId = max($maxId, (int)$m[1]);
-    }
-  }
-  return 'art-' . str_pad($maxId + 1, 3, '0', STR_PAD_LEFT);
-}
-
-function generateSlug($titulo) {
+function generateSlug(string $titulo): string
+{
   $slug = strtolower(trim($titulo));
-  $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
-  $slug = preg_replace('/\s+/', '-', $slug);
-  $slug = preg_replace('/-+/', '-', $slug);
+  $slug = preg_replace('/[^\p{L}\p{N}\s-]/u', '', $slug);
+  $slug = preg_replace('/\s+/u', '-', $slug);
+  $slug = preg_replace('/-+/u', '-', $slug);
+  $slug = trim($slug, '-');
+  if ($slug === '') $slug = 'articulo';
   return $slug;
 }
 
-function loadArticles() {
-  global $dataPath;
-  $data = json_decode(file_get_contents($dataPath), true);
-  return $data['articles'] ?? [];
+function ensureUniqueSlug(string $baseSlug, ?string $ignoreId = null): string
+{
+  $slug = $baseSlug;
+  $n = 1;
+  while (true) {
+    $params = ['slug' => $slug];
+    $sql = "SELECT 1 FROM piezas_contenido WHERE slug = :slug AND deleted_at IS NULL";
+    if ($ignoreId) {
+      $sql .= " AND id <> :id";
+      $params['id'] = $ignoreId;
+    }
+    $exists = dbFetchOne($sql . " LIMIT 1", $params);
+    if (!$exists) return $slug;
+    $n++;
+    $slug = $baseSlug . '-' . $n;
+  }
 }
 
-function saveArticles($articles) {
-  global $dataPath;
-  $data = ['articles' => $articles];
-  file_put_contents($dataPath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+function normalizeEstadoPieza(?string $estado): string
+{
+  $e = strtolower(trim((string)$estado));
+  return in_array($e, ['borrador', 'en_revision', 'aprobada', 'publicada', 'rechazada', 'archivada'], true) ? $e : 'borrador';
 }
 
 if ($method === 'GET') {
-  $articles = loadArticles();
   $estado = $_GET['estado'] ?? null;
   $categoria = $_GET['categoria'] ?? null;
+
+  $where = ["pc.deleted_at IS NULL", "pc.formato = 'nota_web'"];
+  $params = [];
   if ($estado) {
-    $articles = array_values(array_filter($articles, fn($a) => $a['estado'] === $estado));
+    $where[] = 'pc.estado = :estado';
+    $params['estado'] = normalizeEstadoPieza((string)$estado);
   }
   if ($categoria) {
-    $articles = array_values(array_filter($articles, fn($a) => $a['categoria'] === $categoria));
+    $where[] = 'ce.slug = :categoria';
+    $params['categoria'] = $categoria;
   }
-  usort($articles, fn($a, $b) => strcmp($b['created_at'], $a['created_at']));
+
+  $rows = dbFetchAll(
+    "SELECT
+      pc.id,
+      pc.slug,
+      pc.titulo,
+      pc.subtitulo,
+      pc.extracto,
+      pc.contenido_html,
+      pc.imagen_destacada_url,
+      pc.imagen_alt,
+      ce.slug AS categoria_slug,
+      pc.estado::text AS estado,
+      to_json(pc.keywords_seo) AS keywords_seo,
+      pc.meta_description,
+      pc.fecha_publicacion,
+      pc.created_at,
+      pc.updated_at,
+      u.nombre_completo AS autor_nombre,
+      pc.metadata
+     FROM piezas_contenido pc
+     LEFT JOIN categorias_editorial ce ON ce.id = pc.categoria_id
+     LEFT JOIN usuarios u ON u.id = pc.autor_id
+     WHERE " . implode(' AND ', $where) . "
+     ORDER BY pc.created_at DESC",
+    $params
+  );
+
+  $articles = array_map(function ($r) {
+    $meta = json_decode($r['metadata'] ?? '{}', true) ?: [];
+    $kw = [];
+    if (isset($r['keywords_seo']) && $r['keywords_seo'] !== null) {
+      $kw = json_decode($r['keywords_seo'], true) ?: [];
+    }
+    return [
+      'id' => $r['id'],
+      'slug' => $r['slug'],
+      'titulo' => $r['titulo'],
+      'subtitulo' => $r['subtitulo'] ?? '',
+      'extracto' => $r['extracto'] ?? '',
+      'contenido_html' => $r['contenido_html'] ?? '',
+      'imagen_destacada' => $r['imagen_destacada_url'] ?? '',
+      'imagen_alt' => $r['imagen_alt'] ?? '',
+      'categoria' => $r['categoria_slug'] ?? 'local',
+      'autor' => $meta['autor_display'] ?? ($r['autor_nombre'] ?? ''),
+      'estado' => $r['estado'],
+      'keywords_seo' => $kw,
+      'meta_description' => $r['meta_description'] ?? '',
+      'fecha_publicacion' => isoDateTime($r['fecha_publicacion'] ?? null),
+      'created_at' => isoDateTime($r['created_at'] ?? null),
+      'updated_at' => isoDateTime($r['updated_at'] ?? null),
+    ];
+  }, $rows);
+
   echo json_encode(['articles' => $articles]);
   exit;
 }
 
 if ($method === 'POST') {
-  requireAuth();
+  $payload = requireAuth();
   $data = json_decode(file_get_contents('php://input'), true);
   if (empty($data['titulo'])) {
     http_response_code(400);
     echo json_encode(['error' => 'El título es requerido']);
     exit;
   }
-  $articles = loadArticles();
-  $newArticle = [
-    'id' => generateId($articles),
-    'slug' => generateSlug($data['titulo']),
-    'titulo' => $data['titulo'],
-    'subtitulo' => $data['subtitulo'] ?? '',
-    'extracto' => $data['extracto'] ?? '',
-    'contenido_html' => $data['contenido_html'] ?? '',
-    'imagen_destacada' => $data['imagen_destacada'] ?? '',
-    'imagen_alt' => $data['imagen_alt'] ?? '',
-    'categoria' => $data['categoria'] ?? 'local',
-    'autor' => $data['autor'] ?? '',
-    'estado' => $data['estado'] ?? 'borrador',
-    'keywords_seo' => $data['keywords_seo'] ?? [],
-    'meta_description' => $data['meta_description'] ?? '',
+
+  $slugBase = generateSlug((string)$data['titulo']);
+  $slug = ensureUniqueSlug($slugBase);
+  $categoriaSlug = $data['categoria'] ?? 'local';
+  $categoriaRow = dbFetchOne('SELECT id FROM categorias_editorial WHERE slug = :slug LIMIT 1', ['slug' => $categoriaSlug]);
+  $categoriaId = $categoriaRow['id'] ?? null;
+
+  $meta = [];
+  if (isset($data['autor']) && trim((string)$data['autor']) !== '') {
+    $meta['autor_display'] = trim((string)$data['autor']);
+  }
+
+  $keywords = $data['keywords_seo'] ?? [];
+  if (!is_array($keywords)) $keywords = [];
+
+  $row = dbInsert('piezas_contenido', [
+    'titulo' => (string)$data['titulo'],
+    'subtitulo' => $data['subtitulo'] ?? null,
+    'slug' => $slug,
+    'categoria_id' => $categoriaId,
+    'formato' => 'nota_web',
+    'estado' => normalizeEstadoPieza($data['estado'] ?? null),
+    'autor_id' => $payload['sub'],
+    'contenido_html' => $data['contenido_html'] ?? null,
+    'extracto' => $data['extracto'] ?? null,
+    'imagen_destacada_url' => $data['imagen_destacada'] ?? null,
+    'imagen_alt' => $data['imagen_alt'] ?? null,
+    'meta_description' => $data['meta_description'] ?? null,
+    'keywords_seo' => pgTextArrayLiteral($keywords),
     'fecha_publicacion' => $data['fecha_publicacion'] ?? null,
-    'created_at' => date('c'),
-    'updated_at' => date('c')
+    'metadata' => json_encode($meta ?: new stdClass()),
+  ], "id, slug, titulo, subtitulo, extracto, contenido_html, imagen_destacada_url, imagen_alt, estado::text AS estado, to_json(keywords_seo) AS keywords_seo, meta_description, fecha_publicacion, created_at, updated_at, metadata");
+
+  $metaOut = json_decode($row['metadata'] ?? '{}', true) ?: [];
+  $kwOut = json_decode($row['keywords_seo'] ?? '[]', true) ?: [];
+  $newArticle = [
+    'id' => $row['id'],
+    'slug' => $row['slug'],
+    'titulo' => $row['titulo'],
+    'subtitulo' => $row['subtitulo'] ?? '',
+    'extracto' => $row['extracto'] ?? '',
+    'contenido_html' => $row['contenido_html'] ?? '',
+    'imagen_destacada' => $row['imagen_destacada_url'] ?? '',
+    'imagen_alt' => $row['imagen_alt'] ?? '',
+    'categoria' => $categoriaSlug,
+    'autor' => $metaOut['autor_display'] ?? '',
+    'estado' => $row['estado'],
+    'keywords_seo' => $kwOut,
+    'meta_description' => $row['meta_description'] ?? '',
+    'fecha_publicacion' => isoDateTime($row['fecha_publicacion'] ?? null),
+    'created_at' => isoDateTime($row['created_at'] ?? null),
+    'updated_at' => isoDateTime($row['updated_at'] ?? null),
   ];
-  $articles[] = $newArticle;
-  saveArticles($articles);
+
   echo json_encode(['ok' => true, 'article' => $newArticle]);
   exit;
 }
@@ -107,31 +188,85 @@ if ($method === 'PATCH') {
     echo json_encode(['error' => 'El ID es requerido']);
     exit;
   }
-  $articles = loadArticles();
-  $found = false;
-  foreach ($articles as $i => $a) {
-    if ($a['id'] === $id) {
-      $allowed = ['titulo', 'subtitulo', 'extracto', 'contenido_html', 'imagen_destacada', 'imagen_alt', 'categoria', 'autor', 'estado', 'keywords_seo', 'meta_description', 'fecha_publicacion'];
-      foreach ($allowed as $field) {
-        if (isset($data[$field])) {
-          $articles[$i][$field] = $data[$field];
-        }
-      }
-      if (isset($data['titulo'])) {
-        $articles[$i]['slug'] = generateSlug($data['titulo']);
-      }
-      $articles[$i]['updated_at'] = date('c');
-      $found = true;
-      break;
-    }
-  }
-  if (!$found) {
+
+  $current = dbFetchOne('SELECT id, metadata FROM piezas_contenido WHERE id = :id AND deleted_at IS NULL AND formato = :formato LIMIT 1', [
+    'id' => $id,
+    'formato' => 'nota_web',
+  ]);
+  if (!$current) {
     http_response_code(404);
     echo json_encode(['error' => 'Artículo no encontrado']);
     exit;
   }
-  saveArticles($articles);
-  echo json_encode(['ok' => true, 'article' => $articles[$i]]);
+
+  $meta = json_decode($current['metadata'] ?? '{}', true) ?: [];
+
+  $updates = [];
+  if (isset($data['titulo'])) {
+    $slugBase = generateSlug((string)$data['titulo']);
+    $updates['slug'] = ensureUniqueSlug($slugBase, $id);
+    $updates['titulo'] = $data['titulo'];
+  }
+  if (isset($data['subtitulo'])) $updates['subtitulo'] = $data['subtitulo'];
+  if (isset($data['extracto'])) $updates['extracto'] = $data['extracto'];
+  if (isset($data['contenido_html'])) $updates['contenido_html'] = $data['contenido_html'];
+  if (isset($data['imagen_destacada'])) $updates['imagen_destacada_url'] = $data['imagen_destacada'];
+  if (isset($data['imagen_alt'])) $updates['imagen_alt'] = $data['imagen_alt'];
+  if (isset($data['estado'])) $updates['estado'] = normalizeEstadoPieza($data['estado']);
+  if (isset($data['meta_description'])) $updates['meta_description'] = $data['meta_description'];
+  if (isset($data['fecha_publicacion'])) $updates['fecha_publicacion'] = $data['fecha_publicacion'];
+  if (isset($data['keywords_seo'])) {
+    $keywords = $data['keywords_seo'];
+    if (!is_array($keywords)) $keywords = [];
+    $updates['keywords_seo'] = pgTextArrayLiteral($keywords);
+  }
+  if (isset($data['categoria'])) {
+    $categoriaRow = dbFetchOne('SELECT id FROM categorias_editorial WHERE slug = :slug LIMIT 1', ['slug' => $data['categoria']]);
+    $updates['categoria_id'] = $categoriaRow['id'] ?? null;
+  }
+  if (isset($data['autor'])) {
+    $a = trim((string)$data['autor']);
+    if ($a === '') {
+      unset($meta['autor_display']);
+    } else {
+      $meta['autor_display'] = $a;
+    }
+  }
+  $updates['metadata'] = json_encode($meta ?: new stdClass());
+
+  $row = dbUpdate('piezas_contenido', $updates, 'id = :id AND deleted_at IS NULL AND formato = :formato', ['id' => $id, 'formato' => 'nota_web'], "id, slug, titulo, subtitulo, extracto, contenido_html, imagen_destacada_url, imagen_alt, estado::text AS estado, to_json(keywords_seo) AS keywords_seo, meta_description, fecha_publicacion, created_at, updated_at, metadata, categoria_id");
+  if (!$row) {
+    http_response_code(404);
+    echo json_encode(['error' => 'Artículo no encontrado']);
+    exit;
+  }
+
+  $categoriaSlugOut = $data['categoria'] ?? ($_GET['categoria'] ?? null);
+  if (!$categoriaSlugOut) {
+    $catRow = dbFetchOne('SELECT slug FROM categorias_editorial WHERE id = :id LIMIT 1', ['id' => $row['categoria_id']]);
+    $categoriaSlugOut = $catRow['slug'] ?? 'local';
+  }
+
+  $metaOut = json_decode($row['metadata'] ?? '{}', true) ?: [];
+  $kwOut = json_decode($row['keywords_seo'] ?? '[]', true) ?: [];
+  echo json_encode(['ok' => true, 'article' => [
+    'id' => $row['id'],
+    'slug' => $row['slug'],
+    'titulo' => $row['titulo'],
+    'subtitulo' => $row['subtitulo'] ?? '',
+    'extracto' => $row['extracto'] ?? '',
+    'contenido_html' => $row['contenido_html'] ?? '',
+    'imagen_destacada' => $row['imagen_destacada_url'] ?? '',
+    'imagen_alt' => $row['imagen_alt'] ?? '',
+    'categoria' => $categoriaSlugOut,
+    'autor' => $metaOut['autor_display'] ?? '',
+    'estado' => $row['estado'],
+    'keywords_seo' => $kwOut,
+    'meta_description' => $row['meta_description'] ?? '',
+    'fecha_publicacion' => isoDateTime($row['fecha_publicacion'] ?? null),
+    'created_at' => isoDateTime($row['created_at'] ?? null),
+    'updated_at' => isoDateTime($row['updated_at'] ?? null),
+  ]]);
   exit;
 }
 
@@ -143,16 +278,14 @@ if ($method === 'DELETE') {
     echo json_encode(['error' => 'El ID es requerido']);
     exit;
   }
-  $articles = loadArticles();
-  $initialCount = count($articles);
-  $articles = array_values(array_filter($articles, fn($a) => $a['id'] !== $id));
-  if (count($articles) === $initialCount) {
+
+  $deleted = dbExec("UPDATE piezas_contenido SET deleted_at = NOW() WHERE id = :id AND deleted_at IS NULL AND formato = 'nota_web'", ['id' => $id]);
+  if ($deleted <= 0) {
     http_response_code(404);
     echo json_encode(['error' => 'Artículo no encontrado']);
     exit;
   }
-  saveArticles($articles);
-  echo json_encode(['ok' => true, 'deleted' => $initialCount - count($articles)]);
+  echo json_encode(['ok' => true, 'deleted' => $deleted]);
   exit;
 }
 

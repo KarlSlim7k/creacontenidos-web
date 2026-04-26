@@ -2,70 +2,82 @@
 header('Content-Type: application/json');
 
 $method = $_SERVER['REQUEST_METHOD'];
-$dataPath = __DIR__ . '/../../data/clients.json';
-
-function requireAuth() {
-  $token = $_COOKIE['crea_editor_session'] ?? null;
-  if (!$token) {
-    http_response_code(401);
-    echo json_encode(['error' => 'No autorizado']);
-    exit;
-  }
-  $payload = json_decode(base64_decode($token), true);
-  if (!$payload || $payload['exp'] < time()) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Sesión expirada']);
-    exit;
-  }
-  return $payload;
-}
-
-function generateUuid() {
-  return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-    mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-    mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000,
-    mt_rand(0, 0x3fff) | 0x8000,
-    mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-  );
-}
-
-function loadClients() {
-  global $dataPath;
-  $data = json_decode(file_get_contents($dataPath), true);
-  return $data['clients'] ?? [];
-}
-
-function saveClients($clients) {
-  global $dataPath;
-  $data = ['clients' => $clients];
-  file_put_contents($dataPath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-}
+require_once __DIR__ . '/../lib/auth.php';
+require_once __DIR__ . '/../lib/database.php';
 
 if ($method === 'GET') {
-  $clients = loadClients();
   $id = $_GET['id'] ?? null;
   if ($id) {
-    $found = null;
-    foreach ($clients as $c) {
-      if ($c['id'] === $id) { $found = $c; break; }
-    }
-    if (!$found) {
+    $row = dbFetchOne(
+      "SELECT
+        id,
+        contacto_nombre,
+        nombre_empresa,
+        contacto_tel,
+        contacto_email,
+        activo,
+        metadata
+      FROM patrocinadores
+      WHERE id = :id AND deleted_at IS NULL
+      LIMIT 1",
+      ['id' => $id]
+    );
+
+    if (!$row) {
       http_response_code(404);
       echo json_encode(['error' => 'Cliente no encontrado']);
       exit;
     }
-    echo json_encode(['client' => $found]);
+    $meta = json_decode($row['metadata'] ?? '{}', true) ?: [];
+    echo json_encode(['client' => [
+      'id' => $row['id'],
+      'name' => $row['contacto_nombre'] ?? '',
+      'business_name' => $row['nombre_empresa'] ?? '',
+      'package' => $meta['package'] ?? '',
+      'phone' => $row['contacto_tel'] ?? '',
+      'email' => $row['contacto_email'] ?? '',
+      'start_date' => $meta['start_date'] ?? '',
+      'active' => (bool)$row['activo'],
+    ]]);
     exit;
   }
+
   $package = $_GET['package'] ?? null;
   $active = $_GET['active'] ?? null;
+
+  $where = ['deleted_at IS NULL'];
+  $params = [];
   if ($package) {
-    $clients = array_values(array_filter($clients, fn($c) => $c['package'] === $package));
+    $where[] = "metadata->>'package' = :package";
+    $params['package'] = $package;
   }
   if ($active !== null) {
-    $clients = array_values(array_filter($clients, fn($c) => $c['active'] === ($active === 'true' || $active === '1')));
+    $where[] = 'activo = :activo';
+    $params['activo'] = ($active === 'true' || $active === '1');
   }
-  usort($clients, fn($a, $b) => strcmp($a['name'], $b['name']));
+
+  $rows = dbFetchAll(
+    "SELECT id, contacto_nombre, nombre_empresa, contacto_tel, contacto_email, activo, metadata
+     FROM patrocinadores
+     WHERE " . implode(' AND ', $where) . "
+     ORDER BY contacto_nombre ASC NULLS LAST, nombre_empresa ASC",
+    $params
+  );
+
+  $clients = array_map(function ($r) {
+    $meta = json_decode($r['metadata'] ?? '{}', true) ?: [];
+    return [
+      'id' => $r['id'],
+      'name' => $r['contacto_nombre'] ?? '',
+      'business_name' => $r['nombre_empresa'] ?? '',
+      'package' => $meta['package'] ?? '',
+      'phone' => $r['contacto_tel'] ?? '',
+      'email' => $r['contacto_email'] ?? '',
+      'start_date' => $meta['start_date'] ?? '',
+      'active' => (bool)$r['activo'],
+    ];
+  }, $rows);
+
   echo json_encode(['clients' => $clients]);
   exit;
 }
@@ -84,20 +96,33 @@ if ($method === 'POST') {
     echo json_encode(['error' => implode(', ', $errors)]);
     exit;
   }
-  
-  $clients = loadClients();
-  $newClient = [
-    'id' => generateUuid(),
-    'name' => trim($data['name']),
-    'business_name' => trim($data['business_name']),
+
+  $meta = [
     'package' => $data['package'],
-    'phone' => $data['phone'] ?? '',
-    'email' => $data['email'] ?? '',
     'start_date' => $data['start_date'] ?? date('Y-m-d'),
-    'active' => $data['active'] ?? true
   ];
-  $clients[] = $newClient;
-  saveClients($clients);
+
+  $row = dbInsert('patrocinadores', [
+    'contacto_nombre' => trim((string)$data['name']),
+    'nombre_empresa' => trim((string)$data['business_name']),
+    'contacto_tel' => $data['phone'] ?? null,
+    'contacto_email' => $data['email'] ?? null,
+    'activo' => isset($data['active']) ? (bool)$data['active'] : true,
+    'metadata' => json_encode($meta),
+  ], 'id, contacto_nombre, nombre_empresa, contacto_tel, contacto_email, activo, metadata');
+
+  $metaOut = json_decode($row['metadata'] ?? '{}', true) ?: [];
+  $newClient = [
+    'id' => $row['id'],
+    'name' => $row['contacto_nombre'] ?? '',
+    'business_name' => $row['nombre_empresa'] ?? '',
+    'package' => $metaOut['package'] ?? '',
+    'phone' => $row['contacto_tel'] ?? '',
+    'email' => $row['contacto_email'] ?? '',
+    'start_date' => $metaOut['start_date'] ?? '',
+    'active' => (bool)$row['activo'],
+  ];
+
   echo json_encode(['ok' => true, 'client' => $newClient]);
   exit;
 }
@@ -111,33 +136,49 @@ if ($method === 'PATCH') {
     echo json_encode(['error' => 'El ID es requerido']);
     exit;
   }
-  
-  $clients = loadClients();
-  $found = false;
-  foreach ($clients as $i => $c) {
-    if ($c['id'] === $id) {
-      $allowed = ['name', 'business_name', 'package', 'phone', 'email', 'start_date', 'active'];
-      foreach ($allowed as $field) {
-        if (isset($data[$field])) {
-          $clients[$i][$field] = $data[$field];
-        }
-      }
-      if (isset($data['package']) && !in_array($data['package'], ['basico', 'premium', 'gold'])) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Paquete inválido (basico, premium o gold)']);
-        exit;
-      }
-      $found = true;
-      break;
-    }
-  }
-  if (!$found) {
+
+  $current = dbFetchOne('SELECT id, metadata FROM patrocinadores WHERE id = :id AND deleted_at IS NULL', ['id' => $id]);
+  if (!$current) {
     http_response_code(404);
     echo json_encode(['error' => 'Cliente no encontrado']);
     exit;
   }
-  saveClients($clients);
-  echo json_encode(['ok' => true, 'client' => $clients[$i]]);
+
+  if (isset($data['package']) && !in_array($data['package'], ['basico', 'premium', 'gold'])) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Paquete inválido (basico, premium o gold)']);
+    exit;
+  }
+
+  $meta = json_decode($current['metadata'] ?? '{}', true) ?: [];
+  if (isset($data['package'])) $meta['package'] = $data['package'];
+  if (isset($data['start_date'])) $meta['start_date'] = $data['start_date'];
+
+  $updates = ['metadata' => json_encode($meta)];
+  if (isset($data['name'])) $updates['contacto_nombre'] = $data['name'];
+  if (isset($data['business_name'])) $updates['nombre_empresa'] = $data['business_name'];
+  if (isset($data['phone'])) $updates['contacto_tel'] = $data['phone'];
+  if (isset($data['email'])) $updates['contacto_email'] = $data['email'];
+  if (isset($data['active'])) $updates['activo'] = (bool)$data['active'];
+
+  $row = dbUpdate('patrocinadores', $updates, 'id = :id AND deleted_at IS NULL', ['id' => $id], 'id, contacto_nombre, nombre_empresa, contacto_tel, contacto_email, activo, metadata');
+  if (!$row) {
+    http_response_code(404);
+    echo json_encode(['error' => 'Cliente no encontrado']);
+    exit;
+  }
+
+  $metaOut = json_decode($row['metadata'] ?? '{}', true) ?: [];
+  echo json_encode(['ok' => true, 'client' => [
+    'id' => $row['id'],
+    'name' => $row['contacto_nombre'] ?? '',
+    'business_name' => $row['nombre_empresa'] ?? '',
+    'package' => $metaOut['package'] ?? '',
+    'phone' => $row['contacto_tel'] ?? '',
+    'email' => $row['contacto_email'] ?? '',
+    'start_date' => $metaOut['start_date'] ?? '',
+    'active' => (bool)$row['activo'],
+  ]]);
   exit;
 }
 
@@ -149,16 +190,14 @@ if ($method === 'DELETE') {
     echo json_encode(['error' => 'El ID es requerido']);
     exit;
   }
-  $clients = loadClients();
-  $initialCount = count($clients);
-  $clients = array_values(array_filter($clients, fn($c) => $c['id'] !== $id));
-  if (count($clients) === $initialCount) {
+
+  $deleted = dbExec('UPDATE patrocinadores SET deleted_at = NOW(), activo = FALSE WHERE id = :id AND deleted_at IS NULL', ['id' => $id]);
+  if ($deleted <= 0) {
     http_response_code(404);
     echo json_encode(['error' => 'Cliente no encontrado']);
     exit;
   }
-  saveClients($clients);
-  echo json_encode(['ok' => true, 'deleted' => $initialCount - count($clients)]);
+  echo json_encode(['ok' => true, 'deleted' => $deleted]);
   exit;
 }
 

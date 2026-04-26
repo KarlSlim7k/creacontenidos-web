@@ -1,6 +1,9 @@
 FROM php:8.2-fpm-alpine
 
-RUN apk add --no-cache nginx
+RUN apk add --no-cache nginx libpq postgresql15-client \
+  && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS postgresql-dev \
+  && docker-php-ext-install pdo_pgsql pgsql \
+  && apk del .build-deps
 
 COPY apps/web /usr/share/nginx/html
 COPY admin /usr/share/nginx/html/admin

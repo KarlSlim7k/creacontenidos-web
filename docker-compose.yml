@@ -1,4 +1,23 @@
 services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: crea_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-crea_db}
+      POSTGRES_USER: ${POSTGRES_USER:-crea}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d:ro
+    networks:
+      - dokploy-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-crea} -d ${POSTGRES_DB:-crea_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   web:
     build: .
     expose:
@@ -6,6 +25,9 @@ services:
     restart: unless-stopped
     networks:
       - dokploy-network
+    depends_on:
+      postgres:
+        condition: service_healthy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.crea-web.rule=Host(`crea-contenidos.com`) || Host(`www.crea-contenidos.com`)"
@@ -15,6 +37,14 @@ services:
       - "traefik.docker.network=dokploy-network"
     environment:
       - PHP_MEMORY_LIMIT=256M
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-crea_db}
+      - POSTGRES_USER=${POSTGRES_USER:-crea}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-change_me}
+
+volumes:
+  postgres_data:
 
 networks:
   dokploy-network:

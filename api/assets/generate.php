@@ -3,21 +3,7 @@ header('Content-Type: application/json');
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-function requireAuth() {
-  $token = $_COOKIE['crea_editor_session'] ?? null;
-  if (!$token) {
-    http_response_code(401);
-    echo json_encode(['error' => 'No autorizado']);
-    exit;
-  }
-  $payload = json_decode(base64_decode($token), true);
-  if (!$payload || $payload['exp'] < time()) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Sesión expirada']);
-    exit;
-  }
-  return $payload;
-}
+require_once __DIR__ . '/../lib/auth.php';
 
 if ($method !== 'POST') {
   http_response_code(405);

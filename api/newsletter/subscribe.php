@@ -14,6 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   exit;
 }
 
+require_once __DIR__ . '/../lib/database.php';
+
 $data = json_decode(file_get_contents('php://input'), true);
 $email = trim($data['email'] ?? '');
 $whatsapp = trim($data['whatsapp'] ?? '');
@@ -25,34 +27,20 @@ if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
   exit;
 }
 
-$filePath = __DIR__ . '/../../data/subscribers.json';
-
-if (!file_exists($filePath)) {
-  file_put_contents($filePath, json_encode(['subscribers' => []]));
+$emailNorm = strtolower($email);
+$exists = dbFetchOne('SELECT 1 FROM suscriptores WHERE LOWER(email) = LOWER(:email) LIMIT 1', ['email' => $emailNorm]);
+if ($exists) {
+  http_response_code(409);
+  echo json_encode(['error' => 'Este correo ya está suscrito']);
+  exit;
 }
 
-$store = json_decode(file_get_contents($filePath), true);
-$subscribers = $store['subscribers'] ?? [];
-
-// Check for duplicates
-foreach ($subscribers as $sub) {
-  if (strtolower($sub['email']) === strtolower($email)) {
-    http_response_code(409);
-    echo json_encode(['error' => 'Este correo ya está suscrito']);
-    exit;
-  }
-}
-
-// Add subscriber
-$subscribers[] = [
-  'email' => strtolower($email),
-  'whatsapp' => $whatsapp,
-  'subscribed_at' => date('c'),
-  'active' => true
-];
-
-$store['subscribers'] = $subscribers;
-file_put_contents($filePath, json_encode($store, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+dbInsert('suscriptores', [
+  'email' => $emailNorm,
+  'whatsapp' => $whatsapp !== '' ? $whatsapp : null,
+  'activo' => true,
+  'metadata' => json_encode(new stdClass()),
+]);
 
 echo json_encode([
   'ok' => true,

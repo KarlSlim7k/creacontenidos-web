@@ -9,97 +9,155 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 $method = $_SERVER['REQUEST_METHOD'];
-$dataPath = __DIR__ . '/../../data/topics.json';
 
-function requireAuth() {
-  $token = $_COOKIE['crea_editor_session'] ?? null;
-  if (!$token) {
-    http_response_code(401);
-    echo json_encode(['error' => 'No autorizado']);
-    exit;
-  }
-  $payload = json_decode(base64_decode($token), true);
-  if (!$payload || $payload['exp'] < time()) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Sesión expirada']);
-    exit;
-  }
-  return $payload;
+require_once __DIR__ . '/../lib/auth.php';
+require_once __DIR__ . '/../lib/database.php';
+
+function uiStatusToIdeaEstado(string $status): string
+{
+  $status = strtolower(trim($status));
+  return match ($status) {
+    'approved' => 'aprobada',
+    'analyzing', 'en_analisis' => 'en_analisis',
+    'production', 'en_produccion' => 'en_produccion',
+    'rejected', 'discarded', 'descartada' => 'descartada',
+    'postponed', 'pospuesta' => 'pospuesta',
+    default => 'nueva',
+  };
 }
 
-function loadTopics() {
-  global $dataPath;
-  if (!file_exists($dataPath)) {
-    return ['topics' => []];
-  }
-  return json_decode(file_get_contents($dataPath), true);
+function ideaEstadoToUiStatus(?string $estado): string
+{
+  return match ($estado) {
+    'aprobada' => 'approved',
+    'en_analisis' => 'analyzing',
+    'en_produccion' => 'production',
+    'descartada' => 'rejected',
+    'pospuesta' => 'postponed',
+    default => 'pending',
+  };
 }
 
-function saveTopics($data) {
-  global $dataPath;
-  file_put_contents($dataPath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-}
-
-function generateUuid() {
-  return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-    mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-    mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000,
-    mt_rand(0, 0x3fff) | 0x8000,
-    mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-  );
+function normalizeFuenteIdea(?string $source): string
+{
+  $s = strtolower(trim((string)$source));
+  return match ($s) {
+    'telegram' => 'telegram',
+    'whatsapp', 'whatsapp_texto' => 'whatsapp_texto',
+    'whatsapp_voz' => 'whatsapp_voz',
+    'google_news', 'alerta_google_news' => 'alerta_google_news',
+    'perplexity', 'perplexity_signal' => 'perplexity_signal',
+    'director_editorial' => 'director_editorial',
+    'colaborador_externo' => 'colaborador_externo',
+    default => 'director_editorial',
+  };
 }
 
 if ($method === 'GET') {
-  $data = loadTopics();
-  $topics = $data['topics'] ?? [];
-
   $status = $_GET['status'] ?? null;
   $source = $_GET['source'] ?? null;
   $sentiment = $_GET['sentiment'] ?? null;
   $fecha = $_GET['fecha'] ?? null;
 
+  $where = ['deleted_at IS NULL'];
+  $params = [];
+
   if ($status) {
-    $topics = array_values(array_filter($topics, fn($t) => $t['status'] === $status));
+    $where[] = "estado = :estado";
+    $params['estado'] = uiStatusToIdeaEstado((string)$status);
   }
   if ($source) {
-    $topics = array_values(array_filter($topics, fn($t) => strpos($t['source'], $source) !== false));
+    $where[] = "fuente::text ILIKE :source";
+    $params['source'] = '%' . $source . '%';
   }
   if ($sentiment) {
-    $topics = array_values(array_filter($topics, fn($t) => $t['sentiment'] === $sentiment));
+    $where[] = "metadata->>'sentiment' = :sentiment";
+    $params['sentiment'] = $sentiment;
   }
   if ($fecha) {
-    $topics = array_values(array_filter($topics, fn($t) => strpos($t['detected_at'], $fecha) === 0));
+    $where[] = "created_at::date = :fecha::date";
+    $params['fecha'] = $fecha;
   }
 
-  usort($topics, fn($a, $b) => strcmp($b['detected_at'], $a['detected_at']));
+  $sql = "
+    SELECT
+      id,
+      titulo,
+      fuente::text AS fuente,
+      estado::text AS estado,
+      metadata,
+      created_at
+    FROM ideas
+    WHERE " . implode(' AND ', $where) . "
+    ORDER BY created_at DESC
+  ";
+
+  $rows = dbFetchAll($sql, $params);
+  $topics = array_map(function ($r) {
+    $meta = [];
+    if (!empty($r['metadata'])) {
+      $meta = json_decode($r['metadata'], true) ?: [];
+    }
+    return [
+      'id' => $r['id'],
+      'topic' => $r['titulo'],
+      'source' => $meta['source_raw'] ?? $r['fuente'],
+      'mentions' => $meta['mentions'] ?? 1,
+      'sentiment' => $meta['sentiment'] ?? 'neutral',
+      'suggested_formats' => $meta['suggested_formats'] ?? ['nota'],
+      'detected_at' => isoDateTime($r['created_at'] ?? null),
+      'status' => $meta['status'] ?? ideaEstadoToUiStatus($r['estado'] ?? null),
+    ];
+  }, $rows);
+
   echo json_encode(['topics' => $topics]);
   exit;
 }
 
 if ($method === 'POST') {
-  requireAuth();
+  $payload = requireAuth();
   $input = json_decode(file_get_contents('php://input'), true);
 
-  $topic = [
-    'id' => generateUuid(),
-    'topic' => $input['topic'] ?? '',
-    'source' => $input['source'] ?? 'manual',
-    'mentions' => $input['mentions'] ?? 1,
-    'sentiment' => $input['sentiment'] ?? 'neutral',
-    'suggested_formats' => $input['suggested_formats'] ?? ['nota'],
-    'detected_at' => date('c'),
-    'status' => $input['status'] ?? 'pending'
-  ];
-
-  if (empty($topic['topic'])) {
+  $title = trim((string)($input['topic'] ?? ''));
+  if ($title === '') {
     http_response_code(400);
     echo json_encode(['error' => 'El topic es requerido']);
     exit;
   }
 
-  $data = loadTopics();
-  $data['topics'][] = $topic;
-  saveTopics($data);
+  $sourceRaw = (string)($input['source'] ?? 'manual');
+  $uiStatus = (string)($input['status'] ?? 'pending');
+  $mentions = (int)($input['mentions'] ?? 1);
+  $sentiment = (string)($input['sentiment'] ?? 'neutral');
+  $suggestedFormats = $input['suggested_formats'] ?? ['nota'];
+  if (!is_array($suggestedFormats)) $suggestedFormats = ['nota'];
+
+  $meta = [
+    'status' => $uiStatus,
+    'source_raw' => $sourceRaw,
+    'mentions' => $mentions,
+    'sentiment' => $sentiment,
+    'suggested_formats' => array_values($suggestedFormats),
+  ];
+
+  $row = dbInsert('ideas', [
+    'titulo' => $title,
+    'fuente' => normalizeFuenteIdea($sourceRaw),
+    'estado' => uiStatusToIdeaEstado($uiStatus),
+    'registrado_por' => $payload['sub'],
+    'metadata' => json_encode($meta),
+  ], 'id, titulo, created_at');
+
+  $topic = [
+    'id' => $row['id'],
+    'topic' => $row['titulo'],
+    'source' => $sourceRaw,
+    'mentions' => $mentions,
+    'sentiment' => $sentiment,
+    'suggested_formats' => array_values($suggestedFormats),
+    'detected_at' => isoDateTime($row['created_at'] ?? null),
+    'status' => $uiStatus,
+  ];
 
   echo json_encode(['ok' => true, 'topic' => $topic]);
   exit;
@@ -116,30 +174,55 @@ if ($method === 'PATCH') {
     exit;
   }
 
-  $data = loadTopics();
-  $found = false;
-
-  foreach ($data['topics'] as $i => $t) {
-    if ($t['id'] === $id) {
-      $allowed = ['status', 'topic', 'mentions', 'sentiment', 'suggested_formats'];
-      foreach ($allowed as $field) {
-        if (isset($input[$field])) {
-          $data['topics'][$i][$field] = $input[$field];
-        }
-      }
-      $found = true;
-      break;
-    }
-  }
-
-  if (!$found) {
+  $current = dbFetchOne('SELECT id, titulo, fuente::text AS fuente, estado::text AS estado, metadata, created_at FROM ideas WHERE id = :id AND deleted_at IS NULL', ['id' => $id]);
+  if (!$current) {
     http_response_code(404);
     echo json_encode(['error' => 'Topic no encontrado']);
     exit;
   }
 
-  saveTopics($data);
-  echo json_encode(['ok' => true, 'topic' => $data['topics'][$i]]);
+  $meta = [];
+  if (!empty($current['metadata'])) {
+    $meta = json_decode($current['metadata'], true) ?: [];
+  }
+
+  $updates = [];
+  if (isset($input['topic'])) {
+    $updates['titulo'] = trim((string)$input['topic']);
+  }
+  if (isset($input['status'])) {
+    $meta['status'] = (string)$input['status'];
+    $updates['estado'] = uiStatusToIdeaEstado((string)$input['status']);
+  }
+  if (isset($input['mentions'])) $meta['mentions'] = (int)$input['mentions'];
+  if (isset($input['sentiment'])) $meta['sentiment'] = (string)$input['sentiment'];
+  if (isset($input['suggested_formats'])) {
+    $sf = $input['suggested_formats'];
+    if (!is_array($sf)) $sf = ['nota'];
+    $meta['suggested_formats'] = array_values($sf);
+  }
+  $updates['metadata'] = json_encode($meta);
+
+  $row = dbUpdate('ideas', $updates, 'id = :id', ['id' => $id], 'id, titulo, fuente::text AS fuente, estado::text AS estado, metadata, created_at');
+  if (!$row) {
+    http_response_code(500);
+    echo json_encode(['error' => 'No se pudo actualizar']);
+    exit;
+  }
+
+  $metaOut = json_decode($row['metadata'] ?? '{}', true) ?: [];
+  $topic = [
+    'id' => $row['id'],
+    'topic' => $row['titulo'],
+    'source' => $metaOut['source_raw'] ?? $row['fuente'],
+    'mentions' => $metaOut['mentions'] ?? 1,
+    'sentiment' => $metaOut['sentiment'] ?? 'neutral',
+    'suggested_formats' => $metaOut['suggested_formats'] ?? ['nota'],
+    'detected_at' => isoDateTime($row['created_at'] ?? null),
+    'status' => $metaOut['status'] ?? ideaEstadoToUiStatus($row['estado'] ?? null),
+  ];
+
+  echo json_encode(['ok' => true, 'topic' => $topic]);
   exit;
 }
 
@@ -148,29 +231,26 @@ if ($method === 'DELETE') {
   $id = $_GET['id'] ?? null;
   $olderThanDays = $_GET['older_than_days'] ?? null;
 
-  $data = loadTopics();
-
   if ($id) {
-    $initialCount = count($data['topics']);
-    $data['topics'] = array_values(array_filter($data['topics'], fn($t) => $t['id'] !== $id));
-    if (count($data['topics']) === $initialCount) {
+    $updated = dbExec('UPDATE ideas SET deleted_at = NOW() WHERE id = :id AND deleted_at IS NULL', ['id' => $id]);
+    if ($updated <= 0) {
       http_response_code(404);
       echo json_encode(['error' => 'Topic no encontrado']);
       exit;
     }
-    saveTopics($data);
-    echo json_encode(['ok' => true, 'deleted' => $initialCount - count($data['topics'])]);
+    echo json_encode(['ok' => true, 'deleted' => 1]);
     exit;
   }
 
   if ($olderThanDays) {
-    $cutoff = strtotime("-{$olderThanDays} days");
-    $beforeCount = count($data['topics']);
-    $data['topics'] = array_values(array_filter($data['topics'], function($t) use ($cutoff) {
-      return strtotime($t['detected_at']) >= $cutoff;
-    }));
-    saveTopics($data);
-    echo json_encode(['ok' => true, 'deleted' => $beforeCount - count($data['topics'])]);
+    $days = (int)$olderThanDays;
+    if ($days <= 0) $days = 1;
+    $updated = dbExec(
+      "UPDATE ideas SET deleted_at = NOW()
+       WHERE deleted_at IS NULL AND created_at < (NOW() - (:days || ' days')::interval)",
+      ['days' => (string)$days]
+    );
+    echo json_encode(['ok' => true, 'deleted' => $updated]);
     exit;
   }
 

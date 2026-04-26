@@ -10,32 +10,47 @@ if ($method !== 'GET') {
 }
 
 $clientId = $_GET['client_id'] ?? null;
-$clientsPath = __DIR__ . '/../../data/clients.json';
 
-if (!file_exists($clientsPath)) {
-  echo json_encode(['metrics' => []]);
-  exit;
-}
+require_once __DIR__ . '/../lib/database.php';
 
-$clientsData = json_decode(file_get_contents($clientsPath), true);
-$clients = $clientsData['clients'] ?? [];
-
+$where = ['p.deleted_at IS NULL'];
+$params = [];
 if ($clientId) {
-  $clients = array_filter($clients, fn($c) => $c['id'] === $clientId);
-  $clients = array_values($clients);
+  $where[] = 'p.id = :id';
+  $params['id'] = $clientId;
 }
 
-$metrics = array_map(function($client) {
+$rows = dbFetchAll(
+  "SELECT
+     p.id,
+     p.nombre_empresa,
+     p.metadata,
+     COALESCE(SUM(cc.monto_mxn), 0) AS total_inversion
+   FROM patrocinadores p
+   LEFT JOIN contratos_comerciales cc
+     ON cc.patrocinador_id = p.id AND cc.deleted_at IS NULL AND cc.activo = TRUE
+   WHERE " . implode(' AND ', $where) . "
+   GROUP BY p.id
+   ORDER BY p.nombre_empresa ASC",
+  $params
+);
+
+$metrics = array_map(function ($r) {
+  $meta = json_decode($r['metadata'] ?? '{}', true) ?: [];
+  $views = 0;
+  $interactions = 0;
+  $totalInversion = (float)$r['total_inversion'];
+  $cpm = $views > 0 ? ($totalInversion / $views) * 1000 : 0.0;
   return [
-    'client_id' => $client['id'],
-    'business_name' => $client['business_name'],
-    'package' => $client['package'],
-    'views' => 0,
-    'interactions' => 0,
-    'cpm' => 0.0,
-    'total_inversion' => 0.0
+    'client_id' => $r['id'],
+    'business_name' => $r['nombre_empresa'],
+    'package' => $meta['package'] ?? '',
+    'views' => $views,
+    'interactions' => $interactions,
+    'cpm' => $cpm,
+    'total_inversion' => $totalInversion,
   ];
-}, $clients);
+}, $rows);
 
 echo json_encode(['metrics' => $metrics]);
 ?>
