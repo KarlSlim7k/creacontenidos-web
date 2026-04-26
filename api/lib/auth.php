@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/jwt.php';
+
 function getAuthToken(): ?string
 {
   $token = $_COOKIE['crea_editor_session'] ?? null;
@@ -22,8 +24,15 @@ function requireAuth(): array
     exit;
   }
 
-  $payload = json_decode(base64_decode($token), true);
-  if (!$payload || ($payload['exp'] ?? 0) < time()) {
+  $secret = getenv('JWT_SECRET') ?: '';
+  if ($secret === '') {
+    http_response_code(500);
+    echo json_encode(['error' => 'JWT_SECRET no configurado']);
+    exit;
+  }
+
+  $payload = validateJWT($token, $secret);
+  if (!$payload) {
     http_response_code(401);
     echo json_encode(['error' => 'Sesión expirada']);
     exit;

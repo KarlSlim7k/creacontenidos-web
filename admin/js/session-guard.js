@@ -12,21 +12,38 @@
     return match ? decodeURIComponent(match[2]) : null;
   }
 
+  function base64UrlToBase64(str) {
+    let s = str.replace(/-/g, '+').replace(/_/g, '/');
+    const pad = s.length % 4;
+    if (pad) s += '='.repeat(4 - pad);
+    return s;
+  }
+
+  function decodeTokenPayload(token) {
+    if (!token) return null;
+    try {
+      if (token.includes('.')) {
+        const parts = token.split('.');
+        if (parts.length !== 3) return null;
+        return JSON.parse(atob(base64UrlToBase64(parts[1])));
+      }
+      return JSON.parse(atob(token));
+    } catch {
+      return null;
+    }
+  }
+
   function isAuthenticated() {
     const token = getCookie(COOKIE_NAME);
     if (!token) return false;
-    try {
-      const payload = JSON.parse(atob(token));
-      return payload.exp > Math.floor(Date.now() / 1000);
-    } catch {
-      return false;
-    }
+    const payload = decodeTokenPayload(token);
+    return !!payload && payload.exp > Math.floor(Date.now() / 1000);
   }
 
   function getUserFromToken() {
     const token = getCookie(COOKIE_NAME);
     if (!token) return null;
-    try { return JSON.parse(atob(token)); } catch { return null; }
+    return decodeTokenPayload(token);
   }
 
   function requireAuth() {

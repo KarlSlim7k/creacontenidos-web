@@ -42,6 +42,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB:-crea_db}
       - POSTGRES_USER=${POSTGRES_USER:-crea}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-change_me}
+      - JWT_SECRET=${JWT_SECRET:-change_me}
 
 volumes:
   postgres_data:

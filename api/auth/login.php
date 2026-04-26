@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once __DIR__ . '/../lib/database.php';
+require_once __DIR__ . '/../lib/jwt.php';
 
 $data = json_decode(file_get_contents('php://input'), true);
 $email = $data['email'] ?? '';
@@ -34,13 +35,20 @@ if (!$user || empty($user['password_hash']) || !password_verify($password, $user
   exit;
 }
 
-$token = base64_encode(json_encode([
+$secret = getenv('JWT_SECRET') ?: '';
+if ($secret === '') {
+  http_response_code(500);
+  echo json_encode(['error' => 'JWT_SECRET no configurado']);
+  exit;
+}
+
+$token = createJWT([
   'sub' => $user['id'],
   'email' => $user['email'],
   'nombre' => $user['nombre_completo'],
   'rol' => $user['rol'],
   'exp' => time() + (8 * 3600)
-]));
+], $secret);
 
 setcookie('crea_editor_session', $token, [
   'expires' => time() + (8 * 3600),
