@@ -184,6 +184,9 @@
             <div id="publication-history" class="publication-history">
               <p style="font-size:0.75rem;color:var(--crea-gris-text);">Sin publicaciones aún</p>
             </div>
+            <button class="btn btn--success" style="margin-top:0.75rem;width:100%;" onclick="publishFacebookNow()">
+              Publicar en Facebook
+            </button>
             <button class="btn btn--secondary" style="margin-top:0.75rem;width:100%;" onclick="openDistributionModal()">
               + Nueva publicación
             </button>
@@ -712,6 +715,26 @@
     document.addEventListener('DOMContentLoaded', () => {
       loadProposal();
     });
+
+    async function publishFacebookNow() {
+      if (!confirm('¿Crear publicación para Facebook?')) return;
+      try {
+        const res = await CreaCRM.api.apiFetch(API.publish, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ proposal_id: proposalId, platforms: ['facebook'] })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          alert('Publicación de Facebook creada');
+          loadPublications();
+        } else {
+          alert(data.error || 'Error al crear publicación');
+        }
+      } catch (err) {
+        alert('Error al crear publicación');
+      }
+    }
   </script>
 </body>
 </html>

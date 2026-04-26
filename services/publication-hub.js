@@ -1,206 +1,239 @@
-const fs = require('fs');
-const path = require('path');
+#!/usr/bin/env node
+/**
+ * Publication Hub - CREA Contenidos (Fase 6)
+ *
+ * Procesa publicaciones programadas en PostgreSQL (`publicaciones`) y ejecuta
+ * la distribución por canal (Facebook en esta fase).
+ *
+ * Dry-run:
+ * - Si faltan `FB_PAGE_ACCESS_TOKEN` o `FB_PAGE_ID`, marca como `fallida` con
+ *   error `[DRY-RUN]` (no hace llamada real).
+ *
+ * Uso:
+ *   node services/publication-hub.js
+ *
+ * Env opcional:
+ *   PUBLICATION_HUB_LIMIT=10
+ */
 
-const CONFIG_PATH = path.join(__dirname, '../config/distribution-config.json');
-const PUBLICATIONS_PATH = path.join(__dirname, '../data/publications.json');
+const { query } = require('./lib/db');
 
-function loadConfig() {
-  try {
-    return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
-  } catch (e) {
-    console.log('[PublicationHub] Config no encontrada, usando defaults');
-    return { website: { auto_publish: true, publish_endpoint: 'api/articles/crud.php' } };
-  }
+const LOG_PREFIX = '[PublicationHub]';
+
+function log(message, type = 'INFO') {
+  const timestamp = new Date().toISOString();
+  console.log(`${LOG_PREFIX} [${timestamp}] [${type}] ${message}`);
 }
 
-function uuidv4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
+function getEnv(name, fallback = '') {
+  const v = process.env[name];
+  return v === undefined || v === '' ? fallback : v;
+}
+
+function stripMarkdown(md) {
+  if (!md) return '';
+  return String(md)
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/[*_~>#-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function buildFacebookMessage(piece) {
+  const title = piece?.titulo || '';
+  const body = stripMarkdown(piece?.contenido_markdown || '');
+  const excerpt = body.slice(0, 260);
+  const url = piece?.wordpress_url || piece?.url_publicacion || null;
+
+  const parts = [];
+  if (title) parts.push(title);
+  if (excerpt) parts.push(excerpt + (body.length > excerpt.length ? '…' : ''));
+  if (url) parts.push(url);
+  return parts.filter(Boolean).join('\n\n').trim();
+}
+
+async function facebookPost({ pageId, accessToken, message, apiVersion = 'v18.0' }) {
+  const url = `https://graph.facebook.com/${apiVersion}/${pageId}/feed`;
+  const body = new URLSearchParams({ message, access_token: accessToken }).toString();
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body,
   });
-}
 
-async function publishToFacebook(content) {
-  console.log('[PublicationHub] Intentando publicar en Facebook...');
-  console.log('[PublicationHub] Facebook placeholder - título:', content.title);
-  
-  const config = loadConfig();
-  if (!config.facebook?.enabled) {
-    console.log('[PublicationHub] Facebook no está habilitado');
-    return { success: false, error: 'Facebook no habilitado' };
+  const text = await res.text();
+  let json = null;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    json = null;
   }
 
-  console.log('[PublicationHub] PLACEHOLDER: Facebook Graph API no conectada');
-  console.log('[PublicationHub] Page ID:', config.facebook.page_id || 'no configurado');
-  
+  if (!res.ok) {
+    const msg = json?.error?.message || text || `HTTP ${res.status}`;
+    return { ok: false, status: res.status, error: msg, raw: json || text };
+  }
+
+  return { ok: true, status: res.status, id: json?.id || null, raw: json };
+}
+
+async function publishToFacebook(publicationRow) {
+  const accessToken = getEnv('FB_PAGE_ACCESS_TOKEN', '');
+  const pageId = getEnv('FB_PAGE_ID', '');
+  const apiVersion = getEnv('FB_API_VERSION', 'v18.0');
+
+  const message = buildFacebookMessage(publicationRow);
+
+  if (!pageId || !accessToken) {
+    log(`[DRY-RUN] Facebook publish skipped: missing FB_PAGE_ID/FB_PAGE_ACCESS_TOKEN (pub=${publicationRow.publicacion_id})`, 'WARN');
+    return {
+      ok: false,
+      dry_run: true,
+      error: '[DRY-RUN] Facebook token/page_id no configurado',
+      id_externo: null,
+      url_publicacion: null,
+    };
+  }
+
+  const result = await facebookPost({ pageId, accessToken, message, apiVersion });
+  if (!result.ok) {
+    return {
+      ok: false,
+      dry_run: false,
+      error: result.error || 'Error publicando en Facebook',
+      id_externo: null,
+      url_publicacion: null,
+    };
+  }
+
+  const fbId = result.id;
+  const url = fbId ? `https://www.facebook.com/${fbId}` : null;
   return {
-    success: false,
-    error: 'PLACEHOLDER - Se requiere token de acceso de Facebook',
-    platform: 'facebook',
-    url: null
+    ok: true,
+    dry_run: false,
+    error: null,
+    id_externo: fbId || null,
+    url_publicacion: url,
   };
 }
 
-async function publishToInstagram(content) {
-  console.log('[PublicationHub] Intentando publicar en Instagram...');
-  console.log('[PublicationHub] Instagram placeholder - título:', content.title);
-  
-  const config = loadConfig();
-  if (!config.instagram?.enabled) {
-    console.log('[PublicationHub] Instagram no está habilitado');
-    return { success: false, error: 'Instagram no habilitado' };
-  }
-
-  console.log('[PublicationHub] PLACEHOLDER: Instagram Graph API no conectada');
-  console.log('[PublicationHub] Account ID:', config.instagram.account_id || 'no configurado');
-  
-  return {
-    success: false,
-    error: 'PLACEHOLDER - Se requiere token de acceso de Instagram',
-    platform: 'instagram',
-    url: null
-  };
-}
-
-async function generateTikTokAsset(content) {
-  console.log('[PublicationHub] Generando asset para TikTok...');
-  console.log('[PublicationHub] TikTok placeholder');
-  
-  const config = loadConfig();
-  if (!config.tiktok?.enabled) {
-    console.log('[PublicationHub] TikTok no está habilitado');
-    return { success: false, error: 'TikTok no habilitado' };
-  }
-
-  const assetId = uuidv4();
-  const assetData = {
-    id: assetId,
-    platform: 'tiktok',
-    title: content.title,
-    body: content.body,
-    created_at: new Date().toISOString(),
-    status: 'ready_to_upload'
-  };
-
-  const assetsDir = path.join(__dirname, '../data/tiktok-assets');
-  if (!fs.existsSync(assetsDir)) {
-    fs.mkdirSync(assetsDir, { recursive: true });
-  }
-  
-  fs.writeFileSync(
-    path.join(assetsDir, `${assetId}.json`),
-    JSON.stringify(assetData, null, 2)
+async function markPublicationSuccess({ id, idExterno, urlPublicacion }) {
+  await query(
+    `UPDATE publicaciones
+     SET estado = 'publicada',
+         publicada_en = NOW(),
+         id_externo = COALESCE($2, id_externo),
+         url_publicacion = COALESCE($3, url_publicacion),
+         error_detalle = NULL,
+         metadata = COALESCE(metadata, '{}'::jsonb) || $4::jsonb
+     WHERE id = $1`,
+    [
+      id,
+      idExterno,
+      urlPublicacion,
+      JSON.stringify({ last_attempt_at: new Date().toISOString() }),
+    ]
   );
-
-  console.log('[PublicationHub] Asset TikTok generado:', assetId);
-  
-  return {
-    success: true,
-    asset_id: assetId,
-    file_path: `${assetsDir}/${assetId}.json`,
-    message: 'Asset listo para subir manualmente a TikTok'
-  };
 }
 
-function generateWhatsAppLink(content) {
-  console.log('[PublicationHub] Generando link de WhatsApp...');
-  
-  const text = encodeURIComponent(`${content.title}\n\n${content.body.replace(/<[^>]*>/g, '')}`);
-  const whatsappUrl = `https://wa.me/?text=${text}`;
-  
-  console.log('[PublicationHub] WhatsApp link generado');
-  
-  return {
-    success: true,
-    url: whatsappUrl,
-    message: 'Link para compartir en WhatsApp'
-  };
+async function markPublicationFailed({ id, error, dryRun }) {
+  await query(
+    `UPDATE publicaciones
+     SET estado = 'fallida',
+         error_detalle = $2,
+         metadata = COALESCE(metadata, '{}'::jsonb) || $3::jsonb
+     WHERE id = $1`,
+    [
+      id,
+      error || 'Error',
+      JSON.stringify({ last_attempt_at: new Date().toISOString(), dry_run: !!dryRun }),
+    ]
+  );
 }
 
-async function publishToWebsite(content) {
-  console.log('[PublicationHub] Publicando en sitio web...');
-  
-  const config = loadConfig();
-  const endpoint = config.website?.publish_endpoint || 'api/articles/crud.php';
-  
-  console.log('[PublicationHub] PLACEHOLDER: Llamando a CMS endpoint');
-  console.log('[PublicationHub] Endpoint:', endpoint);
-  
-  return {
-    success: false,
-    error: 'PLACEHOLDER - Requiere implementación real del CMS',
-    platform: 'website',
-    url: null
-  };
+async function loadPendingFacebookPublications(limit) {
+  const res = await query(
+    `SELECT
+      p.id AS publicacion_id,
+      p.pieza_id,
+      p.programada_para,
+      p.copy_canal,
+      p.url_publicacion,
+      pc.titulo,
+      pc.contenido_markdown,
+      pc.wordpress_url
+     FROM publicaciones p
+     JOIN piezas_contenido pc ON pc.id = p.pieza_id
+     WHERE p.deleted_at IS NULL
+       AND p.canal = 'facebook'
+       AND p.estado = 'programada'
+       AND (p.programada_para IS NULL OR p.programada_para <= NOW())
+     ORDER BY p.created_at ASC
+     LIMIT $1`,
+    [limit]
+  );
+  return res.rows;
 }
 
-async function getPublicationStatus(publicationId) {
-  console.log('[PublicationHub] Consultando status:', publicationId);
-  
-  try {
-    const data = JSON.parse(fs.readFileSync(PUBLICATIONS_PATH, 'utf8'));
-    const pub = data.publications?.find(p => p.id === publicationId);
-    
-    if (!pub) {
-      return { success: false, error: 'Publicación no encontrada' };
+async function run() {
+  const limit = Number(getEnv('PUBLICATION_HUB_LIMIT', '10')) || 10;
+  log(`Starting publication hub. limit=${limit}`);
+
+  const pubs = await loadPendingFacebookPublications(limit);
+  if (!pubs.length) {
+    log('No pending Facebook publications');
+    return;
+  }
+
+  let okCount = 0;
+  let failCount = 0;
+
+  for (const pub of pubs) {
+    log(`Publishing to Facebook: pub=${pub.publicacion_id} pieza=${pub.pieza_id}`);
+    try {
+      const result = await publishToFacebook(pub);
+      if (result.ok) {
+        await markPublicationSuccess({
+          id: pub.publicacion_id,
+          idExterno: result.id_externo,
+          urlPublicacion: result.url_publicacion,
+        });
+        okCount += 1;
+        log(`Facebook published: pub=${pub.publicacion_id}`, 'OK');
+      } else {
+        await markPublicationFailed({
+          id: pub.publicacion_id,
+          error: result.error,
+          dryRun: result.dry_run,
+        });
+        failCount += 1;
+        log(`Facebook publish failed: pub=${pub.publicacion_id} (${result.error})`, 'ERROR');
+      }
+    } catch (e) {
+      await markPublicationFailed({
+        id: pub.publicacion_id,
+        error: e.message || 'Error',
+        dryRun: false,
+      });
+      failCount += 1;
+      log(`Facebook publish exception: pub=${pub.publicacion_id} (${e.message})`, 'ERROR');
     }
-    
-    return { success: true, publication: pub };
-  } catch (e) {
-    return { success: false, error: 'Error leyendo publications.json' };
-  }
-}
-
-async function createPublication(proposalId, platform, metadata = {}) {
-  const pub = {
-    id: uuidv4(),
-    proposal_id: proposalId,
-    platform,
-    status: 'pending',
-    url: null,
-    published_at: null,
-    error_message: null,
-    metadata,
-    created_at: new Date().toISOString()
-  };
-
-  try {
-    const data = JSON.parse(fs.readFileSync(PUBLICATIONS_PATH, 'utf8'));
-    data.publications = data.publications || [];
-    data.publications.push(pub);
-    fs.writeFileSync(PUBLICATIONS_PATH, JSON.stringify(data, null, 2));
-    console.log('[PublicationHub] Publicación creada:', pub.id);
-  } catch (e) {
-    console.error('[PublicationHub] Error creando publicación:', e);
   }
 
-  return pub;
-}
-
-async function updatePublication(id, updates) {
-  try {
-    const data = JSON.parse(fs.readFileSync(PUBLICATIONS_PATH, 'utf8'));
-    const idx = data.publications?.findIndex(p => p.id === id);
-    
-    if (idx === -1) return { success: false };
-    
-    data.publications[idx] = { ...data.publications[idx], ...updates };
-    fs.writeFileSync(PUBLICATIONS_PATH, JSON.stringify(data, null, 2));
-    
-    return { success: true, publication: data.publications[idx] };
-  } catch (e) {
-    return { success: false };
-  }
+  log(`Publication hub completed. ok=${okCount} failed=${failCount}`);
 }
 
 module.exports = {
-  publishToFacebook,
-  publishToInstagram,
-  generateTikTokAsset,
-  generateWhatsAppLink,
-  publishToWebsite,
-  getPublicationStatus,
-  createPublication,
-  updatePublication
+  run,
 };
+
+if (require.main === module) {
+  run().catch((err) => {
+    log(`Fatal error: ${err.message}`, 'ERROR');
+    process.exit(1);
+  });
+}
+
