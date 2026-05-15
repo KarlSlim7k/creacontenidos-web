@@ -52,7 +52,7 @@ $token = createJWT([
 
 setcookie('crea_editor_session', $token, [
   'expires' => time() + (8 * 3600),
-  'httponly' => false,
+  'httponly' => true,
   'samesite' => 'Lax',
   'path' => '/'
 ]);
