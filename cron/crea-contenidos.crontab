@@ -1,0 +1,6 @@
+# CREA Contenidos - Cron Jobs
+# Social listening cada 6 horas
+0 */6 * * * node /usr/share/nginx/html/services/social-listener.js >> /var/log/crea/social.log 2>&1
+
+# Content generation cada 6 horas (30 min después del social listening)
+30 */6 * * * node /usr/share/nginx/html/services/content-generator.js >> /var/log/crea/content.log 2>&1

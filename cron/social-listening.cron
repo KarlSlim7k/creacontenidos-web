@@ -1,4 +1,3 @@
 # Social Listening - CREA Contenidos
-# Ejecutar cada 30 minutos
-
-*/30 * * * * cd /home/karoldelgado/web-dev/crea_web && node services/social-listener.js >> /var/log/social-listening.log 2>&1
+# Ejecutar cada 6 horas
+0 */6 * * * node /usr/share/nginx/html/services/social-listener.js >> /var/log/crea/social.log 2>&1
