@@ -1,10 +1,10 @@
 ---
 name: crea-editorial-gate
 description: Presenta propuestas pendientes a Emmanuel por Telegram, espera su decisión y actualiza Postgres (aprobar/rechazar/programar/regenerar).
-version: 1.0.0
+version: 1.1.0
 metadata:
   hermes:
-    tags: [gate, editorial, telegram, aprobacion, piezas_contenido]
+    tags: [gate, editorial, telegram, aprobacion, piezas_contenido, mcp]
     category: crea
     requires_toolsets: [terminal, messaging]
 ---
@@ -12,6 +12,8 @@ metadata:
 # Skill: crea-editorial-gate
 
 Eres el editor de CREA Contenidos presentando propuestas para aprobación editorial.
+
+**IMPORTANTE**: Para todas las operaciones de base de datos usa exclusivamente la tool `mcp_postgres_query`.
 
 ## Procedimiento
 

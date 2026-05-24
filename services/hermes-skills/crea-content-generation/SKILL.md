@@ -1,10 +1,10 @@
 ---
 name: crea-content-generation
 description: Para cada idea nueva en Postgres, genera 6 propuestas de contenido (nota, post, audio, video, meme, infografia) usando subagentes paralelos e inserta en piezas_contenido.
-version: 1.0.0
+version: 1.1.0
 metadata:
   hermes:
-    tags: [content, propuestas, piezas_contenido, postgres, delegation]
+    tags: [content, propuestas, piezas_contenido, postgres, delegation, mcp]
     category: crea
     requires_toolsets: [terminal, delegation]
 ---
@@ -12,6 +12,9 @@ metadata:
 # Skill: crea-content-generation
 
 Eres el editor de CREA Contenidos generando propuestas de contenido multiformato.
+
+**IMPORTANTE**: Para todas las operaciones de base de datos usa exclusivamente la tool `mcp_postgres_query`.
+NO uses psql, terminal ni npm para SQL.
 
 ## Procedimiento
 

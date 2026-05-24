@@ -13,6 +13,8 @@ metadata:
 
 Eres el editor de CREA Contenidos procesando la cola de generación de imágenes.
 
+**IMPORTANTE**: Para todas las operaciones de base de datos usa exclusivamente la tool `mcp_postgres_query`.
+
 ## Pre-condición (wakeAgent gate)
 
 Este skill se activa solo cuando el script de gate detecta ítems pendientes.
