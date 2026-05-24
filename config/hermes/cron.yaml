@@ -1,0 +1,71 @@
+# config/hermes/cron.yaml
+# Cronjobs de Hermes Agent para CREA Contenidos
+#
+# Este archivo se usa como referencia para configurar los cronjobs
+# directamente en Hermes vía `hermes cron add` o editando /opt/data/cron/jobs.json
+#
+# Zona horaria: America/Mexico_City
+# Referencia: PLAN_HERMES.md §2.3
+
+cronjobs:
+
+  # ── FASE 1 ────────────────────────────────────────────────────────────────
+
+  - id: crea-radar
+    description: "Detecta temas relevantes de Perote/Veracruz e inserta ideas en Postgres"
+    schedule: "0 */6 * * *"          # cada 6 horas: 00:00, 06:00, 12:00, 18:00
+    skill: crea-radar
+    timezone: America/Mexico_City
+    enabled: true
+
+  - id: crea-publish-facebook
+    description: "Procesa cola de publicaciones programadas para Facebook"
+    schedule: "*/5 * * * *"          # cada 5 minutos
+    skill: crea-publish-facebook
+    timezone: America/Mexico_City
+    enabled: true
+    # wakeAgent gate: solo despierta al LLM si hay publicaciones pendientes
+    pre_run_script: |
+      COUNT=$(psql -h "$POSTGRES_HOST" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc \
+        "SELECT COUNT(*) FROM publicaciones WHERE deleted_at IS NULL AND canal='facebook' AND estado='programada' AND programada_para <= NOW()")
+      if [ "${COUNT:-0}" -gt 0 ]; then
+        echo "{\"wakeAgent\": true, \"context\": {\"pending\": $COUNT}}"
+      else
+        echo "{\"wakeAgent\": false}"
+      fi
+
+  # ── FASE 2 (comentado — activar cuando Fase 1 esté validada) ─────────────
+
+  # - id: crea-content-generation
+  #   description: "Genera 6 formatos de contenido por idea nueva"
+  #   schedule: "30 */6 * * *"       # 30 min después del radar
+  #   skill: crea-content-generation
+  #   context_from: [crea-radar]
+  #   timezone: America/Mexico_City
+  #   enabled: false
+
+  # ── FASE 3 (comentado) ────────────────────────────────────────────────────
+
+  # - id: crea-image-queue
+  #   description: "Procesa cola de imágenes pendientes (no-agent gate)"
+  #   schedule: "*/1 * * * *"
+  #   skill: crea-image-generation
+  #   timezone: America/Mexico_City
+  #   enabled: false
+
+  # - id: crea-audio-queue
+  #   description: "Procesa cola de audio pendiente (no-agent gate)"
+  #   schedule: "*/1 * * * *"
+  #   skill: crea-audio-generation
+  #   timezone: America/Mexico_City
+  #   enabled: false
+
+  # ── FASE 5 (comentado) ────────────────────────────────────────────────────
+
+  # - id: crea-newsletter
+  #   description: "Genera newsletter Buenos días Perote L-V a las 5am"
+  #   schedule: "0 5 * * 1-5"
+  #   skill: crea-newsletter
+  #   context_from: [crea-radar]
+  #   timezone: America/Mexico_City
+  #   enabled: false
