@@ -78,13 +78,14 @@ terminal:
   timeout: 180
 
 # ── MCP servers ──────────────────────────────────────────────────────────────
-mcp_servers:
-  postgres:
-    command: npx
-    args:
-      - -y
-      - "@modelcontextprotocol/server-postgres"
-      - "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
+# MCP Postgres desactivado — los skills usan pg8000 via execute_code (escritura completa)
+# mcp_servers:
+#   postgres:
+#     command: npx
+#     args:
+#       - -y
+#       - "@modelcontextprotocol/server-postgres"
+#       - "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
   # apify (Fase 6):
   # apify:
   #   command: npx
