@@ -1,130 +1,114 @@
 ---
 name: crea-radar
-description: Obtiene noticias RSS de Perote/Veracruz con execute_code Python y las inserta en ideas con UNA sola llamada mcp_postgres_query (batch INSERT).
-version: 4.0.0
+description: Obtiene noticias de Perote/Veracruz via RSS y las inserta en Postgres usando pg8000 en un solo bloque execute_code. Rápido, sin MCP, sin archivos intermedios.
+version: 5.0.0
 metadata:
   hermes:
-    tags: [radar, listening, ideas, postgres, mcp, rss]
+    tags: [radar, listening, ideas, postgres, pg8000, rss]
     category: crea
     requires_toolsets: [terminal]
 ---
 
 # Skill: crea-radar
 
-Eres el editor de CREA Contenidos. Tu objetivo: obtener noticias de Perote/Veracruz e insertarlas en la DB.
-
-## REGLA PRINCIPAL
-
-Haz exactamente **3 llamadas a herramientas** en este orden:
-1. `execute_code` — obtener RSS y construir el SQL
-2. `mcp_postgres_query` — ejecutar el batch INSERT (una sola llamada)
-3. `mcp_postgres_query` — contar el total final
-
-## Paso 1: execute_code (Python) — obtener noticias y construir SQL
+Ejecuta el siguiente bloque Python con `execute_code`. Hace todo en un solo paso: RSS → Postgres.
 
 ```python
-import urllib.request, re, json
-from datetime import datetime, timezone
+import urllib.request, re, os, json
 from xml.etree import ElementTree as ET
+from datetime import datetime, timezone
+import pg8000.native as pg
 
-URLS = [
+# ── Config ────────────────────────────────────────────────────────────────
+FEEDS = [
     "https://news.google.com/rss/search?q=Perote+Veracruz&hl=es-419&gl=MX&ceid=MX:es-419",
     "https://news.google.com/rss/search?q=alertas+Perote+Veracruz&hl=es-419&gl=MX&ceid=MX:es-419",
 ]
-URGENCIA_KW = ["accidente","crimen","robo","incendio","alerta","emergencia","sismo","inundacion","detenido","hallado","muerto","cuerpo","balacera","asalto","asesinato"]
+URGENCIA_KW = {"accidente","crimen","robo","incendio","alerta","emergencia","sismo",
+               "inundacion","inundación","detenido","hallado","muerto","cuerpo",
+               "balacera","asalto","asesinato","secuestro","explosión"}
+MAX_ITEMS = 20
 
+# ── Helpers ───────────────────────────────────────────────────────────────
 def clean(t):
-    t = re.sub(r'<[^>]+>','',t or '').strip()
-    t = re.sub(r'\s+',' ',t)
-    t = re.sub(r'\s+-\s+\S+.*$','',t)  # quitar "- Fuente" al final
+    t = re.sub(r'<[^>]+>', '', t or '').strip()
+    t = re.sub(r'\s+', ' ', t)
+    t = re.sub(r'\s+-\s+\S[\S]*\s*$', '', t)  # quitar " - Fuente" al final
     return t[:250]
 
-def esc(s):
-    return s.replace("'","''").replace("\\","\\\\")
+def urgencia(titulo):
+    tl = titulo.lower()
+    return 'alta' if any(kw in tl for kw in URGENCIA_KW) else 'media'
 
-def urgencia(t):
-    tl = t.lower()
-    for kw in URGENCIA_KW:
-        if kw in tl: return 'alta'
-    return 'media'
-
+# ── Obtener noticias RSS ─────────────────────────────────────────────────
 items, seen = [], set()
-for url in URLS:
+for url in FEEDS:
     try:
-        req = urllib.request.Request(url, headers={"User-Agent":"CREA/4.0"})
+        req = urllib.request.Request(url, headers={"User-Agent": "CREA-Radar/5.0"})
         xml = urllib.request.urlopen(req, timeout=15).read()
         root = ET.fromstring(xml)
         for item in root.findall(".//item"):
-            title_el = item.find("title")
-            link_el = item.find("link")
-            if title_el is None: continue
-            titulo = clean(title_el.text or "")
-            if not titulo or titulo in seen or len(titulo)<15: continue
+            t = item.find("title")
+            l = item.find("link")
+            if t is None or not t.text: continue
+            titulo = clean(t.text)
+            if not titulo or len(titulo) < 15 or titulo in seen: continue
             seen.add(titulo)
-            url_val = (link_el.text or "").strip()[:500] if link_el is not None else ""
-            items.append({"titulo": esc(titulo), "url": esc(url_val), "urgencia": urgencia(titulo)})
-            if len(items) >= 15: break
-        if len(items) >= 15: break
+            link = (l.text or "").strip()[:500] if l is not None else ""
+            items.append({"titulo": titulo, "url": link, "urgencia": urgencia(titulo)})
+            if len(items) >= MAX_ITEMS: break
     except Exception as e:
-        print(f"RSS error: {e}")
+        print(f"[WARN] Feed error: {e}")
 
+print(f"Noticias encontradas: {len(items)}")
+
+# ── Conectar a Postgres ─────────────────────────────────────────────────
+c = pg.Connection(
+    host=os.environ.get("POSTGRES_HOST", "postgres"),
+    database=os.environ.get("POSTGRES_DB", "crea_db"),
+    user=os.environ.get("POSTGRES_USER", "crea"),
+    password=os.environ.get("POSTGRES_PASSWORD", "change_me"),
+    port=5432, timeout=10
+)
+
+# Obtener autor_id
+autor_rows = c.run("SELECT id FROM usuarios WHERE deleted_at IS NULL ORDER BY created_at ASC LIMIT 1")
+autor_id = str(autor_rows[0][0])
 now = datetime.now(timezone.utc).isoformat()
 
-# Obtener autor_id via una query embebida no es posible aquí,
-# así que usamos un placeholder que el agente debe reemplazar con el autor_id real.
-# El agente debe ejecutar primero: SELECT id FROM usuarios WHERE deleted_at IS NULL ORDER BY created_at ASC LIMIT 1
-# y sustituir AUTOR_UUID_AQUI con el resultado.
-
-values = []
+# ── Insertar noticias ─────────────────────────────────────────────────────
+inserted, dupes = 0, 0
 for it in items:
     meta = json.dumps({
-        "service":"social_listener","mentions":1,"sentiment":"neutral",
-        "suggested_formats":["nota"],"url":it["url"],"last_seen_at":now
-    }).replace("'","''")
-    values.append(
-        f"('{it['titulo']}', NULL, 'alerta_google_news', '{it['urgencia']}', 'nueva', false, 'AUTOR_UUID_AQUI', '{meta}')"
-    )
+        "service": "social_listener", "mentions": 1, "sentiment": "neutral",
+        "suggested_formats": ["nota"], "url": it["url"], "last_seen_at": now
+    })
+    try:
+        rows = c.run(
+            """INSERT INTO ideas (titulo, descripcion, fuente, urgencia, estado,
+                potencial_comercial, registrado_por, metadata)
+               VALUES (:titulo, NULL, 'alerta_google_news', :urgencia, 'nueva',
+                false, :autor, :meta)
+               ON CONFLICT DO NOTHING RETURNING id""",
+            titulo=it["titulo"], urgencia=it["urgencia"], autor=autor_id, meta=meta
+        )
+        if rows: inserted += 1
+        else: dupes += 1
+    except Exception as e:
+        print(f"[ERROR] Insert failed for '{it['titulo'][:40]}': {e}")
 
-if values:
-    sql = "INSERT INTO ideas (titulo, descripcion, fuente, urgencia, estado, potencial_comercial, registrado_por, metadata)\nVALUES\n" + ",\n".join(values) + "\nON CONFLICT DO NOTHING RETURNING id;"
-    print("COUNT:", len(values))
-    print("SQL:", sql[:200], "...")
-    # Guardar SQL completo
-    with open("/tmp/radar_batch.sql","w") as f:
-        f.write(sql)
-    print("ITEMS:", json.dumps(items))
-else:
-    print("COUNT: 0")
-    print("SQL: SELECT 1")
-```
+# ── Cleanup (soft-delete >30 días) ───────────────────────────────────────
+cleaned = c.run(
+    """UPDATE ideas SET deleted_at = NOW()
+       WHERE deleted_at IS NULL
+         AND metadata->>'service' = 'social_listener'
+         AND created_at < NOW() - interval '30 days'"""
+)
 
-## Paso 2: mcp_postgres_query — obtener autor_id
+# ── Reporte ──────────────────────────────────────────────────────────────
+total = c.run("SELECT COUNT(*) FROM ideas WHERE deleted_at IS NULL AND estado='nueva'")[0][0]
+c.close()
 
-```sql
-SELECT id FROM usuarios WHERE deleted_at IS NULL ORDER BY created_at ASC LIMIT 1
-```
-
-Guarda el UUID como `autor_id`.
-
-## Paso 3: Leer el SQL y sustituir AUTOR_UUID_AQUI
-
-Lee `/tmp/radar_batch.sql` con `read_file`, reemplaza `AUTOR_UUID_AQUI` con el `autor_id` del paso 2.
-
-## Paso 4: mcp_postgres_query — ejecutar el batch INSERT
-
-Ejecuta el SQL completo (con el autor_id sustituido) en una sola llamada a `mcp_postgres_query`.
-
-## Paso 5: mcp_postgres_query — contar total
-
-```sql
-SELECT COUNT(*) AS total FROM ideas WHERE deleted_at IS NULL AND estado = 'nueva'
-```
-
-## Reporte final
-
-```
-✅ crea-radar completado
-   Noticias encontradas: N
-   Ideas insertadas: M
-   Total activas en DB: T
+print(f"✅ crea-radar completado")
+print(f"   Insertadas: {inserted}  |  Duplicadas: {dupes}  |  Total activas: {total}")
 ```

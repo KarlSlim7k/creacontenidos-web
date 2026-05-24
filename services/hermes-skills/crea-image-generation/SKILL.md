@@ -1,19 +1,75 @@
 ---
 name: crea-image-generation
-description: Procesa la cola de assets_multimedia tipo imagen (queued) usando image_generate y guarda en /output/img.
-version: 1.0.0
+description: Procesa cola assets_multimedia tipo imagen con image_generate y pg8000 para DB — sin MCP.
+version: 2.0.0
 metadata:
   hermes:
-    tags: [imagen, assets_multimedia, cola, image_generate]
+    tags: [imagen, assets_multimedia, cola, image_generate, pg8000]
     category: crea
     requires_toolsets: [terminal, image_gen]
 ---
 
 # Skill: crea-image-generation
 
-Eres el editor de CREA Contenidos procesando la cola de generación de imágenes.
+**IMPORTANTE**: Usa `execute_code` con pg8000 para todas las operaciones DB. No uses MCP.
 
-**IMPORTANTE**: Para todas las operaciones de base de datos usa exclusivamente la tool `mcp_postgres_query`.
+## Paso 1: Verificar cola con execute_code
+
+```python
+import os
+import pg8000.native as pg
+
+c = pg.Connection(
+    host=os.environ.get("POSTGRES_HOST","postgres"),
+    database=os.environ.get("POSTGRES_DB","crea_db"),
+    user=os.environ.get("POSTGRES_USER","crea"),
+    password=os.environ.get("POSTGRES_PASSWORD","change_me"),
+    port=5432, timeout=10
+)
+rows = c.run("""
+    UPDATE assets_multimedia SET estado='processing'
+    WHERE id IN (
+      SELECT id FROM assets_multimedia
+      WHERE deleted_at IS NULL AND estado='queued'
+        AND tipo IN ('image','meme','infographic')
+      ORDER BY created_at ASC LIMIT 3 FOR UPDATE SKIP LOCKED
+    ) RETURNING id::text, tipo, original_prompt
+""")
+c.close()
+import json
+print(json.dumps([{"id":r[0],"tipo":r[1],"prompt":r[2]} for r in rows]))
+```
+
+Si la lista es vacía, termina: "Cola vacía."
+
+## Paso 2: Para cada asset — generar imagen con image_generate
+
+Llama `image_generate` con el `prompt`.
+
+## Paso 3: Guardar resultado con execute_code
+
+```python
+import os
+import pg8000.native as pg
+
+c = pg.Connection(
+    host=os.environ.get("POSTGRES_HOST","postgres"), database=os.environ.get("POSTGRES_DB","crea_db"),
+    user=os.environ.get("POSTGRES_USER","crea"), password=os.environ.get("POSTGRES_PASSWORD","change_me"),
+    port=5432, timeout=10
+)
+# Sustituir ASSET_ID y STATUS con los valores reales
+ASSET_ID = "<asset_id>"
+SUCCESS = True
+FILE_PATH = f"/assets/img/generated/{ASSET_ID}.png"
+
+if SUCCESS:
+    c.run("UPDATE assets_multimedia SET estado='generated', file_path=:fp WHERE id=:id",
+          fp=FILE_PATH, id=ASSET_ID)
+else:
+    c.run("UPDATE assets_multimedia SET estado='failed' WHERE id=:id", id=ASSET_ID)
+c.close()
+print(f"✅ Asset {ASSET_ID}: {'generated' if SUCCESS else 'failed'}")
+```
 
 ## Pre-condición (wakeAgent gate)
 
