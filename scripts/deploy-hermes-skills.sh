@@ -30,5 +30,15 @@ docker exec --user root "$CONTAINER" chown hermes:hermes /opt/data/config.yaml /
 echo "▶ Corrigiendo permisos generales de /opt/data/cron/ ..."
 docker exec --user root "$CONTAINER" chown -R hermes:hermes /opt/data/cron/
 
+echo "▶ Asegurando credenciales de Postgres en .env de Hermes ..."
+docker exec --user hermes "$CONTAINER" bash -c "
+  sed -i '/^POSTGRES_/d' /opt/data/.env
+  echo 'POSTGRES_HOST=postgres'    >> /opt/data/.env
+  echo 'POSTGRES_PORT=5432'        >> /opt/data/.env
+  echo 'POSTGRES_DB=crea_db'       >> /opt/data/.env
+  echo 'POSTGRES_USER=crea'        >> /opt/data/.env
+  echo 'POSTGRES_PASSWORD=change_me' >> /opt/data/.env
+"
+
 echo "✅ Deploy completado — sin necesidad de restart."
 echo "   Verifica con: docker exec $CONTAINER /opt/hermes/.venv/bin/hermes skills list"
