@@ -19,6 +19,43 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  hermes:
+    image: nousresearch/hermes-agent:latest
+    container_name: crea_hermes
+    restart: unless-stopped
+    networks:
+      - dokploy-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - HERMES_HOME=/opt/data
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-crea_db}
+      - POSTGRES_USER=${POSTGRES_USER:-crea}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-change_me}
+      - OPENCODE_API_KEY=${OPENCODE_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY:-}
+      - ELEVENLABS_VOICE_ID=${ELEVENLABS_VOICE_ID:-EXAVITQu4vr4xnSDxMaL}
+      - ELEVENLABS_MODEL_ID=${ELEVENLABS_MODEL_ID:-eleven_multilingual_v2}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - TELEGRAM_HOME_CHANNEL=${TELEGRAM_HOME_CHANNEL:-}
+      - FB_PAGE_ACCESS_TOKEN=${FB_PAGE_ACCESS_TOKEN:-}
+      - FB_PAGE_ID=${FB_PAGE_ID:-}
+      - FB_API_VERSION=${FB_API_VERSION:-v18.0}
+    volumes:
+      - hermes_data:/opt/data
+      - shared_img:/output/img
+      - shared_audio:/output/audio
+    command: ["hermes", "gateway"]
+    healthcheck:
+      test: ["CMD", "hermes", "doctor"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
   web:
     build: .
     expose:
@@ -30,6 +67,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      hermes:
+        condition: service_started
+    volumes:
+      - shared_img:/usr/share/nginx/html/apps/web/assets/img/generated
+      - shared_audio:/usr/share/nginx/html/apps/web/assets/audio
     labels:
       - traefik.http.routers.test-crea-7ahi34-2-web.rule=Host(`crea-contenidos.com`)
       - traefik.http.routers.test-crea-7ahi34-2-web.entrypoints=web
@@ -58,6 +100,9 @@ services:
 
 volumes:
   postgres_data:
+  hermes_data:
+  shared_img:
+  shared_audio:
 
 networks:
   dokploy-network:
