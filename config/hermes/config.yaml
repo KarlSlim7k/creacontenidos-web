@@ -9,17 +9,11 @@
 # NO commitear .env ni API keys — todas las credenciales van en Dokploy Environment.
 
 # ── Modelo principal ─────────────────────────────────────────────────────────
-# TEMPORAL: OpenCode Go para Fase 0/1 de pruebas.
+# TEMPORAL: OpenCode Go + Kimi K2.6 para Fase 0/1 de pruebas.
 # Producción: anthropic/claude-sonnet-4 vía openrouter (ver §4.4 de PLAN_HERMES.md)
-model: claude-sonnet-4-20250514
-provider: custom
-
-custom_provider:
-  name: opencode-go
-  base_url: https://opencode.ai/api/v1   # ajustar si OpenCode expone otro path
-  api_key: ${OPENCODE_API_KEY}
-  # Si OpenCode no es compatible con OpenAI SDK, cambiar a:
-  #   base_url: https://opencode.ai/api/v1/chat/completions
+model:
+  default: kimi-k2.6
+  provider: opencode-go
 
 # ── Fallback (se activa si OpenCode falla) ───────────────────────────────────
 # Descomentar cuando se tenga la key de OpenRouter:
