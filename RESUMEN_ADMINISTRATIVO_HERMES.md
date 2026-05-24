@@ -30,7 +30,7 @@ Tres razones, en orden de impacto:
 **Costos eliminados respecto al plan original** (APIs directas Anthropic + OpenAI): **$450-900 MXN/mes** ($5,400-10,800 MXN/año de ahorro neto).
 
 ### Cronograma para entrar en producción
-**4 a 5 semanas** desde aprobación de presupuesto a operación estable. Ver §6 para el desglose.
+**4 a 5 semanas** desde aprobación de presupuesto a operación estable. Ver §6 para el desglose. Una **Fase 8 opcional** post-lanzamiento añade enriquecimiento SEO sin afectar el flujo editorial principal — ver §12.
 
 ---
 
@@ -258,6 +258,7 @@ Estimación conservadora basada en la operación descrita en el Brief:
 | 5 | ¿Activar Apify desde el inicio o esperar? | **Esperar** a Fase 6 (mes 2+). El listening base con Perplexity + RSS cubre el 80% del valor. Apify se justifica cuando el sitio tenga tráfico estable. |
 | 6 | ¿Tarjeta para pagos? | Asignar **una sola tarjeta empresarial** para todos los servicios técnicos (Nous, OpenRouter, ElevenLabs, Apify futuro). Facilita conciliación contable. |
 | 7 | ¿Quién custodia las API keys y credenciales? | Recomendado: documento cifrado en gestor de contraseñas (1Password / Bitwarden) compartido entre Emmanuel y desarrollador líder. |
+| 8 | ¿Aprobar Fase 8 (enriquecimiento SEO) ahora o decidirlo post-Fase 7? | **Decidir post-Fase 7**. No tomar la decisión ahora. Fase 8 cuesta +$216 MXN/mes y NO es necesaria para la operación editorial. Se evalúa cuando el sistema ya esté estable y se vea si vale la pena perseguir tráfico orgánico desde Google. Reversible si no convence. |
 
 ### 9.2 Métricas para revisión mensual
 
@@ -304,9 +305,75 @@ El costo total mensual de operación —**entre $1,026 y $1,206 MXN**— es comp
 
 ---
 
-## 11. Anexos
+## 11. Mejora opcional post-lanzamiento (Fase 8): enriquecimiento SEO
 
-### 11.1 Equivalencias rápidas USD → MXN (referencia 18 MXN/USD)
+### 11.1 Antecedente
+
+Durante la planeación se evaluó adoptar un flujo de trabajo de **publicación asistida por IA** popular en agencias de marketing digital, que sigue 5 pasos: detectar tendencia → investigar intención de búsqueda → redactar borrador → revisar SEO/claridad → publicar y medir.
+
+Tras el análisis comparativo, **el flujo CREA es objetivamente más profesional para un medio de comunicación local** que ese flujo SEO estándar, porque CREA suma cinco pilares que el flujo de marketing omite:
+
+1. **Gate editorial humano obligatorio** (Emmanuel aprueba todo).
+2. **Producción multiformato** (6 piezas por tema, no 1 sola nota).
+3. **Generación de assets multimedia** (imágenes + audio narrado).
+4. **Etiquetado de transparencia IA** (humano/asistido/generado), requisito ético.
+5. **Distribución multicanal** (Facebook + Instagram + TikTok + WhatsApp + newsletter + podcast + sitio).
+
+Dicho esto, **dos pasos del flujo SEO estándar agregan valor sin comprometer la ética editorial** y se incorporan como mejora opcional posterior al lanzamiento estable: investigación de intención de búsqueda y pre-check SEO técnico antes del gate editorial. El gate humano sigue siendo el árbitro final.
+
+### 11.2 ¿Qué se añade en Fase 8?
+
+| Componente | Función | Cuándo se ejecuta |
+|---|---|---|
+| Skill `crea-search-intent` | Enriquece cada tema detectado con análisis de qué busca la gente en Google sobre ese tema (keywords primarias, preguntas frecuentes, tipo de intención). Esto **mejora el contexto que recibe Claude antes de redactar**, sin cambiar el flujo. | Entre el radar (cada 6h) y la generación de contenido (30 min después) |
+| Skill `crea-seo-review` | Audita técnicamente cada nota web propuesta: legibilidad Flesch en español, longitud de párrafos, densidad de keywords, estructura H1/H2, meta-description, slug. Genera un scoring que llega visible al gate editorial. | Después de la generación, antes del gate editorial humano |
+
+### 11.3 Lo que SÍ y NO hace Fase 8
+
+| ✅ Sí | ❌ No |
+|---|---|
+| Mejora el posicionamiento de notas en Google | NO bloquea publicaciones que no pasen SEO |
+| Da scoring SEO visible a Emmanuel en el gate | NO modifica notas sin aprobación humana |
+| Solo aplica a notas web | NO toca posts/audio/video/memes (no son SEO) |
+| Es completamente opcional | NO está bloqueada por presupuesto |
+| Reversible (se puede desactivar con un comando) | NO cambia el flujo editorial principal |
+
+### 11.4 Costo de Fase 8
+
+| Componente | USD/mes | **MXN/mes** |
+|---|---|---|
+| Inferencia adicional Gemini Flash Lite (search intent + SEO audit) | ~$2 + $10 = $12 | **~$216** |
+| Google Search Console | Gratis | **$0** |
+| Tiempo de desarrollo (una sola vez) | — | Incluido en el costo de proyecto |
+| **Costo recurrente Fase 8** | **~$12** | **~$216** |
+
+**Impacto en presupuesto mensual con Fase 8 activa**: $1,026-1,206 + $216 = **$1,242-$1,422 MXN/mes**.
+
+### 11.5 ¿Cuándo activar Fase 8?
+
+Recomendación: activarla cuando se cumplan **las tres condiciones** simultáneamente:
+
+1. La operación lleva ≥30 días estable post-Fase 7 (sin incidencias).
+2. Emmanuel reporta que quiere mejorar el tráfico orgánico desde Google (no solo redes).
+3. El sitio web tiene mínimo 50 notas publicadas (volumen suficiente para que el SEO mueva la aguja).
+
+Si las tres no se cumplen, Fase 8 es prematura y se pospone.
+
+### 11.6 Métrica de éxito de Fase 8
+
+- A los **30 días post-activación**: ≥40% de notas con `seo_audit` aparecen en top-30 de Google Search Console para su keyword primaria.
+- A los **90 días**: tráfico orgánico desde Google al sitio crece ≥25% mensual.
+- **Si no se cumple a los 90 días**, revisar con el desarrollador: o el `SOUL.md` necesita ajuste, o el sector compite con medios mucho más antiguos y hay que priorizar otra estrategia.
+
+### 11.7 Reversibilidad
+
+Fase 8 es **completamente opcional y reversible**. Si después de activarla Emmanuel siente que el scoring SEO interfiere con su criterio editorial, los dos skills se desactivan con un solo comando (`hermes cron pause crea-seo-review` y `hermes cron pause crea-search-intent`). El flujo principal de CREA queda intacto.
+
+---
+
+## 12. Anexos
+
+### 12.1 Equivalencias rápidas USD → MXN (referencia 18 MXN/USD)
 
 | USD | MXN |
 |---|---|
@@ -319,7 +386,7 @@ El costo total mensual de operación —**entre $1,026 y $1,206 MXN**— es comp
 | $100 | $1,800 |
 | $200 | $3,600 |
 
-### 11.2 Documentos relacionados en este repositorio
+### 12.2 Documentos relacionados en este repositorio
 
 - [`PLAN.md`](./PLAN.md) — Plan maestro técnico de CREA Command Center
 - [`PLAN_HERMES.md`](./PLAN_HERMES.md) — Documento técnico de integración (873 líneas, para desarrolladores y agentes IA)
@@ -327,7 +394,7 @@ El costo total mensual de operación —**entre $1,026 y $1,206 MXN**— es comp
 - [`docs/updates/CREA_Newsletter_Podcast.md`](./docs/updates/CREA_Newsletter_Podcast.md) — Spec del producto "Buenos días, Perote"
 - [`docs/updates/CREA_Social_Listening.md`](./docs/updates/CREA_Social_Listening.md) — Spec del listening con Apify
 
-### 11.3 Glosario administrativo
+### 12.3 Glosario administrativo
 
 - **API**: interfaz que permite al sistema usar un servicio de IA programáticamente (sin abrir el chat web). Es un producto comercial separado de la suscripción Pro/Plus normal.
 - **Token**: unidad de medida del consumo de IA. Un token ≈ 0.75 palabras en español. Las APIs cobran por miles o millones de tokens.
@@ -337,6 +404,9 @@ El costo total mensual de operación —**entre $1,026 y $1,206 MXN**— es comp
 - **Fallback**: sistema de respaldo automático cuando el proveedor principal falla. Garantiza continuidad operativa.
 - **VPS**: servidor virtual privado donde corre todo el sistema (en este caso, contratado en Hostinger).
 - **Dokploy**: panel de control que orquesta los servicios (sitio web, base de datos, Hermes) en el VPS.
+- **Intención de búsqueda** (Fase 8): qué quiere realmente saber un usuario cuando teclea una consulta en Google. Saberlo antes de redactar mejora el ranking sin sacrificar calidad editorial.
+- **Flesch (legibilidad)** (Fase 8): índice numérico de qué tan fácil es leer un texto. En español ideal >60. Lo usa el skill `crea-seo-review` para validar que las notas son accesibles para el público objetivo de Perote.
+- **Google Search Console** (Fase 8): herramienta gratuita de Google que muestra en qué posición aparece el sitio para cada búsqueda. Se conecta una sola vez y empieza a registrar métricas históricas que la Fase 8 usa como métrica de éxito.
 
 ---
 
@@ -347,6 +417,7 @@ El costo total mensual de operación —**entre $1,026 y $1,206 MXN**— es comp
 | Modelo híbrido aprobado (Opción C) | _______________________ | __ / __ / 2026 |
 | Presupuesto mensual aprobado: $1,026 - $1,206 MXN | _______________________ | __ / __ / 2026 |
 | Inicio de Fase 0 autorizado | _______________________ | __ / __ / 2026 |
+| (Opcional) Fase 8 SEO autorizada para activación post-Fase 7 estable: +$216 MXN/mes | _______________________ | __ / __ / 2026 |
 
 **Documento preparado por**: Equipo de Desarrollo CREA Command Center
 **Versión**: 1.0

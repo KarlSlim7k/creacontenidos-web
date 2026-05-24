@@ -21,7 +21,9 @@ CREA Contenidos es un medio digital local (Perote, Veracruz) cuyo backend de aut
 
 **Lo que se elimina**: `services/social-listener.js`, `services/content-generator.js`, `services/image-generator.js`, `services/audio-generator.js`, `services/publication-hub.js`, `services/lib/api-clients.js`, `cron/crea-contenidos.crontab`, `cron/social-listening.cron`, el `crond` del Dockerfile.
 
-**Lo que se añade**: servicio `hermes` al `docker-compose.yml`, volúmenes compartidos `/shared/img` y `/shared/audio`, 6-8 skills en `~/.hermes/skills/crea-*/SKILL.md`, `SOUL.md` (sustituye `config/system-prompt-crea.md`), un bot de Telegram, y `config.yaml` con providers + cronjobs.
+**Lo que se añade**: servicio `hermes` al `docker-compose.yml`, volúmenes compartidos `/shared/img` y `/shared/audio`, **8-10 skills** en `~/.hermes/skills/crea-*/SKILL.md`, `SOUL.md` (sustituye `config/system-prompt-crea.md`), un bot de Telegram, y `config.yaml` con providers + cronjobs.
+
+**Roadmap por fases**: 8 fases en total. Fases 0-7 (4-5 semanas) cubren la migración del sistema actual a Hermes con paridad funcional + gate editorial por Telegram + newsletter diario. **Fase 8 es opcional y posterior al lanzamiento estable**: añade enriquecimiento SEO (skills `crea-search-intent` + `crea-seo-review`) inspirado en flujos profesionales de content marketing, **complementando** al gate editorial humano sin reemplazarlo. El gate editorial sigue siendo el árbitro final — un fallo SEO nunca bloquea publicación.
 
 ---
 
@@ -103,6 +105,19 @@ Documentación oficial: [github.com/NousResearch/hermes-agent](https://github.co
 - Modo `no_agent=True`: ejecuta script `.sh` o `.py` y entrega stdout literal — **0 tokens** cuando no hay trabajo (perfecto para queue polling).
 - Pre-run gate `wakeAgent`: el script decide si despertar al LLM (`{"wakeAgent": false}` → tick silencioso, $0).
 - Skip de delivery: si el agent responde con `[SILENT]`, no se envía nada (alertas-cuando-rompe).
+
+**Cadena objetivo del flujo editorial completo (Fases 1-8)**:
+```
+every 6h        → /crea-radar                 (detecta temas, escribe ideas)
++15m            → /crea-search-intent  (Fase 8)  (enriquece ideas con SEO research)
++30m            → /crea-content-generation    (Claude × 6 formatos, lee search_intent)
+every 5m        → /crea-seo-review     (Fase 8)  (pre-check técnico de notas web, no bloquea)
+                → gate editorial humano por Telegram (Emmanuel aprueba/rechaza/edita)
+every 1m        → /crea-image-queue + /crea-audio-queue  (no-agent gates)
+every 5m        → /crea-publish-queue          (FB Graph API, futuro IG/TikTok)
+0 5 * * 1-5     → /buenos-dias-perote          (newsletter+podcast)
+0 9 * * MON     → /crea-competitor-watch       (Fase 6)
+```
 
 ### 2.4 Mensajería (gate editorial sin construir UI)
 
@@ -338,6 +353,8 @@ privacy:
 | `api/content-proposals/{approve,reject,schedule}.php` | **Sin cambios** + opcional: gate editorial paralelo por **Telegram** vía Hermes. | Complementa, no reemplaza. |
 | Newsletter "Buenos días, Perote" (sin código) | **Skill `crea-newsletter`** + cronjob `0 5 * * 1-5`. `context_from=[crea-radar]` + `web_extract` clima OpenWeatherMap + `text_to_speech` ElevenLabs. Borrador a Telegram a las 5:30, Emmanuel aprueba, distribución automática a Resend (email) + WhatsApp + RSS Spotify + FB. | Implementa `CREA_Newsletter_Podcast.md`. |
 | Apify FB/TikTok/IG scrapers (sin código) | **Skill `crea-competitor-watch`** que usa **MCP de Apify** o el `browser` tool de Hermes (Playwright nativo). | Implementa `CREA_Social_Listening.md` Capa 2. |
+| Investigación de intención de búsqueda / SEO research (no existe en plan original) | **Skill `crea-search-intent`** (Fase 8) usando `web_search` + Gemini Flash Lite. Enriquece `ideas.metadata.search_intent` con primary/secondary keywords, PAA, intent type. Inyectado al contexto del skill `crea-content-generation`. | Adopción del paso 2 del flujo SEO estándar como complemento al periodismo. NO existe equivalente legacy. |
+| Pre-check SEO automático (Flesch, densidad keywords, estructura) (no existe en plan original) | **Skill `crea-seo-review`** (Fase 8) que audita propuestas `formato='nota_web'` antes del gate editorial. Persiste scoring en `metadata.seo_audit`. **NO bloquea**: el gate humano sigue siendo final. | Adopción del paso 4 del flujo SEO estándar como complemento. NO existe equivalente legacy. |
 | Whisper para WhatsApp voice (sin código) | **Hermes Gateway WhatsApp transcribe voice memos automáticamente** (built-in). 0 código adicional. | Cumple sin desarrollo. |
 | Reportes mensuales PDF (no IA) | **Sin cambios** — `services/report-generator.js` Puppeteer. Opcional: el agente lo dispara y lo envía por WhatsApp con `send_message`. | — |
 | Etiquetado `ai_label` (humano/asistido/generado) §9 ético | El skill genera el JSON con `ai_label` igual que ahora. La columna `metadata->>'ai_label'` y la UI del sitio público se quedan como están. | — |
@@ -471,6 +488,124 @@ Igual patrón que `crea-image-generation` pero para `tipo='audio'`. Usa `text_to
 **Propósito**: scraping de Noticias Perote, Perote Al Momento, hashtags TikTok/IG.
 
 **Implementación**: usar MCP-Apify (oficial) o el `browser` tool de Hermes (Playwright nativo) para sitios sin scraper.
+
+### 6.9 `crea-search-intent` (Fase 8, optimización post-lanzamiento)
+
+**Propósito**: enriquecer cada idea del radar con análisis de **qué busca la gente sobre ese tema** en Google y cómo lo formula. Eleva la calidad del contexto que recibe Claude antes de redactar, mejorando posicionamiento orgánico sin sacrificar voz editorial.
+
+**Origen del requisito**: análisis comparativo con flujos profesionales de content marketing/SEO (ver `docs/adr/0002-seo-enrichment-as-fase-8.md` cuando se cree). Adopta el paso 2 del flujo SEO estándar ("Investigar intención de búsqueda") como complemento, no reemplazo, del periodismo multiformato.
+
+**Cuándo se ejecuta**: en el cron encadenado, **entre `crea-radar` y `crea-content-generation`** (15 min después del radar, 15 min antes de la generación). Vía `context_from`.
+
+**Inputs**: ideas con `estado='nueva' AND metadata->>'search_intent' IS NULL`.
+
+**Procedimiento**:
+1. Para cada idea LIMIT 5: usar `web_search` (Tool Gateway) con queries como `"qué quiere saber la gente sobre <tema> en Veracruz México"` y `"<tema> Perote sitio:google.com/trends"`.
+2. Extraer del SERP: top consultas relacionadas, preguntas frecuentes (People Also Ask), keywords primarias y secundarias.
+3. Clasificar tipo de intención con auxiliary model (Gemini Flash Lite): `informational`, `transactional`, `navigational`, `local`.
+4. Estimar tier de volumen de búsqueda (`high|medium|low`) basado en señales del SERP (cantidad de resultados, presencia de PAA, anuncios).
+5. UPDATE `ideas` con metadata enriquecida:
+   ```json
+   {
+     "search_intent": {
+       "primary_query": "corte de agua Perote hoy",
+       "related_queries": ["cuándo regresa el agua perote", "comisión municipal agua perote teléfono"],
+       "people_also_ask": ["¿Por qué hay corte de agua en Perote?", "¿A quién reportar fugas?"],
+       "primary_keywords": ["corte de agua", "perote", "abastecimiento"],
+       "secondary_keywords": ["colonia centro", "comisión municipal", "tandeo"],
+       "intent_type": "informational",
+       "intent_subtype": "local_service_disruption",
+       "search_volume_tier": "high",
+       "enriched_at": "2026-...",
+       "model_used": "google/gemini-3.1-flash-lite"
+     }
+   }
+   ```
+6. Esta metadata se inyecta en el system context del skill `crea-content-generation`, que ahora puede:
+   - Usar la `primary_query` como base del título (ya está validado que la gente busca eso).
+   - Responder explícitamente las `people_also_ask` en el cuerpo de la nota.
+   - Distribuir `primary_keywords` naturalmente (sin forzar) en H1/H2/primeros 100 chars.
+
+**Frontmatter**:
+```yaml
+name: crea-search-intent
+description: Enriquece ideas del radar con análisis de intención de búsqueda y keywords primarias antes de la redacción.
+version: 1.0.0
+metadata:
+  hermes:
+    tags: [seo, search-intent, radar-enrichment]
+    category: crea
+    requires_toolsets: [web, terminal]
+    fallback_for_tools: [web_search]   # Si no hay web_search disponible, el skill se desactiva
+```
+
+**Costo estimado**: ~$0.10 USD/día con Gemini Flash Lite (~$2/mes).
+
+### 6.10 `crea-seo-review` (Fase 8, optimización post-lanzamiento)
+
+**Propósito**: validar legibilidad, estructura, densidad de keywords y meta-description **antes** de presentar la propuesta a Emmanuel para el gate editorial. **NO reemplaza el gate humano**; es un pre-check técnico que llega al gate con un scoring visible.
+
+**Origen del requisito**: paso 4 del flujo SEO estándar ("Revisar SEO y claridad"). Adoptado como complemento al gate editorial, no como sustituto.
+
+**Cuándo se ejecuta**: cronjob `every 5m` con `wakeAgent` gate (despierta solo si hay propuestas sin auditar SEO). Procesa propuestas con `formato='nota_web'` (las redes/audio/video no requieren SEO web).
+
+**Procedimiento**:
+1. SELECT propuestas `metadata.is_proposal=true AND formato='nota_web' AND metadata->>'seo_audit' IS NULL AND estado='borrador'` LIMIT 10.
+2. Para cada propuesta calcular:
+   - **Flesch readability** en español (`Fernández Huerta`): meta ≥60. Bibliotecas: `pyphen` + función custom o `textstat`.
+   - **Longitud de párrafos**: máximo 3 oraciones / 150 palabras por párrafo.
+   - **Densidad de keywords primarias** (de `idea.metadata.search_intent.primary_keywords`): meta 1-2%, alarma >3%.
+   - **Estructura jerárquica**: 1 H1, 3-5 H2, opcionalmente H3. Penalizar H4+ en notas.
+   - **Meta-description**: 140-160 caracteres, debe contener al menos una keyword primaria.
+   - **Slug**: ≤6 palabras, kebab-case, sin stopwords.
+   - **Imagen alt-text**: presente y descriptivo (≥10 chars).
+   - **Longitud total**: 300-500 palabras (rango del Brief), alarma fuera de rango.
+3. UPDATE `piezas_contenido.metadata.seo_audit`:
+   ```json
+   {
+     "flesch_score": 72,
+     "readability": "good",
+     "keyword_density": 0.015,
+     "primary_keyword_in_h1": true,
+     "primary_keyword_in_first_100_chars": true,
+     "structure_valid": true,
+     "h1_count": 1,
+     "h2_count": 4,
+     "meta_description_length": 152,
+     "slug_word_count": 5,
+     "word_count": 412,
+     "warnings": [],
+     "suggestions": ["Considera mover la palabra 'Perote' al primer párrafo"],
+     "passed": true,
+     "audited_at": "2026-...",
+     "model_used": "google/gemini-3.1-flash-lite"
+   }
+   ```
+4. **Si `passed=false`**: 
+   - Si las violaciones son menores (sugerencias, no errores): marcar `metadata.seo_audit.passed=false`, dejar pasar al gate editorial con flag visible.
+   - Si las violaciones son mayores (densidad keyword >5%, párrafos >250 palabras, sin H1, etc.): regenerar **una sola vez** con feedback específico al modelo. Si en la segunda generación no pasa, marcar `metadata.seo_audit.escalated=true` y dejar pasar al gate (Emmanuel decide manualmente).
+5. Notificar a Emmanuel solo cuando una propuesta entra al gate con `escalated=true` o con `passed=false` mayor.
+
+**Importante — qué NO hace este skill**:
+- ❌ NO modifica el cuerpo de la propuesta sin pasar por gate humano.
+- ❌ NO bloquea propuestas que fallen SEO (la decisión es de Emmanuel; periodismo > SEO).
+- ❌ NO aplica a `post`, `audio`, `video`, `meme`, `infografia` — solo a notas web.
+
+**Frontmatter**:
+```yaml
+name: crea-seo-review
+description: Pre-check SEO técnico de propuestas tipo nota_web antes del gate editorial humano. No bloquea, solo informa.
+version: 1.0.0
+metadata:
+  hermes:
+    tags: [seo, audit, pre-gate]
+    category: crea
+    requires_toolsets: [terminal]
+```
+
+**Costo estimado**: ~$0.50 USD/día con Gemini Flash Lite (~$10/mes en régimen alto).
+
+**Métrica de éxito** (revisar a 30 días post-Fase 8): **% de notas publicadas que indexan en top-30 de Google para su keyword primaria** (medible vía Google Search Console). Meta inicial: ≥40% en primeras 4 semanas tras publicación.
 
 ---
 
@@ -650,8 +785,11 @@ docker exec crea_hermes chown 10000:www-data /output/img /output/audio
 | **5** | Skill `crea-newsletter` "Buenos días, Perote" diario L-V | 5-7 días | Fase 2 + Resend account + OpenWeatherMap key | 📋 Pendiente |
 | **6** | Skill `crea-competitor-watch` con MCP Apify (FB/TikTok/IG) | 3-5 días | Cuenta Apify activa | 📋 Pendiente |
 | **7** | Apagado de `services/*.js` legacy (después de 2 semanas de Hermes en paralelo sin incidencias) | 1 día | Validación de paridad funcional | 📋 Pendiente |
+| **8** | Skills `crea-search-intent` + `crea-seo-review` (enriquecimiento SEO opcional, complementa gate editorial humano) | 5-7 días | Fase 5 estable + Google Search Console conectado | 📋 Futuro |
 
-**Total estimado**: 4-5 semanas para llegar a régimen estable post-lanzamiento.
+**Total estimado**: 4-5 semanas para llegar a régimen estable post-lanzamiento (Fases 0-7). Fase 8 añade 1 semana adicional cuando el equipo decida priorizar tráfico orgánico de Google.
+
+> **Sobre Fase 8 (origen del requisito)**: durante revisión del plan se comparó el flujo CREA con flujos profesionales estándar de SEO/content marketing. El flujo CREA es objetivamente más profesional para periodismo local multiformato (gate editorial humano, etiquetado IA, multicanal). Sin embargo, dos pasos del flujo SEO estándar son complementarios y agregan valor sin comprometer ética editorial: (1) investigación de intención de búsqueda como contexto para el redactor IA, y (2) pre-check SEO técnico **antes** del gate editorial humano (NO en lugar de). Por eso se incorporan como Fase 8 post-lanzamiento, no como cambio del flujo principal.
 
 ### Criterios de salida por fase
 
@@ -662,6 +800,7 @@ docker exec crea_hermes chown 10000:www-data /output/img /output/audio
 - **Fase 4**: Emmanuel aprueba 5 propuestas seguidas por Telegram, todas terminan con `estado='aprobada'` en Postgres.
 - **Fase 5**: 5 ediciones consecutivas del newsletter llegan a Emmanuel a las 5:30 AM, él aprueba 4 antes de las 6:30, todas se distribuyen por al menos 2 canales.
 - **Fase 7**: durante 14 días corridos, los `services/*.js` legacy están **detenidos** y la operación editorial corre 100% sobre Hermes sin reclamos.
+- **Fase 8**: tras 30 días de notas con `seo_audit`, ≥40% de notas publicadas aparecen en top-30 de Google Search Console para su keyword primaria; Emmanuel reporta que el scoring SEO le ahorra tiempo en el gate sin haberlo restringido.
 
 ---
 
@@ -706,6 +845,7 @@ Al migrar a Hermes, **NO se necesitan**:
 | 3 | ¿Migración limpia o paralelo? | **Paralelo** durante 2 semanas. Hermes corre en producción mientras los workers Node siguen vivos. Apagado del legacy en Fase 7. |
 | 4 | ¿Postgres compartido vs MCP? | **SQL directo en `terminal`** para Fase 1-3. Migración a **MCP-Postgres server** en Fase 4+ cuando los skills crezcan. |
 | 5 | ¿Volúmenes compartidos `/shared/img` y `/shared/audio`? | **Sí**, definidos como named volumes en `docker-compose.yml`, montados en ambos contenedores (`crea_web` y `crea_hermes`). |
+| 6 | ¿Se adopta el flujo SEO-first del content marketing estándar como reemplazo del flujo CREA? | **NO**. El flujo CREA (multiformato + gate editorial + etiquetado IA + multicanal) es objetivamente más profesional para un medio de comunicación local que para un blog de marketing. **Sí** se adoptan dos pasos complementarios (search intent + pre-check SEO) en Fase 8 como enriquecimiento, NO como reemplazo. El gate editorial humano sigue siendo el árbitro final; un fallo SEO nunca bloquea publicación. |
 
 ---
 
@@ -718,6 +858,8 @@ Al migrar a Hermes, **NO se necesitan**:
 - [ ] **OpenWeatherMap**: free tier (1K calls/día) es suficiente. Confirmar email para registrar.
 - [ ] **Resend**: confirmar dominio para autenticación SPF/DKIM (probablemente `crea-contenidos.com`).
 - [ ] **Apify**: posponer hasta Fase 6 (post-lanzamiento estable).
+- [ ] **Google Search Console** (Fase 8): registrar `crea-contenidos.com` antes de la Fase 8 para tener métricas históricas cuando se active el enriquecimiento SEO. Es gratis, solo requiere verificación de dominio.
+- [ ] **Activar Fase 8**: decidir cuándo (cuando la operación lleve ≥30 días estable y Emmanuel reporte que quiere mejorar ranking en Google). NO es obligatoria, NO está bloqueada por presupuesto.
 
 ---
 
