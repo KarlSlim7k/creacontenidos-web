@@ -1,0 +1,115 @@
+# config/hermes/config.yaml
+# Configuración de Hermes Agent para CREA Contenidos
+#
+# PROVEEDOR TEMPORAL (Fase 0 / testing): OpenCode Go
+# Migrar a OpenRouter + Nous Portal Plus cuando el flujo esté validado end-to-end.
+# Comando de migración: hermes model
+#
+# Este archivo se monta en /opt/data/config.yaml dentro del contenedor crea_hermes.
+# NO commitear .env ni API keys — todas las credenciales van en Dokploy Environment.
+
+# ── Modelo principal ─────────────────────────────────────────────────────────
+# TEMPORAL: OpenCode Go para Fase 0/1 de pruebas.
+# Producción: anthropic/claude-sonnet-4 vía openrouter (ver §4.4 de PLAN_HERMES.md)
+model: claude-sonnet-4-20250514
+provider: custom
+
+custom_provider:
+  name: opencode-go
+  base_url: https://opencode.ai/api/v1   # ajustar si OpenCode expone otro path
+  api_key: ${OPENCODE_API_KEY}
+  # Si OpenCode no es compatible con OpenAI SDK, cambiar a:
+  #   base_url: https://opencode.ai/api/v1/chat/completions
+
+# ── Fallback (se activa si OpenCode falla) ───────────────────────────────────
+# Descomentar cuando se tenga la key de OpenRouter:
+# fallback_providers:
+#   - provider: openrouter
+#     model: anthropic/claude-sonnet-4
+#     api_key: ${OPENROUTER_API_KEY}
+#   - provider: nous
+#     model: hermes-4-405b
+
+# ── Modelos auxiliares (tareas baratas) ──────────────────────────────────────
+# Activar en Fase 1+ cuando se tenga OpenRouter.
+# auxiliary:
+#   vision:
+#     provider: openrouter
+#     model: google/gemini-2.5-flash
+#   web_extract:
+#     provider: openrouter
+#     model: google/gemini-2.5-flash
+#   compression:
+#     provider: openrouter
+#     model: google/gemini-3.1-flash-lite
+#   triage_specifier:
+#     provider: openrouter
+#     model: google/gemini-3.1-flash-lite
+
+# ── Compresión de contexto ───────────────────────────────────────────────────
+compression:
+  enabled: true
+  threshold: 0.50
+
+# ── Parámetros del agente ────────────────────────────────────────────────────
+agent:
+  max_turns: 90
+  api_max_retries: 2
+  reasoning_effort: medium
+  disabled_toolsets: []
+  toolsets:
+    - web
+    - file
+    - terminal
+    - skills
+    - memory
+    - session_search
+    - cronjob
+    - delegation
+    - tts
+    - image_gen
+    - messaging
+
+# ── TTS: ElevenLabs ─────────────────────────────────────────────────────────
+tts:
+  provider: elevenlabs
+  elevenlabs:
+    voice_id: ${ELEVENLABS_VOICE_ID}
+    model_id: ${ELEVENLABS_MODEL_ID}
+
+# ── Terminal ─────────────────────────────────────────────────────────────────
+terminal:
+  backend: local
+  cwd: /opt/data
+  timeout: 180
+
+# ── MCP servers ──────────────────────────────────────────────────────────────
+mcp_servers:
+  postgres:
+    command: npx
+    args:
+      - -y
+      - "@modelcontextprotocol/server-postgres"
+      - "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
+  # apify (Fase 6):
+  # apify:
+  #   command: npx
+  #   args: ["-y", "@apify/actors-mcp-server"]
+  #   env:
+  #     APIFY_TOKEN: ${APIFY_TOKEN}
+
+# ── Display ──────────────────────────────────────────────────────────────────
+display:
+  language: es
+  tool_progress: new
+  runtime_footer:
+    enabled: true
+    fields: [model, context_pct, cost]
+
+# ── Cron ─────────────────────────────────────────────────────────────────────
+cron:
+  wrap_response: true
+
+# ── Privacidad ───────────────────────────────────────────────────────────────
+privacy:
+  redact_pii: false   # entorno controlado, datos del medio
