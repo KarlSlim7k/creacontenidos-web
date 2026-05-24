@@ -1,7 +1,7 @@
 ---
 name: crea-radar
-description: Obtiene noticias de Perote/Veracruz vía RSS (Google News) usando execute_code Python, e inserta en ideas con mcp_postgres_query directamente.
-version: 3.0.0
+description: Obtiene noticias RSS de Perote/Veracruz con execute_code Python y las inserta en ideas con UNA sola llamada mcp_postgres_query (batch INSERT).
+version: 4.0.0
 metadata:
   hermes:
     tags: [radar, listening, ideas, postgres, mcp, rss]
@@ -11,15 +11,94 @@ metadata:
 
 # Skill: crea-radar
 
-Eres el editor de CREA Contenidos. Obtén noticias locales e insértalas en la base de datos.
+Eres el editor de CREA Contenidos. Tu objetivo: obtener noticias de Perote/Veracruz e insertarlas en la DB.
 
-## REGLAS ABSOLUTAS
+## REGLA PRINCIPAL
 
-1. Usa `execute_code` con Python para obtener el RSS (Python puede hacer requests HTTP).
-2. Usa `mcp_postgres_query` para cada INSERT en Postgres — uno por noticia, sin archivos intermedios.
-3. Limpia el HTML de las descripciones antes de insertar.
+Haz exactamente **3 llamadas a herramientas** en este orden:
+1. `execute_code` — obtener RSS y construir el SQL
+2. `mcp_postgres_query` — ejecutar el batch INSERT (una sola llamada)
+3. `mcp_postgres_query` — contar el total final
 
-## Paso 1: Obtener ID del sistema con mcp_postgres_query
+## Paso 1: execute_code (Python) — obtener noticias y construir SQL
+
+```python
+import urllib.request, re, json
+from datetime import datetime, timezone
+from xml.etree import ElementTree as ET
+
+URLS = [
+    "https://news.google.com/rss/search?q=Perote+Veracruz&hl=es-419&gl=MX&ceid=MX:es-419",
+    "https://news.google.com/rss/search?q=alertas+Perote+Veracruz&hl=es-419&gl=MX&ceid=MX:es-419",
+]
+URGENCIA_KW = ["accidente","crimen","robo","incendio","alerta","emergencia","sismo","inundacion","detenido","hallado","muerto","cuerpo","balacera","asalto","asesinato"]
+
+def clean(t):
+    t = re.sub(r'<[^>]+>','',t or '').strip()
+    t = re.sub(r'\s+',' ',t)
+    t = re.sub(r'\s+-\s+\S+.*$','',t)  # quitar "- Fuente" al final
+    return t[:250]
+
+def esc(s):
+    return s.replace("'","''").replace("\\","\\\\")
+
+def urgencia(t):
+    tl = t.lower()
+    for kw in URGENCIA_KW:
+        if kw in tl: return 'alta'
+    return 'media'
+
+items, seen = [], set()
+for url in URLS:
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent":"CREA/4.0"})
+        xml = urllib.request.urlopen(req, timeout=15).read()
+        root = ET.fromstring(xml)
+        for item in root.findall(".//item"):
+            title_el = item.find("title")
+            link_el = item.find("link")
+            if title_el is None: continue
+            titulo = clean(title_el.text or "")
+            if not titulo or titulo in seen or len(titulo)<15: continue
+            seen.add(titulo)
+            url_val = (link_el.text or "").strip()[:500] if link_el is not None else ""
+            items.append({"titulo": esc(titulo), "url": esc(url_val), "urgencia": urgencia(titulo)})
+            if len(items) >= 15: break
+        if len(items) >= 15: break
+    except Exception as e:
+        print(f"RSS error: {e}")
+
+now = datetime.now(timezone.utc).isoformat()
+
+# Obtener autor_id via una query embebida no es posible aquí,
+# así que usamos un placeholder que el agente debe reemplazar con el autor_id real.
+# El agente debe ejecutar primero: SELECT id FROM usuarios WHERE deleted_at IS NULL ORDER BY created_at ASC LIMIT 1
+# y sustituir AUTOR_UUID_AQUI con el resultado.
+
+values = []
+for it in items:
+    meta = json.dumps({
+        "service":"social_listener","mentions":1,"sentiment":"neutral",
+        "suggested_formats":["nota"],"url":it["url"],"last_seen_at":now
+    }).replace("'","''")
+    values.append(
+        f"('{it['titulo']}', NULL, 'alerta_google_news', '{it['urgencia']}', 'nueva', false, 'AUTOR_UUID_AQUI', '{meta}')"
+    )
+
+if values:
+    sql = "INSERT INTO ideas (titulo, descripcion, fuente, urgencia, estado, potencial_comercial, registrado_por, metadata)\nVALUES\n" + ",\n".join(values) + "\nON CONFLICT DO NOTHING RETURNING id;"
+    print("COUNT:", len(values))
+    print("SQL:", sql[:200], "...")
+    # Guardar SQL completo
+    with open("/tmp/radar_batch.sql","w") as f:
+        f.write(sql)
+    print("ITEMS:", json.dumps(items))
+else:
+    print("COUNT: 0")
+    print("SQL: SELECT 1")
+```
+
+## Paso 2: mcp_postgres_query — obtener autor_id
 
 ```sql
 SELECT id FROM usuarios WHERE deleted_at IS NULL ORDER BY created_at ASC LIMIT 1
@@ -27,98 +106,25 @@ SELECT id FROM usuarios WHERE deleted_at IS NULL ORDER BY created_at ASC LIMIT 1
 
 Guarda el UUID como `autor_id`.
 
-## Paso 2: Obtener noticias con execute_code (Python)
+## Paso 3: Leer el SQL y sustituir AUTOR_UUID_AQUI
 
-```python
-import urllib.request, xml.etree.ElementTree as ET, re, json
+Lee `/tmp/radar_batch.sql` con `read_file`, reemplaza `AUTOR_UUID_AQUI` con el `autor_id` del paso 2.
 
-URLS = [
-    "https://news.google.com/rss/search?q=Perote+Veracruz&hl=es-419&gl=MX&ceid=MX:es-419",
-    "https://news.google.com/rss/search?q=alertas+Perote+Veracruz&hl=es-419&gl=MX&ceid=MX:es-419",
-]
+## Paso 4: mcp_postgres_query — ejecutar el batch INSERT
 
-URGENCIA_KEYWORDS = ["accidente","crimen","crisis","robo","asesinato","incendio","alerta","emergencia","sismo","inundación","detenido","hallado","muerto","cuerpo","balacera","asalto"]
+Ejecuta el SQL completo (con el autor_id sustituido) en una sola llamada a `mcp_postgres_query`.
 
-def clean_html(text):
-    if not text: return ""
-    text = re.sub(r'<[^>]+>', ' ', text)
-    text = re.sub(r'\s+', ' ', text).strip()
-    return text[:300]
-
-def get_urgencia(titulo):
-    t = titulo.lower()
-    for kw in URGENCIA_KEYWORDS:
-        if kw in t:
-            return "alta"
-    return "media"
-
-noticias = []
-seen = set()
-for url in URLS:
-    try:
-        req = urllib.request.Request(url, headers={"User-Agent": "CREA-Radar/3.0"})
-        r = urllib.request.urlopen(req, timeout=15)
-        root = ET.fromstring(r.read())
-        for item in root.findall(".//item")[:10]:
-            title_el = item.find("title")
-            link_el = item.find("link")
-            if title_el is None or not title_el.text:
-                continue
-            titulo_raw = title_el.text.strip()
-            # Quitar " - Fuente" al final si existe
-            titulo = re.sub(r'\s+-\s+[^-]+$', '', titulo_raw).strip()
-            titulo = clean_html(titulo)
-            if titulo in seen or len(titulo) < 10:
-                continue
-            seen.add(titulo)
-            link = link_el.text.strip() if link_el is not None and link_el.text else ""
-            noticias.append({
-                "titulo": titulo.replace("'", "''"),  # escape SQL
-                "url": link[:500],
-                "urgencia": get_urgencia(titulo)
-            })
-    except Exception as e:
-        print(f"Error fetch {url}: {e}")
-
-print(json.dumps(noticias[:15]))
-```
-
-Guarda la lista de noticias del output.
-
-## Paso 3: Insertar cada noticia con mcp_postgres_query
-
-Para **cada noticia** de la lista (una llamada a `mcp_postgres_query` por noticia):
-
-```sql
-INSERT INTO ideas (titulo, descripcion, fuente, urgencia, estado, potencial_comercial, registrado_por, metadata)
-VALUES (
-  '<titulo_escapado>',
-  NULL,
-  'alerta_google_news',
-  '<alta_o_media>',
-  'nueva',
-  false,
-  '<autor_id>',
-  '{"service":"social_listener","mentions":1,"sentiment":"neutral","suggested_formats":["nota"],"url":"<url>","last_seen_at":"<NOW()>"}'
-)
-ON CONFLICT DO NOTHING
-RETURNING id
-```
-
-Si el resultado de `RETURNING id` está vacío, la noticia ya existía (duplicado) — continúa con la siguiente.
-
-## Paso 4: Contar total con mcp_postgres_query
+## Paso 5: mcp_postgres_query — contar total
 
 ```sql
 SELECT COUNT(*) AS total FROM ideas WHERE deleted_at IS NULL AND estado = 'nueva'
 ```
 
-## Paso 5: Reporte
+## Reporte final
 
-Responde:
 ```
 ✅ crea-radar completado
    Noticias encontradas: N
-   Ideas insertadas: M  |  Duplicadas (skip): K
+   Ideas insertadas: M
    Total activas en DB: T
 ```
