@@ -44,21 +44,21 @@ cronjobs:
     timezone: America/Mexico_City
     enabled: true
 
-  # ── FASE 3 (comentado) ────────────────────────────────────────────────────
+  # ── FASE 3 ───────────────────────────────────────────────────────────────
 
-  # - id: crea-image-queue
-  #   description: "Procesa cola de imágenes pendientes (no-agent gate)"
-  #   schedule: "*/1 * * * *"
-  #   skill: crea-image-generation
-  #   timezone: America/Mexico_City
-  #   enabled: false
+  - id: crea-image-queue
+    description: "Procesa cola de imágenes pendientes (wakeAgent gate — 0 tokens si cola vacía)"
+    schedule: "*/1 * * * *"
+    skill: crea-image-generation
+    timezone: America/Mexico_City
+    enabled: true
 
-  # - id: crea-audio-queue
-  #   description: "Procesa cola de audio pendiente (no-agent gate)"
-  #   schedule: "*/1 * * * *"
-  #   skill: crea-audio-generation
-  #   timezone: America/Mexico_City
-  #   enabled: false
+  - id: crea-audio-queue
+    description: "Procesa cola de audio pendiente (wakeAgent gate — 0 tokens si cola vacía)"
+    schedule: "*/1 * * * *"
+    skill: crea-audio-generation
+    timezone: America/Mexico_City
+    enabled: true
 
   # ── FASE 5 (comentado) ────────────────────────────────────────────────────
 
