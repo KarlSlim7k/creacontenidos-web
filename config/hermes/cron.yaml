@@ -60,6 +60,15 @@ cronjobs:
     timezone: America/Mexico_City
     enabled: true
 
+  # ── FASE 4 ───────────────────────────────────────────────────────────────
+
+  - id: crea-editorial-gate
+    description: "Presenta propuestas pendientes a Emmanuel por Telegram (08:00-22:00 MX)"
+    schedule: "0 8-22 * * *"         # cada hora entre 8am y 10pm hora MX
+    skill: crea-editorial-gate
+    timezone: America/Mexico_City
+    enabled: true
+
   # ── FASE 5 (comentado) ────────────────────────────────────────────────────
 
   # - id: crea-newsletter
