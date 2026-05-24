@@ -778,8 +778,8 @@ docker exec crea_hermes chown 10000:www-data /output/img /output/audio
 | Fase | Entregable | Tiempo | Dependencias | Estado |
 |---|---|---|---|---|
 | **0** | Servicio `crea_hermes` en Dokploy + `SOUL.md` + Telegram bot conectado + saludo de prueba | 1-2 días | OpenRouter API key + Telegram bot token | ✅ Completa (2026-05-24) |
-| **1** | Skill `crea-radar` reemplaza `social-listener.js` (en paralelo al legacy) + skill `crea-publish-facebook` | 2-3 días | Postgres acceso desde Hermes | 📋 Pendiente |
-| **2** | Skill `crea-content-generation` con `delegate_task` para 6 formatos. Migración de `system-prompt-crea.md` → `SOUL.md` | 3-4 días | Fase 1 validada | 📋 Pendiente |
+| **1** | Skill `crea-radar` reemplaza `social-listener.js` (en paralelo al legacy) + skill `crea-publish-facebook` | 2-3 días | Postgres acceso desde Hermes | ✅ Completa (2026-05-24) |
+| **2** | Skill `crea-content-generation` con `delegate_task` para 6 formatos. Migración de `system-prompt-crea.md` → `SOUL.md` | 3-4 días | Fase 1 validada | ✅ Completa (2026-05-24) |
 | **3** | Skills `crea-image-generation` + `crea-audio-generation` + bind-mounts compartidos | 3-4 días | Volúmenes `shared_img`, `shared_audio` | 📋 Pendiente |
 | **4** | Gate editorial vía Telegram (aprobar/rechazar/programar/regenerar desde celular) | 4-5 días | Fase 2 + bot Telegram con sesión persistente | 📋 Pendiente |
 | **5** | Skill `crea-newsletter` "Buenos días, Perote" diario L-V | 5-7 días | Fase 2 + Resend account + OpenWeatherMap key | 📋 Pendiente |
