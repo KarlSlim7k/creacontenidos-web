@@ -34,15 +34,15 @@ cronjobs:
         echo "{\"wakeAgent\": false}"
       fi
 
-  # ── FASE 2 (comentado — activar cuando Fase 1 esté validada) ─────────────
+  # ── FASE 2 ───────────────────────────────────────────────────────────────
 
-  # - id: crea-content-generation
-  #   description: "Genera 6 formatos de contenido por idea nueva"
-  #   schedule: "30 */6 * * *"       # 30 min después del radar
-  #   skill: crea-content-generation
-  #   context_from: [crea-radar]
-  #   timezone: America/Mexico_City
-  #   enabled: false
+  - id: crea-content-generation
+    description: "Genera 6 formatos de contenido por idea nueva"
+    schedule: "30 */6 * * *"       # 30 min después del radar
+    skill: crea-content-generation
+    context_from: [crea-radar]
+    timezone: America/Mexico_City
+    enabled: true
 
   # ── FASE 3 (comentado) ────────────────────────────────────────────────────
 
