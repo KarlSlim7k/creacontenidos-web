@@ -782,7 +782,7 @@ docker exec crea_hermes chown 10000:www-data /output/img /output/audio
 | **2** | Skill `crea-content-generation` con `delegate_task` para 6 formatos. Migración de `system-prompt-crea.md` → `SOUL.md` | 3-4 días | Fase 1 validada | ✅ Completa (2026-05-24) |
 | **3** | Skills `crea-image-generation` + `crea-audio-generation` + bind-mounts compartidos | 3-4 días | Volúmenes `shared_img`, `shared_audio` | ✅ Completa (2026-05-24) | |
 | **4** | Gate editorial vía Telegram (aprobar/rechazar/programar/regenerar desde celular) | 4-5 días | Fase 2 + bot Telegram con sesión persistente | ✅ Completa (2026-05-24) | |
-| **5** | Skill `crea-newsletter` "Buenos días, Perote" diario L-V | 5-7 días | Fase 2 + Resend account + OpenWeatherMap key | 📋 Pendiente |
+| **5** | Skill `crea-newsletter` "Buenos días, Perote" diario L-V | 5-7 días | Fase 2 + Resend + OpenWeatherMap | ✅ Completa (2026-05-24) | |
 | **6** | Skill `crea-competitor-watch` con MCP Apify (FB/TikTok/IG) | 3-5 días | Cuenta Apify activa | 📋 Pendiente |
 | **7** | Apagado de `services/*.js` legacy (después de 2 semanas de Hermes en paralelo sin incidencias) | 1 día | Validación de paridad funcional | 📋 Pendiente |
 | **8** | Skills `crea-search-intent` + `crea-seo-review` (enriquecimiento SEO opcional, complementa gate editorial humano) | 5-7 días | Fase 5 estable + Google Search Console conectado | 📋 Futuro |
