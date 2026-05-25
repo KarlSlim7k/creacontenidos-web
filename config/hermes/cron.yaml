@@ -69,12 +69,12 @@ cronjobs:
     timezone: America/Mexico_City
     enabled: true
 
-  # ── FASE 5 (comentado) ────────────────────────────────────────────────────
+  # ── FASE 5 ───────────────────────────────────────────────────────────────
 
-  # - id: crea-newsletter
-  #   description: "Genera newsletter Buenos días Perote L-V a las 5am"
-  #   schedule: "0 5 * * 1-5"
-  #   skill: crea-newsletter
-  #   context_from: [crea-radar]
-  #   timezone: America/Mexico_City
-  #   enabled: false
+  - id: crea-newsletter
+    description: "Genera newsletter Buenos días Perote L-V a las 5am"
+    schedule: "0 5 * * 1-5"
+    skill: crea-newsletter
+    context_from: [crea-radar]
+    timezone: America/Mexico_City
+    enabled: true
