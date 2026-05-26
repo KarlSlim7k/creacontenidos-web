@@ -115,13 +115,32 @@ Espera respuesta. Si en 30 minutos no hay respuesta, envía recordatorio.
 ## Paso 4 (solo si aprueba): Enviar por email con execute_code
 
 ```python
-import os, json, urllib.request, urllib.parse
-
-RESEND_KEY = os.environ.get("RESEND_API_KEY","")
-BORRADOR = """<texto aprobado>"""
-
-# Obtener suscriptores con pg8000
+import os, subprocess, json
 import pg8000.native as pg
+from datetime import date
+
+TEMPLATE_ID = "13a36963-80d3-4158-873d-e4dd1656ab18"
+RESEND_KEY = os.environ.get("RESEND_API_KEY","")
+
+# Datos del newsletter (sustituir con los del Paso 2)
+VARS = {
+    "fecha": "<fecha_del_paso_1>",
+    "dia": "<dia_semana>",
+    "preview_text": "<resumen_una_linea>",
+    "clima_descripcion": "<clima>",
+    "temp_actual": "<temp>", "temp_max": "<max>", "temp_min": "<min>", "alerta": "",
+    "nota_titulo": "<titulo_nota_principal>",
+    "nota_cuerpo": "<cuerpo_nota_principal>",
+    "nota_url": "https://crea-contenidos.com",
+    "breve_1": "<noticia_2>", "breve_2": "<noticia_3>",
+    "breve_3": "<noticia_4>", "breve_4": "<noticia_5>",
+    "dato_del_dia": "<dato>",
+    "agenda": "<agenda_o_Sin eventos registrados para hoy.>",
+    "patrocinador_nombre": "", "patrocinador_copy": "", "patrocinador_url": "#",
+    "unsub_url": "https://crea-contenidos.com/newsletter/baja"
+}
+
+# Obtener suscriptores de Postgres
 c = pg.Connection(
     host=os.environ.get("POSTGRES_HOST","postgres"),
     database=os.environ.get("POSTGRES_DB","crea_db"),
@@ -133,30 +152,37 @@ subs = c.run("SELECT email FROM suscriptores WHERE activo=true AND deleted_at IS
 c.close()
 
 emails = [r[0] for r in subs if r[0]]
-print(f"Suscriptores: {len(emails)}")
-
 if not emails:
-    print("Sin suscriptores aún — publicando solo en FB")
-else:
-    # Enviar via Resend
-    for email in emails:
-        try:
-            data = json.dumps({
-                "from": "Buenos días, Perote <newsletter@crea-contenidos.com>",
-                "to": [email],
-                "subject": f"Buenos días, Perote — {__import__('datetime').date.today().strftime('%d/%m/%Y')}",
-                "text": BORRADOR
-            }).encode()
-            req = urllib.request.Request(
-                "https://api.resend.com/emails",
-                data=data,
-                headers={"Authorization": f"Bearer {RESEND_KEY}", "Content-Type": "application/json"},
-                method="POST"
-            )
-            resp = json.loads(urllib.request.urlopen(req, timeout=15).read())
-            print(f"✅ Email enviado a {email}: {resp.get('id','')}")
-        except Exception as e:
-            print(f"❌ Error {email}: {e}")
+    emails = []
+    print("Sin suscriptores — enviando solo prueba interna")
+
+fecha_str = VARS["fecha"]
+sent, failed = 0, 0
+
+for email in (emails or ["newsletter@crea-contenidos.com"]):
+    # Construir args --var
+    var_args = []
+    for k, v in VARS.items():
+        var_args += ["--var", f"{k}={v}"]
+
+    cmd = [
+        "resend", "emails", "send",
+        "--api-key", RESEND_KEY,
+        "--from", "CREA Contenidos <newsletter@crea-contenidos.com>",
+        "--to", email,
+        "--subject", f"Buenos días, Perote — {fecha_str}",
+        "--template", TEMPLATE_ID,
+    ] + var_args
+
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode == 0:
+        sent += 1
+        print(f"✅ {email}")
+    else:
+        failed += 1
+        print(f"❌ {email}: {result.stdout}")
+
+print(f"\n📧 Newsletter enviado: {sent} OK | {failed} errores")
 ```
 
 ## Paso 5 (solo si aprueba): Publicar en Facebook
