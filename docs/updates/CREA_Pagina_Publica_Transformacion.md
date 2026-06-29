@@ -182,7 +182,7 @@ Inspeccionado contra `apps/web/`:
 
 ---
 
-### 4.5 Paginas de seccion (`seccion.html`, `local.html` (si existe), etc.)
+### 4.5 Paginas de seccion (`seccion.html` + variantes cultura/economia/deportes/opinion/entretenimiento)
 
 **De:** listado generico.
 **A:** portada de seccion con identidad.
@@ -649,3 +649,44 @@ La pagina publica debe conectarse con la operacion del medio:
 - Si un CTA no tiene destino real, no se pone.
 - Si una imagen es placeholder, no se publica.
 - Cada cambio debe pasar por los DoD de su fase. Fase firmada antes de pasar a la siguiente.
+
+---
+
+## 13. Estado de implementacion (2026-06-29)
+
+**Deployado en produccion** (VPS Dokploy, dominio `crea-contenidos.com`).
+
+### Que esta implementado
+
+| Fase | Entregable | Estado |
+|------|------------|--------|
+| 1 | `apps/web/assets/js/nav.js` (header/footer compartidos via `data-include`) | Hecho |
+| 1 | 13/13 paginas usan `data-include` para header | Hecho |
+| 1 | Cero imagenes externas en HTML/JS | Hecho |
+| 2 | 130 imagenes Unsplash provisionales con keywords contextuales | Hecho |
+| 2 | `pickUnsplash()` en `dynamic-articles.js` y `dynamic-content.js` | Hecho |
+| 3 | `apps/web/pages/comercial.html` con form conectado a API | Hecho |
+| 3 | `/api/comercial/lead.php` crea prospecto con `origen='formulario_comercial'` | Hecho |
+| 3 | `/api/newsletter/subscribe.php` unificado a `prospectos` con `origen='newsletter'` | Hecho |
+| 3 | Banner `#newsletter-banner` en portada con preview del titular del dia | Hecho |
+| 4 | Schema.org `NewsMediaOrganization` en index, `NewsArticle` en nota | Hecho |
+| 4 | Open Graph + Twitter Cards en index y nota | Hecho |
+| 4 | `sitemap.xml` + `robots.txt` | Hecho |
+| 4 | Tokens CSS: `--color-acento` (#A07A1C), TT paleta validada (#e6b54a) | Hecho |
+| 4 | A11y: `outline:none` eliminado en 4 selectores de inputs | Hecho |
+
+### Que queda pendiente
+
+| Pendiente | Bloqueado por |
+|-----------|---------------|
+| Lighthouse mobile >=90 Performance, >=95 A11y/SEO | Medir en Chrome (no automatizable desde CLI) |
+| Responsive 375px sin scroll horizontal | Validar visualmente en Chrome DevTools |
+| Sustituir imagenes Unsplash por fotos propias de Perote | Contenido real (no es codigo) |
+| Social links con URLs reales (Facebook, Instagram, X) | Emmanuel confirma las URLs |
+| CTR de banners (newsletter, comercial) y conversion tracking | Analytics (definir herramienta) |
+
+### Como seguir reemplazando imagenes
+
+1. **Imagen individual HTML:** editar el `src` directamente en el archivo.
+2. **Imagen en card dinamica:** editar `imagen_destacada` en la pieza (BD o seed).
+3. **Set completo:** editar `KEYWORD_MAP` en `scripts/fase2-unsplash-images.py` y re-ejecutar. Y los mapas `UNSPLASH_MAP` / `pickUnsplash()` en `dynamic-articles.js` y `dynamic-content.js`.
