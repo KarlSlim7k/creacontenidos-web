@@ -1,51 +1,81 @@
 /* CREA Contenidos — main.css */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Oswald:wght@500;600;700&display=swap');
 
 :root {
-  --color-noche: #1A1A2E;
-  --color-noche-soft: #2D2D44;
-  --color-papel: #FAF7F2;
-  --color-papel-alt: #F5F1EA;
+  /* Base palette */
+  --color-noche: #111111;
+  --color-noche-soft: #1e1e1e;
+  --color-papel: #FFFFFF;
+  --color-papel-alt: #F7F7F5;
+  --color-fondo: #FFFFFF;
+  --color-fondo-alt: #F7F7F5;
+  --color-texto: #111111;
+  --color-texto-medio: #6B6B6B;
+  --color-borde-suave: #E8E8E8;
+
+  /* Brand */
   --color-rojo: #C0392B;
   --color-rojo-hover: #A93226;
   --color-rojo-light: rgba(192, 57, 43, 0.1);
-  --color-naranja: #E67E22;
-  --color-naranja-hover: #D35400;
-  --color-naranja-light: rgba(230, 126, 34, 0.15);
-  --color-gris-texto: #3D3D3D;
+
+  /* Legacy aliases (kept for backwards compat) */
+  --color-naranja: #A07A1C;
+  --color-naranja-hover: #B88A2A;
+  --color-naranja-light: rgba(160, 122, 28, 0.12);
+  --color-dorado: #A07A1C;
+  --color-dorado-light: rgba(160, 122, 28, 0.12);
+
+  /* Grays */
+  --color-gris-texto: #333333;
   --color-gris-medio: #6B6B6B;
-  --color-gris-claro: #F0EDE8;
-  --color-gris-linea: #E8E4DD;
-  --color-borde: #D4C9BC;
-  --color-dorado: #B7950B;
-  --color-dorado-light: rgba(183, 149, 11, 0.15);
+  --color-gris-claro: #F7F7F5;
+  --color-gris-linea: #E8E8E8;
+  --color-borde: #E0E0E0;
   --color-blanco: #FFFFFF;
   --color-negro: #111111;
 
-  /* === Acento mostaza magazine (decidido 2026-06-28) === */
+  /* Acento mostaza magazine (decidido 2026-06-28) */
   --color-acento: #A07A1C;
   --color-acento-hover: #B88A2A;
   --color-acento-soft: rgba(160, 122, 28, 0.12);
+
+  /* Typography */
   --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Source Sans 3', Helvetica, sans-serif;
-  --font-accent: 'Lora', Georgia, serif;
-  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-accent: 'Inter', system-ui, sans-serif;
+  --font-eyebrow: 'Oswald', sans-serif;
+
+  /* Type scale */
+  --text-xs: 0.6875rem; --text-sm: 0.8125rem; --text-base: 1rem;
   --text-lg: 1.125rem; --text-xl: 1.25rem; --text-2xl: 1.5rem;
   --text-3xl: 1.875rem; --text-4xl: 2.25rem; --text-5xl: 3rem;
   --text-hero: clamp(2.5rem, 5vw, 4.5rem);
+
+  /* Spacing */
   --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem;
   --space-4: 1rem; --space-5: 1.25rem; --space-6: 1.5rem;
   --space-8: 2rem; --space-10: 2.5rem; --space-12: 3rem;
   --space-16: 4rem; --space-20: 5rem; --space-24: 6rem;
-  --max-width: 1280px; --max-width-narrow: 800px;
+
+  /* Layout */
+  --max-width: 1280px; --max-width-narrow: 760px;
   --col-gap: 1.5rem; --row-gap: 1.5rem;
-  --shadow-sm: 0 1px 3px rgba(26,26,46,0.06);
-  --shadow-card: 0 2px 8px rgba(26,26,46,0.08);
-  --shadow-hover: 0 8px 24px rgba(26,26,46,0.16);
-  --shadow-lg: 0 12px 40px rgba(26,26,46,0.2);
-  --radius-sm: 3px; --radius-base: 5px; --radius-lg: 8px; --radius-full: 50%;
-  --transition-fast: 150ms ease; --transition-base: 250ms ease;
-  --transition-slow: 400ms ease;
+
+  /* Shadows — lighter, more modern */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-hover: 0 8px 24px rgba(0,0,0,0.10);
+  --shadow-lg: 0 16px 40px rgba(0,0,0,0.12);
+
+  /* Radius — magazine system */
+  --radius-sm: 8px; --radius-base: 12px; --radius-lg: 16px;
+  --radius-xl: 20px; --radius-pill: 999px; --radius-full: 50%;
+
+  /* Motion */
+  --transition-fast: 150ms ease; --transition-base: 220ms ease;
+  --transition-slow: 380ms ease;
+
+  /* Z-index */
   --z-header: 100; --z-overlay: 200; --z-modal: 300;
 
   /* === TERCER TIEMPO — Identidad visual del programa (validada en presentacion.html) === */
@@ -77,10 +107,9 @@
 html { font-size:16px; scroll-behavior:smooth; -webkit-font-smoothing:antialiased; }
 
 body {
-  font-family: var(--font-body); font-size: var(--text-base);
-  line-height: 1.6; color: var(--color-gris-texto);
-  background-color: var(--color-papel); overflow-x: hidden;
-  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+  font-family: var(--font-body); font-size: 17px;
+  line-height: 1.6; color: var(--color-texto);
+  background-color: var(--color-fondo); overflow-x: hidden;
 }
 
 img { max-width:100%; height:auto; display:block; }
@@ -89,7 +118,7 @@ a:hover { color:var(--color-rojo); }
 ul,ol { list-style:none; }
 button { font-family:inherit; cursor:pointer; border:none; background:none; }
 input,textarea,select { font-family:inherit; font-size:inherit; }
-h1,h2,h3,h4,h5,h6 { font-family:var(--font-display); font-weight:700; line-height:1.2; color:var(--color-noche); }
+h1,h2,h3,h4,h5,h6 { font-family:var(--font-display); font-weight:700; line-height:1.2; color:var(--color-texto); }
 blockquote { font-family:var(--font-accent); font-style:italic; }
 
 .container { width:100%; max-width:var(--max-width); margin:0 auto; padding:0 var(--space-4); }
@@ -131,9 +160,24 @@ blockquote { font-family:var(--font-accent); font-style:italic; }
 .aspect-16-9 { aspect-ratio:16/9; object-fit:cover; }
 .aspect-4-3 { aspect-ratio:4/3; object-fit:cover; }
 
-.seccion { padding:var(--space-12) 0; }
-.seccion--oscura { background:var(--color-noche); color:var(--color-papel); }
-.seccion--oscura h2,.seccion--oscura h3 { color:var(--color-papel); }
-.seccion--gris { background:var(--color-gris-claro); }
-.seccion__titulo { font-family:var(--font-display); font-size:var(--text-3xl); font-weight:700; color:var(--color-noche); margin-bottom:var(--space-2); }
-.seccion__subtitulo { font-family:var(--font-body); font-size:var(--text-lg); color:var(--color-gris-medio); margin-bottom:var(--space-8); }
+.seccion { padding: var(--space-12) 0; }
+.seccion--oscura { background: var(--color-noche); color: var(--color-papel); }
+.seccion--oscura h2,.seccion--oscura h3 { color: var(--color-papel); }
+.seccion--gris { background: var(--color-fondo-alt); }
+.seccion__eyebrow {
+  font-family: var(--font-eyebrow);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-rojo);
+  display: block;
+  margin-bottom: var(--space-2);
+}
+.seccion__titulo { font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 800; color: var(--color-texto); margin-bottom: var(--space-2); letter-spacing: -0.01em; }
+.seccion__subtitulo { font-family: var(--font-body); font-size: var(--text-base); color: var(--color-gris-medio); margin-bottom: var(--space-8); }
+
+@media (min-width: 1024px) {
+  .seccion { padding: 80px 0; }
+  .seccion--compact { padding: 48px 0; }
+}
