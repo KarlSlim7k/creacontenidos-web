@@ -21,6 +21,11 @@
   --color-dorado-light: rgba(183, 149, 11, 0.15);
   --color-blanco: #FFFFFF;
   --color-negro: #111111;
+
+  /* === Acento mostaza magazine (decidido 2026-06-28) === */
+  --color-acento: #A07A1C;
+  --color-acento-hover: #B88A2A;
+  --color-acento-soft: rgba(160, 122, 28, 0.12);
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body: 'Source Sans 3', Helvetica, sans-serif;
   --font-accent: 'Lora', Georgia, serif;
@@ -43,14 +48,28 @@
   --transition-slow: 400ms ease;
   --z-header: 100; --z-overlay: 200; --z-modal: 300;
 
-  /* === TERCER TIEMPO — Identidad visual del programa === */
-  --tt-primario: #1A1A2E;          /* Noche de estadio */
-  --tt-acento: #C0392B;            /* Rojo pasión */
-  --tt-acento-alt: #E67E22;        /* Naranja béisbol / histórico */
+  /* === TERCER TIEMPO — Identidad visual del programa (validada en presentacion.html) === */
+  --tt-primario: #0b1220;          /* Noche de estadio */
+  --tt-paper: #050912;
+  --tt-cream: #f5f1e8;
+  --tt-dim: #cfc7b3;
+  --tt-dimmer: #9aa3b2;
+  --tt-line: rgba(245, 241, 232, 0.14);
+  --tt-line-soft: rgba(245, 241, 232, 0.08);
+  --tt-gold: #e6b54a;               /* Oro vibrante, validado */
+  --tt-gold-2: #c8941f;             /* Hover */
+  --tt-gold-soft: rgba(230, 181, 74, 0.12);
+  --tt-red: #d44a4a;                /* Live, critico */
+  --tt-green: #5fd28b;              /* Victoria */
+  --tt-amber: #e9c46a;              /* Empate */
+  --tt-rose: #ff7676;               /* Derrota */
+  /* Aliases para compatibilidad con CSS existente */
+  --tt-acento: #e6b54a;
+  --tt-acento-alt: #c8941f;
   --tt-texto-claro: rgba(255,255,255,0.90);
   --tt-texto-dimmed: rgba(255,255,255,0.55);
-  --tt-cancha: rgba(255,255,255,0.04); /* Textura de campo */
-  --tt-live-red: #FF3B30;          /* Rojo "live" más vibrante */
+  --tt-cancha: rgba(255,255,255,0.04);
+  --tt-live-red: #FF3B30;
 }
 
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }

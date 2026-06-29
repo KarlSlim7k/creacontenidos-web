@@ -112,7 +112,6 @@
   color: var(--color-noche);
 }
 .search-bar input:focus {
-  outline: none;
   border-color: var(--color-rojo);
 }
 
@@ -441,7 +440,7 @@
   font-size: var(--text-base);
 }
 .newsletter__form input::placeholder { color: rgba(250,247,242,0.4); }
-.newsletter__form input:focus { outline: none; border-color: var(--color-naranja); }
+.newsletter__form input:focus { border-color: var(--color-naranja); }
 
 /* ── Footer ── */
 .footer {
@@ -667,7 +666,6 @@
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 .form-input:focus, .form-textarea:focus, .form-select:focus {
-  outline: none;
   border-color: var(--color-rojo);
   box-shadow: 0 0 0 3px var(--color-rojo-light);
 }
@@ -1804,7 +1802,7 @@
   transition: border-color var(--transition-fast);
 }
 .proxima__form input::placeholder { color: rgba(255,255,255,0.3); }
-.proxima__form input:focus { outline: none; border-color: var(--tt-acento); }
+.proxima__form input:focus { border-color: var(--tt-acento); }
 .btn-tt-newsletter {
   padding: var(--space-3) var(--space-5);
   background: var(--tt-acento);
