@@ -306,3 +306,19 @@ Semana 6:  Fase 9 (métricas + drag&drop) + QA general
 ### Browser Testing
 - Playwright para validar cada módulo admin después de la migración a PostgreSQL
 - Verificar que el sidebar, formularios, y CRUD siguen funcionando
+
+---
+
+## Skills para agentes IA (opencode)
+
+Cualquier agente IA que trabaje en este repo debe cargar primero las skills operativas en `.opencode/skills/`. Mapeo rapido:
+
+| Area de trabajo | Skill a cargar |
+|------------------|----------------|
+| Cualquier tarea | `fullstack` |
+| Sitio publico (`apps/web/`), CSS, HTML, diseno | `crea-pagina-publica` + `crea-design-system` |
+| CRM, `migrations/` con `prospectos`, API comercial | `crea-crm` |
+
+Las skills son resumenes operativos de los specs en `docs/updates/`. Si hay conflicto entre skill y spec, gana el spec. Las skills se sincronizan manualmente con `bash scripts/sync-skills.sh` (que solo detecta drift, no regenera).
+
+Indice detallado en `docs/README.md`.

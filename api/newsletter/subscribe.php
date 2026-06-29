@@ -17,10 +17,17 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 require_once __DIR__ . '/../lib/database.php';
 
 $data = json_decode(file_get_contents('php://input'), true);
+
+// Honeypot
+if (!empty($data['website'])) {
+  http_response_code(200);
+  echo json_encode(['ok' => true]);
+  exit;
+}
+
 $email = trim($data['email'] ?? '');
 $whatsapp = trim($data['whatsapp'] ?? '');
 
-// Validate email
 if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
   http_response_code(400);
   echo json_encode(['error' => 'Correo electrónico inválido']);
@@ -28,22 +35,46 @@ if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 
 $emailNorm = strtolower($email);
-$exists = dbFetchOne('SELECT 1 FROM suscriptores WHERE LOWER(email) = LOWER(:email) LIMIT 1', ['email' => $emailNorm]);
+
+// Verificar duplicado en prospectos con origen newsletter
+$exists = dbFetchOne(
+  "SELECT id FROM prospectos
+   WHERE LOWER(email_contacto) = :email
+     AND origen_descripcion = 'newsletter'
+     AND deleted_at IS NULL
+   LIMIT 1",
+  ['email' => $emailNorm]
+);
 if ($exists) {
   http_response_code(409);
   echo json_encode(['error' => 'Este correo ya está suscrito']);
   exit;
 }
 
-dbInsert('suscriptores', [
-  'email' => $emailNorm,
-  'whatsapp' => $whatsapp !== '' ? $whatsapp : null,
-  'activo' => true,
-  'metadata' => json_encode(new stdClass()),
-]);
+$metadata = [
+  'fuente' => 'newsletter_form',
+  'ip_origen' => $_SERVER['REMOTE_ADDR'] ?? null,
+  'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+  'enviado_en' => date('c'),
+];
 
-echo json_encode([
-  'ok' => true,
-  'message' => '¡Suscripción exitosa! Recibirás Buenos días, Perote cada mañana.'
-]);
-?>
+try {
+  $row = dbInsert('prospectos', [
+    'nombre_empresa' => 'Suscriptor newsletter',
+    'nombre_contacto' => null,
+    'email_contacto' => $emailNorm,
+    'telefono_contacto' => $whatsapp !== '' ? $whatsapp : null,
+    'origen_descripcion' => 'newsletter',
+    'estado_pipeline' => 'identificado',
+    'metadata' => json_encode($metadata),
+  ], 'id');
+
+  echo json_encode([
+    'ok' => true,
+    'message' => '¡Suscripción exitosa! Recibirás Buenos días, Perote cada mañana.'
+  ]);
+} catch (Throwable $e) {
+  error_log('[newsletter/subscribe] insert failed: ' . $e->getMessage());
+  http_response_code(500);
+  echo json_encode(['error' => 'No pudimos completar la suscripción. Intenta de nuevo.']);
+}
