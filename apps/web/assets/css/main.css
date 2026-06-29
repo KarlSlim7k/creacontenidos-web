@@ -2,21 +2,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Oswald:wght@500;600;700&display=swap');
 
 :root {
-  /* Base palette */
-  --color-noche: #111111;
-  --color-noche-soft: #1e1e1e;
-  --color-papel: #FFFFFF;
-  --color-papel-alt: #F7F7F5;
-  --color-fondo: #FFFFFF;
-  --color-fondo-alt: #F7F7F5;
-  --color-texto: #111111;
-  --color-texto-medio: #6B6B6B;
-  --color-borde-suave: #E8E8E8;
+  /* Base palette — calibrada con identidad PFA 2026 */
+  --color-noche: #0f172a;
+  --color-noche-soft: #1e293b;
+  --color-papel: #fafaf7;
+  --color-papel-alt: #f1efe9;
+  --color-fondo: #fafaf7;
+  --color-fondo-alt: #f1efe9;
+  --color-texto: #0f172a;
+  --color-texto-medio: #64748b;
+  --color-borde-suave: #e2e0d8;
 
   /* Brand */
-  --color-rojo: #C0392B;
-  --color-rojo-hover: #A93226;
-  --color-rojo-light: rgba(192, 57, 43, 0.1);
+  --color-rojo: #8b1a1a;
+  --color-rojo-hover: #6b1414;
+  --color-rojo-light: rgba(139, 26, 26, 0.10);
 
   /* Legacy aliases (kept for backwards compat) */
   --color-naranja: #A07A1C;
@@ -26,13 +26,13 @@
   --color-dorado-light: rgba(160, 122, 28, 0.12);
 
   /* Grays */
-  --color-gris-texto: #333333;
-  --color-gris-medio: #6B6B6B;
-  --color-gris-claro: #F7F7F5;
-  --color-gris-linea: #E8E8E8;
-  --color-borde: #E0E0E0;
+  --color-gris-texto: #1e293b;
+  --color-gris-medio: #64748b;
+  --color-gris-claro: #f1efe9;
+  --color-gris-linea: #e2e0d8;
+  --color-borde: #d6d3c7;
   --color-blanco: #FFFFFF;
-  --color-negro: #111111;
+  --color-negro: #0f172a;
 
   /* Acento mostaza magazine (decidido 2026-06-28) */
   --color-acento: #A07A1C;
@@ -104,12 +104,16 @@
 
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-html { font-size:16px; scroll-behavior:smooth; -webkit-font-smoothing:antialiased; }
+html { font-size:16px; scroll-behavior:smooth; -webkit-font-smoothing:antialiased; text-rendering: optimizeLegibility; }
 
 body {
   font-family: var(--font-body); font-size: 17px;
   line-height: 1.6; color: var(--color-texto);
-  background-color: var(--color-fondo); overflow-x: hidden;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(176,138,42,0.05), transparent 60%),
+    var(--color-fondo);
+  background-attachment: fixed;
+  overflow-x: hidden;
 }
 
 img { max-width:100%; height:auto; display:block; }
@@ -118,16 +122,18 @@ a:hover { color:var(--color-rojo); }
 ul,ol { list-style:none; }
 button { font-family:inherit; cursor:pointer; border:none; background:none; }
 input,textarea,select { font-family:inherit; font-size:inherit; }
-h1,h2,h3,h4,h5,h6 { font-family:var(--font-display); font-weight:700; line-height:1.2; color:var(--color-texto); }
+h1,h2,h3,h4,h5,h6 { font-family:var(--font-display); font-weight:700; line-height:1.15; color:var(--color-texto); }
+h1 { line-height: 0.95; letter-spacing: -0.02em; }
 blockquote { font-family:var(--font-accent); font-style:italic; }
 
 .container { width:100%; max-width:var(--max-width); margin:0 auto; padding:0 var(--space-4); }
 .container--narrow { max-width:var(--max-width-narrow); }
 .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 
-.editorial-divider { border:none; height:1px; background:var(--color-borde); margin:var(--space-8) 0; }
+.editorial-divider { border:none; height:1px; background:var(--color-borde-suave); margin:var(--space-8) 0; }
+.editorial-divider--double { border:none; border-top: 3px double var(--color-borde); margin:var(--space-8) 0; height:0; }
 .editorial-divider--thick { height:3px; background:var(--color-noche); }
-.editorial-divider--accent { height:3px; background:var(--color-rojo); width:60px; }
+.editorial-divider--accent { height:3px; background:var(--color-rojo); width:48px; }
 
 ::selection { background:var(--color-rojo-light); color:var(--color-noche); }
 :focus-visible { outline:2px solid var(--color-rojo); outline-offset:2px; }
@@ -166,10 +172,10 @@ blockquote { font-family:var(--font-accent); font-style:italic; }
 .seccion--gris { background: var(--color-fondo-alt); }
 .seccion__eyebrow {
   font-family: var(--font-eyebrow);
-  font-size: 0.7rem;
+  font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.25em;
   color: var(--color-rojo);
   display: block;
   margin-bottom: var(--space-2);
