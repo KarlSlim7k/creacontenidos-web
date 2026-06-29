@@ -41,6 +41,42 @@
     return map[cat] || '';
   }
 
+  function imgOrPlaceholder(art, ratio) {
+    if (art.imagen_destacada) {
+      return `<img src="${art.imagen_destacada}" alt="${art.imagen_alt || art.titulo}" loading="lazy">`;
+    }
+    const label = art.imagen_alt || art.titulo || 'Imagen';
+    // Provisional Fase 2: Unsplash por keyword. Reemplazar por URL real cuando exista.
+    const url = pickUnsplash(label, ratio);
+    return `<img src="${url}" alt="${label}" loading="lazy">`;
+  }
+
+  function pickUnsplash(label, ratio) {
+    const l = (label || '').toLowerCase();
+    const map = {
+      'futbol': 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80&auto=format&fit=crop',
+      'basquet': 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&q=80&auto=format&fit=crop',
+      'cafe': 'https://images.unsplash.com/photo-1442550528053-c431ecb55509?w=800&q=80&auto=format&fit=crop',
+      'danza': 'https://images.unsplash.com/photo-1547153760-18fc86324498?w=800&q=80&auto=format&fit=crop',
+      'cultura': 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800&q=80&auto=format&fit=crop',
+      'feria': 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=800&q=80&auto=format&fit=crop',
+      'niebla': 'https://images.unsplash.com/photo-1487621167305-5d248087c724?w=800&q=80&auto=format&fit=crop',
+      'cofre': 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=80&auto=format&fit=crop',
+      'mercado': 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&q=80&auto=format&fit=crop',
+      'papa': 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=800&q=80&auto=format&fit=crop',
+      'opinion': 'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&q=80&auto=format&fit=crop',
+      'default': 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80&auto=format&fit=crop'
+    };
+    const keys = Object.keys(map).sort((a, b) => b.length - a.length);
+    for (const k of keys) {
+      if (k !== 'default' && l.includes(k)) return map[k];
+    }
+    return ratio === '2x1'
+      ? 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&q=80&auto=format&fit=crop'
+      : map.default;
+  }
+  }
+
   function getArticleUrl(article) {
     return '/pages/nota.html?slug=' + encodeURIComponent(article.slug);
   }
@@ -79,7 +115,7 @@
 
     track.innerHTML = articles.slice(0, 5).map(art => `
       <div class="carousel__slide">
-        <img src="${art.imagen_destacada || 'https://picsum.photos/seed/' + art.slug + '/1200/500'}" alt="${art.imagen_alt || art.titulo}">
+        ${imgOrPlaceholder(art, '2x1')}
         <div class="carousel__slide-overlay"></div>
         <div class="carousel__slide-content">
           <span class="badge-categoria ${getCategoryClass(art.categoria)}">${(art.categoria || 'local').charAt(0).toUpperCase() + (art.categoria || 'local').slice(1)}</span>

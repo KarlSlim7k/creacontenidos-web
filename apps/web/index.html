@@ -11,88 +11,98 @@
   <link rel="stylesheet" href="/assets/css/components.css">
   <link rel="stylesheet" href="/assets/css/responsive.css">
   <style>
-    .header__logo-img {
-      width: 110px;
-      max-width: 100%;
-      max-height: 52px;
-      height: auto;
-      object-fit: contain;
+    .newsletter-banner {
+      padding: var(--space-12) 0;
+      background: linear-gradient(135deg, var(--color-noche) 0%, var(--color-noche-soft) 100%);
+      color: var(--color-papel);
+      position: relative;
+      overflow: hidden;
+    }
+    .newsletter-banner::before {
+      content: "";
+      position: absolute;
+      top: -50%; right: -10%;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(230,126,34,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .newsletter-banner__inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    @media (min-width: 768px) {
+      .newsletter-banner__inner {
+        grid-template-columns: 1.5fr 1fr;
+        gap: var(--space-10);
+      }
+    }
+    .newsletter-banner__eyebrow {
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-naranja);
       display: block;
+      margin-bottom: var(--space-3);
     }
-
-    .header-editorial.is-scrolled .header__logo-img { width: 130px; }
-
-    @media (min-width: 640px) {
-      .header__logo-img { width: 130px; }
+    .newsletter-banner__titulo {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--color-papel);
+      margin-bottom: var(--space-3);
     }
-
-    @media (min-width: 1024px) {
-      .header__logo-img { width: 150px; }
+    .newsletter-banner__subtitulo {
+      font-size: var(--text-base);
+      color: rgba(250,247,242,0.75);
+      margin: 0;
+    }
+    .newsletter-banner__form {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+    }
+    .newsletter-banner__form input {
+      flex: 1;
+      min-width: 200px;
+      padding: var(--space-3) var(--space-4);
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: var(--radius-base);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: var(--text-base);
+    }
+    .newsletter-banner__form input::placeholder { color: rgba(255,255,255,0.5); }
+    .newsletter-banner__form input:focus {
+      outline: none;
+      border-color: var(--color-rojo);
+      background: rgba(255,255,255,0.15);
+    }
+    .newsletter-banner__msg {
+      grid-column: 1 / -1;
+      font-size: var(--text-sm);
+      min-height: 1.25rem;
+      margin: 0;
     }
   </style>
 </head>
 <body data-page-id="home">
 
-  <!-- ═══ BARRA DE UTILIDAD ═══ -->
-  <div class="barra-utilidad">
-    <div class="container">
-      <div class="barra-utilidad__izq">
-        <span id="fecha-actual">Viernes 27 de marzo de 2026</span>
-        <span class="temp-perote">🌤 14°C Perote</span>
-        <a href="/pages/newsletter.html" class="newsletter-link">📩 Newsletter</a>
-      </div>
-      <div class="barra-utilidad__der">
-        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
-        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
-        <a href="#" aria-label="X / Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══ HEADER EDITORIAL ═══ -->
-  <header class="header-editorial" id="header">
-    <div class="container">
-      <div class="header__top">
-        <div>
-          <a href="/" class="header__logo" aria-label="Inicio CREA Contenidos">
-            <img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="header__logo-img" width="110" height="65">
-          </a>
-          <p class="header__tagline">El medio de Perote y su región</p>
-        </div>
-        <div class="header__actions">
-          <button class="search-toggle" id="search-toggle" aria-label="Buscar">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          </button>
-          <a href="/pages/comercial.html" class="btn-cta">Apoya a CREA</a>
-          <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false">
-            <span></span><span></span><span></span>
-          </button>
-        </div>
-      </div>
-      <nav class="nav-principal" aria-label="Navegación principal">
-        <ul class="nav-principal__lista" id="nav-lista">
-          <li><a href="/" class="nav-principal__enlace activo">Inicio</a></li>
-          <li><a href="/pages/seccion.html" class="nav-principal__enlace">Local</a></li>
-          <li><a href="/pages/cultura.html" class="nav-principal__enlace">Cultura</a></li>
-          <li><a href="/pages/economia.html" class="nav-principal__enlace">Economía</a></li>
-          <li><a href="/pages/entretenimiento.html" class="nav-principal__enlace">Entretenimiento</a></li>
-          <li><a href="/pages/deportes.html" class="nav-principal__enlace">Deportes</a></li>
-          <li><a href="/pages/opinion.html" class="nav-principal__enlace">Opinión</a></li>
-          <li><a href="/pages/tercer-tiempo.html" class="nav-principal__enlace" style="color:var(--tt-acento);">⚽ Tercer Tiempo</a></li>
-        </ul>
-      </nav>
-      <div class="search-bar" id="search-bar">
-        <input type="search" placeholder="Buscar en CREA Contenidos..." aria-label="Buscar">
-      </div>
-    </div>
-  </header>
+  <div data-include="header"></div>
 
   <main>
 
     <!-- ═══ HERO EDITORIAL ═══ -->
     <section class="hero-editorial" id="hero">
       <div class="hero-editorial__imagen">
-        <img src="https://picsum.photos/seed/perote-niebla/1400/700" alt="Niebla envolviendo el Cofre de Perote al amanecer">
+        <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1400&q=80&auto=format&fit=crop" alt="Imagen principal del día">
       </div>
       <div class="hero-editorial__overlay"></div>
       <div class="hero-editorial__contenido">
@@ -114,7 +124,7 @@
         <div class="carousel reveal">
           <div class="carousel__track">
             <div class="carousel__slide">
-              <img src="https://picsum.photos/seed/feria-cafe/1200/500" alt="Feria del café veracruzano en Perote">
+              <img src="https://images.unsplash.com/photo-1585464231875-d9ef1f5ad396?w=1200&q=80&auto=format&fit=crop" alt="Feria del café veracruzano en Perote">
               <div class="carousel__slide-overlay"></div>
               <div class="carousel__slide-content">
                 <span class="badge-categoria badge-categoria--cultura">Cultura</span>
@@ -123,7 +133,7 @@
               </div>
             </div>
             <div class="carousel__slide">
-              <img src="https://picsum.photos/seed/pavimentacion3/1200/500" alt="Obras de pavimentación en colonia Centro de Perote">
+              <img src="https://images.unsplash.com/photo-1517089152318-42ec560349c0?w=800&q=80&auto=format&fit=crop" alt="Obras de pavimentación en colonia Centro de Perote">
               <div class="carousel__slide-overlay"></div>
               <div class="carousel__slide-content">
                 <span class="badge-categoria">Local</span>
@@ -132,7 +142,7 @@
               </div>
             </div>
             <div class="carousel__slide">
-              <img src="https://picsum.photos/seed/futbol-juvenil/1200/500" alt="Equipo de fútbol juvenil de Perote celebrando victoria">
+              <img src="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&q=80&auto=format&fit=crop" alt="Equipo de fútbol juvenil de Perote celebrando victoria">
               <div class="carousel__slide-overlay"></div>
               <div class="carousel__slide-content">
                 <span class="badge-categoria badge-categoria--deportes">Deportes</span>
@@ -157,12 +167,11 @@
       <div class="container">
         <hr class="editorial-divider--thick">
         <div class="grid-secundario" style="display:grid; grid-template-columns:2fr 1fr; gap:var(--col-gap);">
-          <!-- Columna principal: 2 notas medianas -->
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--col-gap);">
             <article class="card-nota reveal reveal-delay-1">
               <a href="/pages/nota.html">
                 <div class="card-imagen">
-                  <img src="https://picsum.photos/seed/papa-export/400/250" alt="Productor de papa en campo de Perote" loading="lazy">
+                  <img src="https://images.unsplash.com/photo-1500076656116-558758c991c1?w=800&q=80&auto=format&fit=crop" alt="Productor de papa en campo de Perote">
                   <span class="badge-categoria badge-categoria--economia">Economía</span>
                 </div>
                 <div class="card-contenido">
@@ -179,7 +188,7 @@
             <article class="card-nota reveal reveal-delay-2">
               <a href="/pages/nota.html">
                 <div class="card-imagen">
-                  <img src="https://picsum.photos/seed/danza-folk/400/250" alt="Grupo de danza folklórica presentándose en Perote" loading="lazy">
+                  <img src="https://images.unsplash.com/photo-1585464231875-d9ef1f5ad396?w=1200&q=80&auto=format&fit=crop" alt="Grupo de danza folklórica presentándose en Perote">
                   <span class="badge-categoria badge-categoria--cultura">Cultura</span>
                 </div>
                 <div class="card-contenido">
@@ -194,7 +203,6 @@
               </a>
             </article>
           </div>
-          <!-- Columna lateral: noticias breves -->
           <aside class="grid-secundario__lateral" style="border-left:1px solid var(--color-borde); padding-left:var(--col-gap);">
             <h2 style="font-family:var(--font-body); font-size:var(--text-sm); font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--color-rojo); margin-bottom:var(--space-4);">Noticias breves</h2>
             <article class="card-nota card-nota--compacta reveal reveal-delay-3">
@@ -255,7 +263,7 @@
           <span class="banner-patrocinador__etiqueta">Contenido patrocinado</span>
           <h3 class="banner-patrocinador__titulo">Ferretería El Cofre — 35 años construyendo Perote</h3>
           <p class="banner-patrocinador__texto">Todo lo que necesitas para tu hogar y tu negocio. Visítanos en Av. Nacional #45, Centro. Envíos a toda la región.</p>
-          <a href="#" class="btn-cta btn-cta--naranja">Conocer más</a>
+          <a href="/pages/comercial.html" class="btn-cta btn-cta--naranja">Conocer más</a>
         </div>
       </div>
     </section>
@@ -266,13 +274,12 @@
         <h2 class="seccion__titulo">Secciones</h2>
         <hr class="editorial-divider--accent" style="margin:var(--space-3) 0 var(--space-8);">
         <div class="grid-secciones" style="display:grid; grid-template-columns:repeat(3,1fr); gap:var(--col-gap);">
-          <!-- LOCAL -->
           <div class="reveal reveal-delay-1">
             <h3 style="font-family:var(--font-display); font-size:var(--text-2xl); color:var(--color-noche); margin-bottom:var(--space-4); padding-bottom:var(--space-2); border-bottom:3px solid var(--color-rojo);">Local</h3>
             <article class="card-nota" style="border:none; box-shadow:none;">
               <a href="/pages/nota.html">
                 <div class="card-imagen">
-                  <img src="https://picsum.photos/seed/local-perote/400/220" alt="Vista del centro de Perote" loading="lazy">
+                  <img src="https://images.unsplash.com/photo-1585464231875-d9ef1f5ad396?w=1200&q=80&auto=format&fit=crop" alt="Vista del centro de Perote">
                 </div>
                 <div class="card-contenido" style="padding:var(--space-3) 0;">
                   <h3 class="card-titular" style="font-size:var(--text-lg);">Reabren tramo de la carretera federal Perote–Puebla tras derrumbe menor</h3>
@@ -282,13 +289,12 @@
             </article>
             <a href="/pages/seccion.html" style="font-family:var(--font-body); font-size:var(--text-sm); font-weight:700; color:var(--color-rojo); text-transform:uppercase; letter-spacing:0.04em;">Ver todo Local →</a>
           </div>
-          <!-- CULTURA -->
           <div class="reveal reveal-delay-2">
             <h3 style="font-family:var(--font-display); font-size:var(--text-2xl); color:var(--color-noche); margin-bottom:var(--space-4); padding-bottom:var(--space-2); border-bottom:3px solid var(--color-naranja);">Cultura</h3>
             <article class="card-nota" style="border:none; box-shadow:none;">
               <a href="/pages/nota.html">
                 <div class="card-imagen">
-                  <img src="https://picsum.photos/seed/cultura-vera/400/220" alt="Festival cultural en Perote" loading="lazy">
+                  <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800&q=80&auto=format&fit=crop" alt="Festival cultural en Perote">
                 </div>
                 <div class="card-contenido" style="padding:var(--space-3) 0;">
                   <h3 class="card-titular" style="font-size:var(--text-lg);">Feria del café veracruzano llega a Perote este fin de semana con más de 30 expositores</h3>
@@ -296,15 +302,14 @@
                 </div>
               </a>
             </article>
-            <a href="/pages/seccion.html" style="font-family:var(--font-body); font-size:var(--text-sm); font-weight:700; color:var(--color-naranja); text-transform:uppercase; letter-spacing:0.04em;">Ver todo Cultura →</a>
+            <a href="/pages/cultura.html" style="font-family:var(--font-body); font-size:var(--text-sm); font-weight:700; color:var(--color-naranja); text-transform:uppercase; letter-spacing:0.04em;">Ver todo Cultura →</a>
           </div>
-          <!-- ECONOMÍA -->
           <div class="reveal reveal-delay-3">
             <h3 style="font-family:var(--font-display); font-size:var(--text-2xl); color:var(--color-noche); margin-bottom:var(--space-4); padding-bottom:var(--space-2); border-bottom:3px solid #2E86C1;">Economía</h3>
             <article class="card-nota" style="border:none; box-shadow:none;">
               <a href="/pages/nota.html">
                 <div class="card-imagen">
-                  <img src="https://picsum.photos/seed/economia-gas/400/220" alt="Mercado municipal de Perote" loading="lazy">
+                  <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&q=80&auto=format&fit=crop" alt="Mercado municipal de Perote">
                 </div>
                 <div class="card-contenido" style="padding:var(--space-3) 0;">
                   <h3 class="card-titular" style="font-size:var(--text-lg);">Así afectan los precios del gas a los negocios del mercado municipal</h3>
@@ -312,18 +317,83 @@
                 </div>
               </a>
             </article>
-            <a href="/pages/seccion.html" style="font-family:var(--font-body); font-size:var(--text-sm); font-weight:700; color:#2E86C1; text-transform:uppercase; letter-spacing:0.04em;">Ver todo Economía →</a>
+            <a href="/pages/economia.html" style="font-family:var(--font-body); font-size:var(--text-sm); font-weight:700; color:#2E86C1; text-transform:uppercase; letter-spacing:0.04em;">Ver todo Economía →</a>
           </div>
         </div>
       </div>
     </section>
 
 
+    <!-- ═══ BANNER NEWSLETTER (preview del titulo del dia) ═══ -->
+    <section class="newsletter-banner reveal" id="newsletter-banner">
+      <div class="container">
+        <div class="newsletter-banner__inner">
+          <div class="newsletter-banner__copy">
+            <span class="newsletter-banner__eyebrow">☀️ Buenos días, Perote</span>
+            <h2 class="newsletter-banner__titulo" id="nl-banner-titulo">Lo que necesitas saber esta mañana, en tu correo antes de las 7 AM.</h2>
+            <p class="newsletter-banner__subtitulo">5 notas resumidas · clima · agenda local. Gratis.</p>
+          </div>
+          <form class="newsletter-banner__form" id="nl-banner-form">
+            <input type="email" id="nl-banner-email" placeholder="tucorreo@ejemplo.com" aria-label="Correo electrónico" required>
+            <button type="submit" class="btn-cta" id="nl-banner-btn">Suscribirme</button>
+          </form>
+          <div class="newsletter-banner__msg" id="nl-banner-msg" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+    <script>
+    (function () {
+      const form = document.getElementById('nl-banner-form');
+      if (!form) return;
+      const btn = document.getElementById('nl-banner-btn');
+      const msg = document.getElementById('nl-banner-msg');
+      const titulo = document.getElementById('nl-banner-titulo');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('nl-banner-email').value;
+        btn.textContent = 'Enviando...';
+        btn.disabled = true;
+        msg.textContent = '';
+        try {
+          const res = await fetch('/api/newsletter/subscribe.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ email })
+          });
+          const data = await res.json();
+          if (res.ok) {
+            msg.style.color = '#4ade80';
+            msg.textContent = data.message || '¡Listo! Revisa tu correo.';
+            form.reset();
+          } else {
+            msg.style.color = '#fca5a5';
+            msg.textContent = data.error || 'Error. Intenta de nuevo.';
+          }
+        } catch {
+          msg.style.color = '#fca5a5';
+          msg.textContent = 'Error de conexión.';
+        }
+        btn.textContent = 'Suscribirme';
+        btn.disabled = false;
+      });
+
+      // Preview: leer ultimo articulo del dia para mostrarlo como titulo del newsletter
+      fetch('/api/articles/crud.php?public=true&limit=1')
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (data && data.articles && data.articles[0] && titulo) {
+            const a = data.articles[0];
+            titulo.textContent = a.titulo;
+          }
+        })
+        .catch(() => {});
+    })();
+    </script>
+
     <!-- ═══ WIDGET TERCER TIEMPO ═══ -->
     <section class="widget-tercer-tiempo" id="tercer-tiempo">
       <div class="container">
 
-        <!-- Encabezado del widget -->
         <div class="widget-header">
           <div class="widget-marca">
             <span class="widget-logo-tt">TERCER TIEMPO</span>
@@ -332,13 +402,11 @@
           <a href="/pages/tercer-tiempo.html" class="ver-todos">Ver todos los episodios →</a>
         </div>
 
-        <!-- Grid episodio principal + 2 secundarios -->
         <div class="widget-grid">
 
-          <!-- Episodio principal: Coyotes -->
           <div class="widget-ep-principal reveal">
             <div class="widget-thumbnail">
-              <img src="https://picsum.photos/seed/coyotes-basquetbol/600/340" alt="Coyotes de Perote campeones estatales de básquetbol 2026" loading="lazy">
+              <img src="https://images.unsplash.com/photo-1585464231875-d9ef1f5ad396?w=1200&q=80&auto=format&fit=crop" alt="Coyotes de Perote campeones estatales de básquetbol 2026">
               <div class="play-overlay-mini">▶</div>
               <span class="badge-destacado-widget">EPISODIO DESTACADO</span>
             </div>
@@ -350,13 +418,11 @@
             </div>
           </div>
 
-          <!-- 2 episodios secundarios apilados -->
           <div class="widget-eps-secundarios reveal reveal-delay-2">
 
-            <!-- Card béisbol -->
             <a href="/pages/tercer-tiempo.html#ep-12-beisbol" class="widget-ep-secundario">
               <div class="widget-ep-sec__thumb">
-                <img src="https://picsum.photos/seed/beisbol-widget/120/100" alt="Historia del béisbol en Perote" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1461896836934-bd45ba8fcf9b?w=800&q=80&auto=format&fit=crop" alt="Historia del béisbol en Perote">
               </div>
               <div class="widget-ep-sec__info">
                 <span class="widget-ep-sec__cat">⚾ Historia deportiva · EP. 12</span>
@@ -365,10 +431,9 @@
               </div>
             </a>
 
-            <!-- Card fútbol femenil -->
             <a href="/pages/tercer-tiempo.html#ep-9" class="widget-ep-secundario">
               <div class="widget-ep-sec__thumb">
-                <img src="https://picsum.photos/seed/femenil-widget/120/100" alt="Fútbol femenil inter-colonias Perote" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1551958219-acbc608c6377?w=800&q=80&auto=format&fit=crop" alt="Fútbol femenil inter-colonias Perote">
               </div>
               <div class="widget-ep-sec__info">
                 <span class="widget-ep-sec__cat">⚽ Fútbol femenil · EP. 9</span>
@@ -380,7 +445,6 @@
           </div>
         </div>
 
-        <!-- Footer del widget -->
         <div class="widget-footer">
           <span>🎙️ Todos los jueves en vivo por</span>
           <a href="https://www.facebook.com/profile.php?id=100079776720617" target="_blank" rel="noopener noreferrer" class="fb-link">Facebook · Crea Contenidos</a>
@@ -390,105 +454,11 @@
       </div>
     </section>
 
-    <!-- ═══ FRANJA NEWSLETTER ═══ -->
-    <section class="newsletter-strip reveal" id="newsletter">
-      <div class="container">
-        <div class="newsletter__texto">
-          <h2>Buenos días, Perote — cada mañana en tu correo</h2>
-          <p>Lo que necesitas saber para vivir en Perote. Sin spam. Gratis.</p>
-        </div>
-        <form class="newsletter__form" id="newsletter-form">
-          <input type="email" id="nl-email" placeholder="tucorreo@ejemplo.com" aria-label="Correo electrónico" required>
-          <input type="tel" id="nl-whatsapp" placeholder="WhatsApp (opcional)" aria-label="WhatsApp" style="max-width:180px;">
-          <button type="submit" class="btn-cta btn-cta--naranja" id="nl-submit">Suscribirme</button>
-        </form>
-        <div id="nl-message" style="display:none; margin-top:0.75rem; font-size:0.875rem; text-align:center;"></div>
-      </div>
-    </section>
-    <script>
-    document.getElementById('newsletter-form')?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById('nl-submit');
-      const msg = document.getElementById('nl-message');
-      const email = document.getElementById('nl-email').value;
-      const whatsapp = document.getElementById('nl-whatsapp').value;
-      btn.textContent = 'Enviando...'; btn.disabled = true;
-      msg.style.display = 'none';
-      try {
-        const res = await fetch('/api/newsletter/subscribe.php', {
-          method: 'POST', headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ email, whatsapp })
-        });
-        const data = await res.json();
-        msg.style.display = 'block';
-        if (res.ok) {
-          msg.style.color = '#0A8F6C';
-          msg.textContent = data.message || '¡Suscripción exitosa!';
-          document.getElementById('nl-email').value = '';
-          document.getElementById('nl-whatsapp').value = '';
-        } else {
-          msg.style.color = '#CC2936';
-          msg.textContent = data.error || 'Error al suscribirse';
-        }
-      } catch { msg.style.display = 'block'; msg.style.color = '#CC2936'; msg.textContent = 'Error de conexión'; }
-      btn.textContent = 'Suscribirme'; btn.disabled = false;
-    });
-    </script>
-
   </main>
 
-  <!-- ═══ FOOTER ═══ -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__grid">
-        <div>
-          <a href="/" class="footer__logo"><img src="/assets/img/public/logo-crea.png" alt="CREA Contenidos" class="footer__logo-img"></a>
-          <p class="footer__desc">CREA Contenidos es el medio digital de referencia para Perote y la región serrana de Veracruz. Periodismo local, humano, potenciado por inteligencia artificial.</p>
-          <div class="footer__redes">
-            <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
-            <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
-            <a href="#" aria-label="X / Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
-          </div>
-        </div>
-        <div>
-          <h4 class="footer__titulo-col">Secciones</h4>
-          <ul class="footer__lista">
-            <li><a href="/pages/seccion.html">Local</a></li>
-            <li><a href="/pages/seccion.html">Cultura</a></li>
-            <li><a href="/pages/seccion.html">Economía</a></li>
-            <li><a href="/pages/seccion.html">Entretenimiento</a></li>
-            <li><a href="/pages/seccion.html">Deportes</a></li>
-            <li><a href="/pages/seccion.html">Opinión</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="footer__titulo-col">CREA</h4>
-          <ul class="footer__lista">
-            <li><a href="/pages/colaboradores.html">Equipo</a></li>
-            <li><a href="/pages/comunidad.html">Comunidad</a></li>
-            <li><a href="/pages/comercial.html">Publicidad</a></li>
-            <li><a href="#">Media Kit</a></li>
-            <li><a href="#">Contacto</a></li>
-            <li><a href="/admin/login.html">Acceso editorial</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="footer__titulo-col">Legal</h4>
-          <ul class="footer__lista">
-            <li><a href="#">Aviso de privacidad</a></li>
-            <li><a href="#">Términos de uso</a></li>
-            <li><a href="#">Código de ética</a></li>
-            <li><a href="#">Derechos de autor</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer__bottom">
-        <span>© <span id="anio-actual">2026</span> CREA Contenidos. Todos los derechos reservados.</span>
-        <span class="footer__hecho">Hecho en Perote, Veracruz 🇲🇽</span>
-      </div>
-    </div>
-  </footer>
+  <div data-include="footer"></div>
 
+  <script src="/assets/js/nav.js"></script>
   <script src="/assets/js/main.js"></script>
   <script src="/assets/js/carousel.js"></script>
   <script src="/assets/js/interactions.js"></script>

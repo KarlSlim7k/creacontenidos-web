@@ -85,12 +85,53 @@
   }
 
   // ─── Render article card ───
+  function imgOrPlaceholder(article, ratio) {
+    if (article.imagen_destacada) {
+      return `<img src="${article.imagen_destacada}" alt="${article.imagen_alt || article.titulo}" loading="lazy">`;
+    }
+    const label = article.imagen_alt || article.titulo || 'Imagen';
+    // Provisional: imagen Unsplash por keyword. Reemplazar por URL real cuando exista.
+    const url = pickUnsplash(label, ratio);
+    return `<img src="${url}" alt="${label}" loading="lazy">`;
+  }
+
+  // Mapa keyword -> URL Unsplash (provisional Fase 2)
+  const UNSPLASH_MAP = {
+    "futbol": "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80&auto=format&fit=crop",
+    "basquet": "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&q=80&auto=format&fit=crop",
+    "beisbol": "https://images.unsplash.com/photo-1471295253337-3ceaaedca402?w=800&q=80&auto=format&fit=crop",
+    "deporte": "https://images.unsplash.com/photo-1461896836934-bd45ba8fcf9b?w=800&q=80&auto=format&fit=crop",
+    "cafe": "https://images.unsplash.com/photo-1442550528053-c431ecb55509?w=800&q=80&auto=format&fit=crop",
+    "danza": "https://images.unsplash.com/photo-1547153760-18fc86324498?w=800&q=80&auto=format&fit=crop",
+    "cultura": "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800&q=80&auto=format&fit=crop",
+    "feria": "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=800&q=80&auto=format&fit=crop",
+    "niebla": "https://images.unsplash.com/photo-1487621167305-5d248087c724?w=800&q=80&auto=format&fit=crop",
+    "cofre": "https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=80&auto=format&fit=crop",
+    "perote": "https://images.unsplash.com/photo-1585464231875-d9ef1f5ad396?w=800&q=80&auto=format&fit=crop",
+    "carretera": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&q=80&auto=format&fit=crop",
+    "mercado": "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&q=80&auto=format&fit=crop",
+    "papa": "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=800&q=80&auto=format&fit=crop",
+    "agricultura": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80&auto=format&fit=crop",
+    "opinion": "https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&q=80&auto=format&fit=crop",
+    "default": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80&auto=format&fit=crop"
+  };
+
+  function pickUnsplash(label, ratio) {
+    const l = (label || "").toLowerCase();
+    for (const kw of Object.keys(UNSPLASH_MAP).sort((a, b) => b.length - a.length)) {
+      if (kw !== "default" && l.includes(kw)) return UNSPLASH_MAP[kw];
+    }
+    return ratio === "2x1"
+      ? "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&q=80&auto=format&fit=crop"
+      : UNSPLASH_MAP.default;
+  }
+
   function renderCard(article) {
     return `
       <article class="card-nota reveal">
         <a href="${getArticleUrl(article)}">
           <div class="card-imagen">
-            <img src="${article.imagen_destacada || 'https://picsum.photos/seed/' + article.slug + '/400/250'}" alt="${article.imagen_alt || article.titulo}" loading="lazy">
+            ${imgOrPlaceholder(article, '16x9')}
             <span class="badge-categoria ${getCategoryClass(article.categoria)}">${getCategoryLabel(article.categoria)}</span>
           </div>
           <div class="card-contenido">
@@ -206,7 +247,7 @@
     if (!pageId) return;
 
     const categoriaMap = {
-      local: 'local', cultura: 'cultura', economia: 'economia',
+      seccion: 'local', cultura: 'cultura', economia: 'economia',
       entretenimiento: 'entretenimiento', deportes: 'deportes', opinion: 'opinion'
     };
     const categoria = categoriaMap[pageId];
@@ -385,7 +426,7 @@
     if (track) {
       track.innerHTML = articles.slice(0, 5).map(art => `
         <div class="carousel__slide">
-          <img src="${art.imagen_destacada || 'https://picsum.photos/seed/' + art.slug + '/1200/500'}" alt="${art.imagen_alt || art.titulo}">
+          ${imgOrPlaceholder(art, '2x1')}
           <div class="carousel__slide-overlay"></div>
           <div class="carousel__slide-content">
             <span class="badge-categoria ${getCategoryClass(art.categoria)}">${getCategoryLabel(art.categoria)}</span>
@@ -472,7 +513,7 @@
       initIndexPage();
     } else if (pageId === 'nota') {
       initNotaPage();
-    } else if (['local', 'cultura', 'economia', 'entretenimiento', 'deportes', 'opinion'].includes(pageId)) {
+    } else if (['seccion', 'cultura', 'economia', 'entretenimiento', 'deportes', 'opinion'].includes(pageId)) {
       initSeccionPage();
     }
   }

@@ -1,4 +1,6 @@
-/* CREA Contenidos — main.js */
+/* CREA Contenidos — main.js
+ * Helpers globales. Nav/footer/sticky/search viven en nav.js.
+ */
 (function () {
   'use strict';
 
@@ -16,64 +18,6 @@
   function setAnioFooter() {
     const el = document.getElementById('anio-actual');
     if (el) el.textContent = new Date().getFullYear();
-  }
-
-  /* ── Navegación móvil ── */
-  function initMobileNav() {
-    const hamburger = document.getElementById('hamburger');
-    const navLista = document.getElementById('nav-lista');
-    if (!hamburger || !navLista) return;
-
-    hamburger.addEventListener('click', function () {
-      hamburger.classList.toggle('is-active');
-      navLista.classList.toggle('is-open');
-      const expanded = hamburger.getAttribute('aria-expanded') === 'true';
-      hamburger.setAttribute('aria-expanded', !expanded);
-    });
-
-    // Cerrar al clic fuera
-    document.addEventListener('click', function (e) {
-      if (!hamburger.contains(e.target) && !navLista.contains(e.target)) {
-        hamburger.classList.remove('is-active');
-        navLista.classList.remove('is-open');
-        hamburger.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
-
-  /* ── Sticky header compacto ── */
-  function initStickyHeader() {
-    const header = document.querySelector('.header-editorial');
-    if (!header) return;
-    let lastScroll = 0;
-
-    window.addEventListener('scroll', function () {
-      const currentScroll = window.scrollY;
-      if (currentScroll > 80) {
-        header.classList.add('is-scrolled');
-      } else {
-        header.classList.remove('is-scrolled');
-      }
-      lastScroll = currentScroll;
-    }, { passive: true });
-  }
-
-  /* ── Barra de búsqueda ── */
-  function initSearch() {
-    const toggle = document.getElementById('search-toggle');
-    const bar = document.getElementById('search-bar');
-    if (!toggle || !bar) return;
-
-    toggle.addEventListener('click', function () {
-      bar.classList.toggle('is-open');
-      if (bar.classList.contains('is-open')) {
-        bar.querySelector('input').focus();
-      }
-    });
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') bar.classList.remove('is-open');
-    });
   }
 
   /* ── IntersectionObserver para animaciones de entrada ── */
@@ -117,9 +61,6 @@
   document.addEventListener('DOMContentLoaded', function () {
     setFechaDinamica();
     setAnioFooter();
-    initMobileNav();
-    initStickyHeader();
-    initSearch();
     initRevealAnimations();
     initSmoothScroll();
   });
